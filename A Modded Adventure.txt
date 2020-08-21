@@ -1,0 +1,552 @@
+
+local library = loadstring(game:HttpGet("https://pastebin.com/raw/tqKTJQAA", true))()
+
+local Window = library:CreateWindow('A Modded Adventure')
+
+Window:Section('Item Farm')
+
+
+local Toggle = Window:Toggle("Hyper Gem", {flag = "ThisNeedsToBeRemembered1"})
+spawn( 
+    function() --Makes this a new loop within the running script so it doesn't interfere with the rest of the script
+        while wait(1) do
+            if Window.flags.ThisNeedsToBeRemembered1 then
+                for _,v in pairs(game.Workspace:GetChildren()) do
+                    if v:IsA("Tool") and v.Name == "Hyper Gem" then
+                        v.Handle.CFrame = game.Players.LocalPlayer.Character.PrimaryPart.CFrame
+                        wait()
+                    end
+                end
+            end
+        end
+    end
+)
+
+local Toggle = Window:Toggle("Cone", {flag = "ThisNeedsToBeRemembered2"})
+spawn( 
+    function() --Makes this a new loop within the running script so it doesn't interfere with the rest of the script
+        while wait(1) do
+            if Window.flags.ThisNeedsToBeRemembered2 then
+                for _,v in pairs(game.Workspace:GetChildren()) do
+                    if v:IsA("Tool") and v.Name == "Cone" then
+                        v.Handle.CFrame = game.Players.LocalPlayer.Character.PrimaryPart.CFrame
+                        wait()
+                    end
+                end
+            end
+        end
+    end
+)
+
+local Toggle = Window:Toggle("Full Form Gem", {flag = "ThisNeedsToBeRemembered3"})
+spawn( 
+    function() --Makes this a new loop within the running script so it doesn't interfere with the rest of the script
+        while wait(1) do
+            if Window.flags.ThisNeedsToBeRemembered3 then
+                for _,v in pairs(game.Workspace:GetChildren()) do
+                    if v:IsA("Tool") and v.Name == "Full Form Gem" then
+                        v.Handle.CFrame = game.Players.LocalPlayer.Character.PrimaryPart.CFrame
+                        wait()
+                    end
+                end
+            end
+        end
+    end
+)
+
+local Toggle = Window:Toggle("Hellish Diary", {flag = "ThisNeedsToBeRemembered4"})
+spawn( 
+    function() --Makes this a new loop within the running script so it doesn't interfere with the rest of the script
+        while wait(1) do
+            if Window.flags.ThisNeedsToBeRemembered4 then
+                for _,v in pairs(game.Workspace:GetChildren()) do
+                    if v:IsA("Tool") and v.Name == "Hellish Diary" then
+                        v.Handle.CFrame = game.Players.LocalPlayer.Character.PrimaryPart.CFrame
+                        wait()
+                    end
+                end
+            end
+        end
+    end
+)
+
+local Toggle = Window:Toggle("Dio's Diary", {flag = "ThisNeedsToBeRemembered5"})
+spawn( 
+    function() --Makes this a new loop within the running script so it doesn't interfere with the rest of the script
+        while wait(1) do
+            if Window.flags.ThisNeedsToBeRemembered5 then
+                for _,v in pairs(game.Workspace:GetChildren()) do
+                    if v:IsA("Tool") and v.Name == "Dios Diary" then
+                        v.Handle.CFrame = game.Players.LocalPlayer.Character.PrimaryPart.CFrame
+                        wait()
+                    end
+                end
+            end
+        end
+    end
+)
+
+local Toggle = Window:Toggle("Sonic Shoes", {flag = "ThisNeedsToBeRemembered6"})
+spawn( 
+    function() --Makes this a new loop within the running script so it doesn't interfere with the rest of the script
+        while wait(1) do
+            if Window.flags.ThisNeedsToBeRemembered6 then
+                for _,v in pairs(game.Workspace:GetChildren()) do
+                    if v:IsA("Tool") and v.Name == "Sonic Shoes" then
+                        v.Handle.CFrame = game.Players.LocalPlayer.Character.PrimaryPart.CFrame
+                        wait()
+                    end
+                end
+            end
+        end
+    end
+)
+
+local Toggle = Window:Toggle("Zipper Hand", {flag = "ThisNeedsToBeRemembered7"})
+spawn( 
+    function() --Makes this a new loop within the running script so it doesn't interfere with the rest of the script
+        while wait(1) do
+            if Window.flags.ThisNeedsToBeRemembered7 then
+                for _,v in pairs(game.Workspace:GetChildren()) do
+                    if v:IsA("Tool") and v.Name == "Zipper Hand" then
+                        v.Handle.CFrame = game.Players.LocalPlayer.Character.PrimaryPart.CFrame
+                        wait()
+                    end
+                end
+            end
+        end
+    end
+)
+
+local Toggle = Window:Toggle("Reborn Arrow", {flag = "ThisNeedsToBeRemembered8"})
+spawn( 
+    function() --Makes this a new loop within the running script so it doesn't interfere with the rest of the script
+        while wait(1) do
+            if Window.flags.ThisNeedsToBeRemembered8 then
+                for _,v in pairs(game.Workspace:GetChildren()) do
+                    if v:IsA("Tool") and v.Name == "Reborn Arrow" then
+                        v.Handle.CFrame = game.Players.LocalPlayer.Character.PrimaryPart.CFrame
+                        wait()
+                    end
+                end
+            end
+        end
+    end
+)
+
+local Toggle = Window:Toggle("Aja mask", {flag = "ThisNeedsToBeRemembered9"})
+spawn( 
+    function() --Makes this a new loop within the running script so it doesn't interfere with the rest of the script
+        while wait(1) do
+            if Window.flags.ThisNeedsToBeRemembered then
+                for _,v in pairs(game.Workspace:GetChildren()) do
+                    if v:IsA("Tool") and v.Name == "Aja mask" then
+                        v.Handle.CFrame = game.Players.LocalPlayer.Character.PrimaryPart.CFrame
+                        wait()
+                    end
+                end
+            end
+        end
+    end
+)
+
+local Toggle = Window:Toggle("Holy corpse eye", {flag = "ThisNeedsToBeRemembered10"})
+spawn( 
+    function() --Makes this a new loop within the running script so it doesn't interfere with the rest of the script
+        while wait(1) do
+            if Window.flags.ThisNeedsToBeRemembered10 then
+                for _,v in pairs(game.Workspace:GetChildren()) do
+                    if v:IsA("Tool") and v.Name == "Holy corpse eye" then
+                        v.Handle.CFrame = game.Players.LocalPlayer.Character.PrimaryPart.CFrame
+                        wait()
+                    end
+                end
+            end
+        end
+    end
+)
+
+local Toggle = Window:Toggle("Holy Corpse", {flag = "ThisNeedsToBeRemembered11"})
+spawn( 
+    function() --Makes this a new loop within the running script so it doesn't interfere with the rest of the script
+        while wait(1) do
+            if Window.flags.ThisNeedsToBeRemembered11 then
+                for _,v in pairs(game.Workspace:GetChildren()) do
+                    if v:IsA("Tool") and v.Name == "Holy Corpse" then
+                        v.Handle.CFrame = game.Players.LocalPlayer.Character.PrimaryPart.CFrame
+                        wait()
+                    end
+                end
+            end
+        end
+    end
+)
+
+local Toggle = Window:Toggle("Diego Requiem Arrow", {flag = "ThisNeedsToBeRemembered12"})
+spawn( 
+    function() --Makes this a new loop within the running script so it doesn't interfere with the rest of the script
+        while wait(1) do
+            if Window.flags.ThisNeedsToBeRemembered12 then
+                for _,v in pairs(game.Workspace:GetChildren()) do
+                    if v:IsA("Tool") and v.Name == "Diego Requiem Arrow" then
+                        v.Handle.CFrame = game.Players.LocalPlayer.Character.PrimaryPart.CFrame
+                        wait()
+                    end
+                end
+            end
+        end
+    end
+)
+
+local Toggle = Window:Toggle("Jotaro Requiem Arrow", {flag = "ThisNeedsToBeRemembered13"})
+spawn( 
+    function() --Makes this a new loop within the running script so it doesn't interfere with the rest of the script
+        while wait(1) do
+            if Window.flags.ThisNeedsToBeRemembered13 then
+                for _,v in pairs(game.Workspace:GetChildren()) do
+                    if v:IsA("Tool") and v.Name == "Jotaro Requiem Arrow" then
+                        v.Handle.CFrame = game.Players.LocalPlayer.Character.PrimaryPart.CFrame
+                        wait()
+                    end
+                end
+            end
+        end
+    end
+)
+
+local Toggle = Window:Toggle("Rokakaka Fruit", {flag = "ThisNeedsToBeRemembered14"})
+spawn( 
+    function() --Makes this a new loop within the running script so it doesn't interfere with the rest of the script
+        while wait(1) do
+            if Window.flags.ThisNeedsToBeRemembered14 then
+                for _,v in pairs(game.Workspace:GetChildren()) do
+                    if v:IsA("Tool") and v.Name == "Rokakaka Fruit" then
+                        v.Handle.CFrame = game.Players.LocalPlayer.Character.PrimaryPart.CFrame
+                        wait()
+                    end
+                end
+            end
+        end
+    end
+)
+
+local Toggle = Window:Toggle("Joke Requiem", {flag = "ThisNeedsToBeRemembered15"})
+spawn( 
+    function() --Makes this a new loop within the running script so it doesn't interfere with the rest of the script
+        while wait(1) do
+            if Window.flags.ThisNeedsToBeRemembered15 then
+                for _,v in pairs(game.Workspace:GetChildren()) do
+                    if v:IsA("Tool") and v.Name == "Joke Requiem" then
+                        game.Players.LocalPlayer.Character.PrimaryPart.CFrame = v.Handle.CFrame
+                        wait()
+                    end
+                end
+            end
+        end
+    end
+)
+
+local Toggle = Window:Toggle("Frog", {flag = "ThisNeedsToBeRemembered16"})
+spawn( 
+    function() --Makes this a new loop within the running script so it doesn't interfere with the rest of the script
+        while wait(1) do
+            if Window.flags.ThisNeedsToBeRemembered16 then
+                for _,v in pairs(game.Workspace:GetChildren()) do
+                    if v:IsA("Tool") and v.Name == "Frog" then
+                        game.Players.LocalPlayer.Character.PrimaryPart.CFrame = v.Handle.CFrame
+                        wait()
+                    end
+                end
+            end
+        end
+    end
+)
+
+local Toggle = Window:Toggle("Hat", {flag = "ThisNeedsToBeRemembered17"})
+spawn( 
+    function() --Makes this a new loop within the running script so it doesn't interfere with the rest of the script
+        while wait(1) do
+            if Window.flags.ThisNeedsToBeRemembered17 then
+                for _,v in pairs(game.Workspace:GetChildren()) do
+                    if v:IsA("Tool") and v.Name == "Hat" then
+                        game.Players.LocalPlayer.Character.PrimaryPart.CFrame = v.Handle.CFrame
+                        wait()
+                    end
+                end
+            end
+        end
+    end
+)
+
+local Toggle = Window:Toggle("Coffin", {flag = "ThisNeedsToBeRemembered18"})
+spawn( 
+    function() --Makes this a new loop within the running script so it doesn't interfere with the rest of the script
+        while wait(1) do
+            if Window.flags.ThisNeedsToBeRemembered18 then
+                for _,v in pairs(game.Workspace:GetChildren()) do
+                    if v:IsA("Tool") and v.Name == "Coffin" then
+                        game.Players.LocalPlayer.Character.PrimaryPart.CFrame = v.Handle.CFrame
+                        wait()
+                    end
+                end
+            end
+        end
+    end
+)
+
+local Toggle = Window:Toggle("Knife", {flag = "ThisNeedsToBeRemembered19"})
+spawn( 
+    function() --Makes this a new loop within the running script so it doesn't interfere with the rest of the script
+        while wait(1) do
+            if Window.flags.ThisNeedsToBeRemembered19 then
+                for _,v in pairs(game.Workspace:GetChildren()) do
+                    if v:IsA("Tool") and v.Name == "Knife" then
+                        game.Players.LocalPlayer.Character.PrimaryPart.CFrame = v.Handle.CFrame
+                        wait()
+                    end
+                end
+            end
+        end
+    end
+)
+
+local Toggle = Window:Toggle("Vampire Mask", {flag = "ThisNeedsToBeRemembered20"})
+spawn( 
+    function() --Makes this a new loop within the running script so it doesn't interfere with the rest of the script
+        while wait(1) do
+            if Window.flags.ThisNeedsToBeRemembered20 then
+                for _,v in pairs(game.Workspace:GetChildren()) do
+                    if v:IsA("Tool") and v.Name == "Vampire Mask" then
+                        game.Players.LocalPlayer.Character.PrimaryPart.CFrame = v.Handle.CFrame
+                        wait()
+                    end
+                end
+            end
+        end
+    end
+)
+
+local Toggle = Window:Toggle("Requiem Arrow", {flag = "ThisNeedsToBeRemembered21"})
+spawn( 
+    function() --Makes this a new loop within the running script so it doesn't interfere with the rest of the script
+        while wait(1) do
+            if Window.flags.ThisNeedsToBeRemembered21 then
+                for _,v in pairs(game.Workspace:GetChildren()) do
+                    if v:IsA("Tool") and v.Name == "Requiem Arrow" then
+                        v.Handle.CFrame = game.Players.LocalPlayer.Character.PrimaryPart.CFrame
+                        wait()
+                    end
+                end
+            end
+        end
+    end
+)
+
+local Toggle = Window:Toggle("Black Requiem Arrow", {flag = "ThisNeedsToBeRemembered22"})
+spawn( 
+    function() --Makes this a new loop within the running script so it doesn't interfere with the rest of the script
+        while wait(1) do
+            if Window.flags.ThisNeedsToBeRemembered22 then
+                for _,v in pairs(game.Workspace:GetChildren()) do
+                    if v:IsA("Tool") and v.Name == "Black Requiem Arrow" then
+                        v.Handle.CFrame = game.Players.LocalPlayer.Character.PrimaryPart.CFrame
+                        wait()
+                    end
+                end
+            end
+        end
+    end
+)
+
+local Toggle = Window:Toggle("Ender Pearl", {flag = "ThisNeedsToBeRemembered23"})
+spawn( 
+    function() --Makes this a new loop within the running script so it doesn't interfere with the rest of the script
+        while wait(1) do
+            if Window.flags.ThisNeedsToBeRemembered23 then
+                for _,v in pairs(game.Workspace:GetChildren()) do
+                    if v:IsA("Tool") and v.Name == "Ender Pearl" then
+                        v.Handle.CFrame = game.Players.LocalPlayer.Character.PrimaryPart.CFrame
+                        wait()
+                    end
+                end
+            end
+        end
+    end
+)
+
+local Toggle = Window:Toggle("Camera", {flag = "ThisNeedsToBeRemembered24"})
+spawn( 
+    function() --Makes this a new loop within the running script so it doesn't interfere with the rest of the script
+        while wait(1) do
+            if Window.flags.ThisNeedsToBeRemembered24 then
+                for _,v in pairs(game.Workspace:GetChildren()) do
+                    if v:IsA("Tool") and v.Name == "Camera" then
+                        v.Handle.CFrame = game.Players.LocalPlayer.Character.PrimaryPart.CFrame
+                        wait()
+                    end
+                end
+            end
+        end
+    end
+)
+
+local Toggle = Window:Toggle("Jotaro Hat", {flag = "ThisNeedsToBeRemembered25"})
+spawn( 
+    function() --Makes this a new loop within the running script so it doesn't interfere with the rest of the script
+        while wait(1) do
+            if Window.flags.ThisNeedsToBeRemembered25 then
+                for _,v in pairs(game.Workspace:GetChildren()) do
+                    if v:IsA("Tool") and v.Name == "Jotaro Hat" then
+                        game.Players.LocalPlayer.Character.PrimaryPart.CFrame = v.Handle.CFrame
+                        wait()
+                    end
+                end
+            end
+        end
+    end
+)
+
+local Toggle = Window:Toggle("Banknote", {flag = "ThisNeedsToBeRemembered26"})
+spawn( 
+    function() --Makes this a new loop within the running script so it doesn't interfere with the rest of the script
+        while wait(1) do
+            if Window.flags.ThisNeedsToBeRemembered26 then
+                for _,v in pairs(game.Workspace:GetChildren()) do
+                    if v:IsA("Tool") and v.Name == "Banknote" then
+                        v.Handle.CFrame = game.Players.LocalPlayer.Character.PrimaryPart.CFrame
+                        wait()
+                    end
+                end
+            end
+        end
+    end
+)
+
+local Toggle = Window:Toggle("Bootleg's Diary", {flag = "ThisNeedsToBeRemembered27"})
+spawn( 
+    function() --Makes this a new loop within the running script so it doesn't interfere with the rest of the script
+        while wait(1) do
+            if Window.flags.ThisNeedsToBeRemembered27 then
+                for _,v in pairs(game.Workspace:GetChildren()) do
+                    if v:IsA("Tool") and v.Name == "Bootlegs Diary" then
+                        v.Handle.CFrame = game.Players.LocalPlayer.Character.PrimaryPart.CFrame
+                        wait()
+                    end
+                end
+            end
+        end
+    end
+)
+
+local Toggle = Window:Toggle("Mario's Hat", {flag = "ThisNeedsToBeRemembered28"})
+spawn( 
+    function() --Makes this a new loop within the running script so it doesn't interfere with the rest of the script
+        while wait(1) do
+            if Window.flags.ThisNeedsToBeRemembered28 then
+                for _,v in pairs(game.Workspace:GetChildren()) do
+                    if v:IsA("Tool") and v.Name == "Marios Hat" then
+                        v.Handle.CFrame = game.Players.LocalPlayer.Character.PrimaryPart.CFrame
+                        wait()
+                    end
+                end
+            end
+        end
+    end
+)
+
+local Toggle = Window:Toggle("Arrow", {flag = "ThisNeedsToBeRemembered29"})
+spawn( 
+    function() --Makes this a new loop within the running script so it doesn't interfere with the rest of the script
+        while wait(1) do
+            if Window.flags.ThisNeedsToBeRemembered29 then
+                for _,v in pairs(game.Workspace:GetChildren()) do
+                    if v:IsA("Tool") and v.Name == "Arrow" then
+                        v.Handle.CFrame = game.Players.LocalPlayer.Character.PrimaryPart.CFrame
+                        wait()
+                    end
+                end
+            end
+        end
+    end
+)
+
+local Toggle = Window:Toggle("Essence Of The Pot God", {flag = "ThisNeedsToBeRemembered30"})
+spawn( 
+    function() --Makes this a new loop within the running script so it doesn't interfere with the rest of the script
+        while wait(1) do
+            if Window.flags.ThisNeedsToBeRemembered30 then
+                for _,v in pairs(game.Workspace:GetChildren()) do
+                    if v:IsA("Tool") and v.Name == "Essence Of The Pot God" then
+                        v.Handle.CFrame = game.Players.LocalPlayer.Character.PrimaryPart.CFrame
+                        wait()
+                    end
+                end
+            end
+        end
+    end
+)
+
+local Toggle = Window:Toggle("Pot's Diary", {flag = "ThisNeedsToBeRemembered31"})
+spawn( 
+    function() --Makes this a new loop within the running script so it doesn't interfere with the rest of the script
+        while wait(1) do
+            if Window.flags.ThisNeedsToBeRemembered32 then
+                for _,v in pairs(game.Workspace:GetChildren()) do
+                    if v:IsA("Tool") and v.Name == "Pots Diary" then
+                        v.Handle.CFrame = game.Players.LocalPlayer.Character.PrimaryPart.CFrame
+                        wait()
+                    end
+                end
+            end
+        end
+    end
+)
+
+local Toggle = Window:Toggle("Saitama's Cape", {flag = "ThisNeedsToBeRemembered33"})
+spawn( 
+    function() --Makes this a new loop within the running script so it doesn't interfere with the rest of the script
+        while wait(1) do
+            if Window.flags.ThisNeedsToBeRemembered then
+                for _,v in pairs(game.Workspace:GetChildren()) do
+                    if v:IsA("Tool") and v.Name == "Saitamas Cape" then
+                        v.Handle.CFrame = game.Players.LocalPlayer.Character.PrimaryPart.CFrame
+                        wait()
+                    end
+                end
+            end
+        end
+    end
+)
+
+local Toggle = Window:Toggle("Trowel", {flag = "ThisNeedsToBeRemembered34"})
+spawn( 
+    function() --Makes this a new loop within the running script so it doesn't interfere with the rest of the script
+        while wait(1) do
+            if Window.flags.ThisNeedsToBeRemembered34 then
+                for _,v in pairs(game.Workspace:GetChildren()) do
+                    if v:IsA("Tool") and v.Name == "Trowel" then
+                        v.Handle.CFrame = game.Players.LocalPlayer.Character.PrimaryPart.CFrame
+                        wait()
+                    end
+                end
+            end
+        end
+    end
+)
+
+local Toggle = Window:Toggle("500k D4C Part", {flag = "ThisNeedsToBeRemembered34"})
+spawn( 
+    function() --Makes this a new loop within the running script so it doesn't interfere with the rest of the script
+        while wait(1) do
+            if Window.flags.ThisNeedsToBeRemembered34 then
+                for _,v in pairs(game.Workspace:GetChildren()) do
+                    if v:IsA("Tool") and v.Name == "500k D4C Part" then
+                        v.Handle.CFrame = game.Players.LocalPlayer.Character.PrimaryPart.CFrame
+                        wait()
+                    end
+                end
+            end
+        end
+    end
+)
+
