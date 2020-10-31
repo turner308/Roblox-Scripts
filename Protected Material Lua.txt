@@ -31,7 +31,7 @@ function stringGen(int)
 end;
 
 local GuiProtect = Instance.new("ScreenGui")
-GuiProtect.Name = stringGen(10)
+GuiProtect.Name = stringGen(25)
 GuiProtect.Parent = game:GetService("CoreGui")
 if syn then syn.protect_gui(GuiProtect) end
 
