@@ -533,7 +533,7 @@ function Library:CreateTab(name)
             Title.ZIndex = 5
             Title.Font = Library.Theme.TextFont
             Title.Text = name
-            Title.TextColor3 = Color3.fromRGB(185, 185, 185)
+            Title.TextColor3 = Color3.fromRGB(255, 255, 255)
             Title.TextSize = 15.000
             Title.TextXAlignment = Enum.TextXAlignment.Left
 
