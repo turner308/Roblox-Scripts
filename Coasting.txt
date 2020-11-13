@@ -7,7 +7,7 @@ local CoreGui = game:GetService("CoreGui")
 
 for i,v in pairs(CoreGui:GetDescendants()) do
     if v.Name == "Main" and v:FindFirstChild("Border") then
-        v.Parent:Destroy()
+        v.Parent.Parent:Destroy()
     end
 end
 
