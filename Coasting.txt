@@ -6,9 +6,9 @@ local ContentProvider = game:GetService("ContentProvider")
 local CoreGui = game:GetService("CoreGui")
 
 for i,v in pairs(CoreGui:GetDescendants()) do
-    if v.Name == "Main" and v:FindFirstChild("Border") then
-        v.Parent.Parent:Destroy()
-    end
+    if v.Name == "Main" then
+    	v.Parent:Destroy()
+	end
 end
 
 local LocalPlayer = game:GetService("Players").LocalPlayer
