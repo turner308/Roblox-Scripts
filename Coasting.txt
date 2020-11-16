@@ -18,8 +18,8 @@ ContentProvider:PreloadAsync({"rbxassetid://3570695787", "rbxassetid://270889159
 
 local Library = {
     Theme = {
-        MainColor = Color3.fromRGB(254, 128, 128),
-        BackgroundColor = Color3.fromRGB(253, 122, 123),
+        MainColor = Color3.fromRGB(192, 168, 219),
+        BackgroundColor = Color3.fromRGB(235, 168, 219),
         UIToggleKey = Enum.KeyCode.RightControl,
         TextFont = Enum.Font.SourceSansBold,
         EasingStyle = Enum.EasingStyle.Quart
@@ -533,7 +533,7 @@ function Library:CreateTab(name)
             Title.ZIndex = 5
             Title.Font = Library.Theme.TextFont
             Title.Text = name
-            Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+            Title.TextColor3 = Color3.fromRGB(185, 185, 185)
             Title.TextSize = 15.000
             Title.TextXAlignment = Enum.TextXAlignment.Left
 
