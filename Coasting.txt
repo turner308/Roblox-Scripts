@@ -18,8 +18,8 @@ ContentProvider:PreloadAsync({"rbxassetid://3570695787", "rbxassetid://270889159
 
 local Library = {
     Theme = {
-        MainColor = Color3.fromRGB(192, 168, 219),
-        BackgroundColor = Color3.fromRGB(235, 168, 219),
+        MainColor = Color3.fromRGB(46, 149, 144),
+        BackgroundColor = Color3.fromRGB(46, 104, 149),
         UIToggleKey = Enum.KeyCode.RightControl,
         TextFont = Enum.Font.SourceSansBold,
         EasingStyle = Enum.EasingStyle.Quart
