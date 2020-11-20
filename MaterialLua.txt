@@ -168,7 +168,7 @@ local Themes = {
 		ColorPickerAccent = Color3.fromRGB(219, 68, 103),
 		TextField = Color3.fromRGB(175,175,175),
 		TextFieldAccent = Color3.fromRGB(255,255,255),
-    }
+    },
     Phoenix = {
 		MainFrame = Color3.fromRGB(255, 238, 0),
 		Minimise = Color3.fromRGB(255, 191, 0),
