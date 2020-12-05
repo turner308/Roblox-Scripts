@@ -5,11 +5,15 @@ local UserInputService = game:GetService("UserInputService")
 local ContentProvider = game:GetService("ContentProvider")
 local CoreGui = game:GetService("CoreGui")
 
-for i,v in pairs(getgenv().Settings) do
-    if typeof(v) == "boolean" then
-        v = false
-    end
-end 
+local GlobalSettings = getgenv().Settings
+
+if typeof(GlobalSettings) == "table" then
+	for i,v in pairs(GlobalSettings) do
+	    if typeof(v) == "boolean" then
+		v = false
+	    end
+	end 
+end
 
 for i,v in pairs(CoreGui:GetDescendants()) do
     if v.Name == "Main" and v:FindFirstChild("Border") then
