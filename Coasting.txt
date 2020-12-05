@@ -578,7 +578,7 @@ function Library:CreateTab(name)
             CheckboxTicked.Size = UDim2.new(0, 24, 0, 24)
             CheckboxTicked.ZIndex = 5
             CheckboxTicked.Image = "http://www.roblox.com/asset/?id=5416796675"
-            CheckboxTicked.ImageColor3 = Color3.fromRGB(65, 65, 65)
+            CheckboxTicked.ImageColor3 = Library.Theme.MainColor
 
             TickCover.Name = "TickCover"
             TickCover.Parent = Toggle
