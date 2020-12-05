@@ -564,7 +564,7 @@ function Library:CreateTab(name)
             CheckboxOutline.Size = UDim2.new(0, 24, 0, 24)
             CheckboxOutline.ZIndex = 5
             CheckboxOutline.Image = "http://www.roblox.com/asset/?id=5416796047"
-            CheckboxOutline.ImageColor3 = Color3.fromRGB(Library.Theme.MainColor)
+            CheckboxOutline.ImageColor3 = Library.Theme.MainColor
 
             CheckboxTicked.Name = "CheckboxTicked"
             CheckboxTicked.Parent = Toggle
