@@ -5,6 +5,10 @@ local UserInputService = game:GetService("UserInputService")
 local ContentProvider = game:GetService("ContentProvider")
 local CoreGui = game:GetService("CoreGui")
 
+for i,v in pairs(getgenv().Settings) do
+	v = false
+end
+
 for i,v in pairs(CoreGui:GetDescendants()) do
     if v.Name == "Main" and v:FindFirstChild("Border") then
         v:Destroy()
