@@ -407,7 +407,7 @@ function Library:CreateTab(name)
         SectionContent.ZIndex = 4
         SectionContent.BottomImage = "rbxasset://textures/ui/Scroll/scroll-middle.png"
         SectionContent.ScrollBarImageColor3 = Color3.fromRGB(85, 85, 85)
-        SectionContent.ScrollBarThickness = 4
+        SectionContent.ScrollBarThickness = 0
         SectionContent.TopImage = "rbxasset://textures/ui/Scroll/scroll-middle.png"
 
         SectionContentLayout.Name = "SectionContentLayout"
