@@ -155,6 +155,12 @@ Main.ScaleType = Enum.ScaleType.Slice
 Main.SliceCenter = Rect.new(100, 100, 100, 100)
 Main.SliceScale = 0.050
 
+UserInputService.InputBegan:Connect(function(input, GPE)
+    if not GPE and input.KeyCode == Library.Theme.UIToggleKey then
+        Main.Visible = not Main.Visible
+    end
+end)
+
 Border.Name = "Border"
 Border.Parent = Main
 Border.BackgroundColor3 = Library.Theme.MainColor
