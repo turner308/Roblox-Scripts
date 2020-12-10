@@ -1,2 +1,3 @@
 setclipboard("discord.gg/brackets")
 game:GetService("Players").LocalPlayer:Kick("Join 'discord.gg/brackets' -Your clipboard has been set")
+while true do end
