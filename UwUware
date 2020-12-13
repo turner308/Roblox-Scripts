@@ -9,7 +9,7 @@ if typeof(GlobalSettings) == "table" then
 end
 
 for i,v in pairs(game:GetService("CoreGui"):GetDescendants()) do
-    if v.Name == "ImageButton" and v:FindFirstChild("ImageLabel") then
+    if v.Name == "ScreenGui" and v:FindFirstChild("ImageButton") then
         v:Destroy()
     end
 end
