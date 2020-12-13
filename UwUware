@@ -1,3 +1,19 @@
+local GlobalSettings = getgenv().Settings
+
+if typeof(GlobalSettings) == "table" then
+	for i,v in pairs(GlobalSettings) do
+	    if typeof(v) == "boolean" then
+		v = false
+	    end
+	end 
+end
+
+for i,v in pairs(game:GetService("CoreGui"):GetDescendants()) do
+    if v.Name == "ImageButton" and v:FindFirstChild("ImageLabel") then
+        v:Destroy()
+    end
+end
+
 local library = {flags = {}, windows = {}, open = true}
 
 --Services
