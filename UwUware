@@ -1626,11 +1626,6 @@ function library:Init()
 	
 	self.base = self.base or self:Create("ScreenGui")
 	if syn and syn.protect_gui then
-		inputService.InputBegan:Connect(function(input, GPE)
-			if not GPE and input.KeyCode == Enum.KeyCode.RightControl then
-				self.base.Enabled = not self.base.Enabled
-			end
-		end
 		syn.protect_gui(self.base)
 	elseif get_hidden_gui then
 		get_hidden_gui(self.base)
@@ -1639,6 +1634,12 @@ function library:Init()
 		return
 	end
 	self.base.Parent = game:GetService"CoreGui"
+	
+	inputService.InputBegan:Connect(function(input, GPE)
+		if not GPE and input.KeyCode == Enum.KeyCode.RightControl then
+			self.base.Enabled = not self.base.Enabled
+		end
+	end
 	
 	self.cursor = self.cursor or self:Create("Frame", {
 		ZIndex = 100,
