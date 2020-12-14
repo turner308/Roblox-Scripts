@@ -1639,7 +1639,7 @@ function library:Init()
 		if not GPE and input.KeyCode == Enum.KeyCode.RightControl then
 			self.base.Enabled = not self.base.Enabled
 		end
-	end
+	end)
 	
 	self.cursor = self.cursor or self:Create("Frame", {
 		ZIndex = 100,
