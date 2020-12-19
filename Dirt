@@ -1,4 +1,4 @@
-local GlobalSettings = getgenv().Settings
+local GlobalSettings = getgenv().Set
 
 if typeof(GlobalSettings) == "table" then
 	for i,v in pairs(GlobalSettings) do
