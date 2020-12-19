@@ -1,3 +1,13 @@
+local GlobalSettings = getgenv().Settings
+
+if typeof(GlobalSettings) == "table" then
+	for i,v in pairs(GlobalSettings) do
+	    if typeof(v) == "boolean" then
+		v = false
+	    end
+	end 
+end
+
 local Lib = {}
     if game.CoreGui:FindFirstChild("Lib") then
         game.CoreGui:FindFirstChild("Lib"):Destroy()
