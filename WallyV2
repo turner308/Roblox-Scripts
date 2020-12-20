@@ -379,10 +379,14 @@ local defaults; do
             local callback     = callback or function() end;
             local default      = options.default;
 
-            if keyboardOnly and (not tostring(default):find('MouseButton')) then
-                location[flag] = default
+            local passed = true;
+            if keyboardOnly and (tostring(default):find('MouseButton')) then 
+                passed = false 
             end
-            
+            if passed then 
+               location[flag] = default 
+            end
+           
             local banned = {
                 Return = true;
                 Space = true;
@@ -994,7 +998,6 @@ local defaults; do
                     Active = false;
                 });
                 Parent = game:GetService("CoreGui");
-				Name = game:GetService("HttpService"):GenerateGUID(false);
             }):FindFirstChild('Container');
         end
         
