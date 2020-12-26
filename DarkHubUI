@@ -1502,3 +1502,48 @@ function DarkLib:Window(name)
 	return Win
 end
 return DarkLib
+
+--[[
+DOCS
+
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/BimbusCoder/Roblox-Scripts/master/DarkHubUI"))()
+local Window = Library:Window("CUM CHECK")
+local Tab = Window:Tab("LOL EZ")
+local Tab2 = Window:Tab("UH OKKKK")
+
+Tab:Button("BUTTON", function()
+    print("LOL")
+end)
+
+Tab:Toggle("TOGGLE", function(bool)
+    _G.on = bool
+    
+    while _G.on do
+        print("YES")
+        wait()
+    end
+end)
+
+Tab:Slider("SLIDER", 16, 100, function(val)
+    game.Player.LocalPlayer.Character.Humanoid.WalkSpeed = val
+end)
+
+Tab:Dropdown("DROPDOWN", {"THE MAN","COOL"}, function(val)
+    print(val)
+end)
+
+Tab:Colorpicker("COLOR PICKER", Color3.fromRGB(255, 255, 255), function(clr)
+    print(clr)
+end)
+
+Tab:Textbox("TEXTBOX", false, function(txt)
+    print(txt)
+end)
+
+Tab:Keybind("KEYBIND", Enum.KeyCode.P, function()
+    print("PRESSED KEYBIND")
+end)
+
+Tab:Label("LABEL")
+
+]]
