@@ -1,3 +1,5 @@
+```lua
+
 if game.CoreGui:FindFirstChild("DarkHubLib") then
     game.CoreGui.DarkHubLib:Destroy()
 end
@@ -1547,3 +1549,4 @@ end)
 Tab:Label("LABEL")
 
 ]]
+```
