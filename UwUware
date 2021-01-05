@@ -14,7 +14,7 @@ for i,v in pairs(game:GetService("CoreGui"):GetDescendants()) do
     end
 end
 
-local library = {flags = {}, windows = {}, open = true}
+local library = {flags = {}, windows = {}, open = true, closekey = Enum.KeyCode.RightControl}
 
 --Services
 local runService = game:GetService"RunService"
@@ -1636,7 +1636,7 @@ function library:Init()
 	self.base.Parent = game:GetService"CoreGui"
 	
 	inputService.InputBegan:Connect(function(input, GPE)
-		if not GPE and input.KeyCode == Enum.KeyCode.RightControl then
+		if not GPE and input.KeyCode == library.closekey then
 			self.base.Enabled = not self.base.Enabled
 		end
 	end)
