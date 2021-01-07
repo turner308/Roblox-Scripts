@@ -14,7 +14,7 @@ for i,v in pairs(game:GetService("CoreGui"):GetDescendants()) do
     end
 end
 
-local library = {flags = {}, windows = {}, open = true, closekey = Enum.KeyCode.RightControl}
+local library = {flags = {}, windows = {}, open = true, CloseKey = Enum.KeyCode.RightControl}
 
 --Services
 local runService = game:GetService"RunService"
