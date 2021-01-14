@@ -1,0 +1,664 @@
+local Library = {
+	CloseKey = Enum.KeyCode.RightShift;
+	DragSpeed = .05
+};
+
+local TweenService = game:GetService("TweenService");
+local UserInputService = game:GetService("UserInputService");
+
+function Library:Window()
+	local Library = Instance.new("ScreenGui")
+	local Background = Instance.new("ImageLabel")
+	local Tabs = Instance.new("ImageLabel")
+	local UIListLayout = Instance.new("UIListLayout")
+	local Padding = Instance.new("Frame")
+	
+	Library.Name = "Library"
+	Library.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+	
+	Background.Name = "Background"
+	Background.Parent = Library
+	Background.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	Background.BackgroundTransparency = 1.000
+	Background.Position = UDim2.new(0.231026798, 0, 0.106687903, 0)
+	Background.Size = UDim2.new(0, 552, 0, 368)
+	Background.Image = "rbxassetid://3570695787"
+	Background.ImageColor3 = Color3.fromRGB(36, 36, 36)
+	Background.ScaleType = Enum.ScaleType.Slice
+	Background.SliceCenter = Rect.new(100, 100, 100, 100)
+	Background.SliceScale = 0.040
+
+	Tabs.Name = "Tabs"
+	Tabs.Parent = Background
+	Tabs.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	Tabs.BackgroundTransparency = 1.000
+	Tabs.Position = UDim2.new(0.0108695654, 0, 0.0163043477, 0)
+	Tabs.Size = UDim2.new(0, 124, 0, 356)
+	Tabs.Image = "rbxassetid://3570695787"
+	Tabs.ImageColor3 = Color3.fromRGB(49, 49, 49)
+	Tabs.ScaleType = Enum.ScaleType.Slice
+	Tabs.SliceCenter = Rect.new(100, 100, 100, 100)
+	Tabs.SliceScale = 0.020
+
+	UIListLayout.Parent = Tabs
+	UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+	UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+	UIListLayout.Padding = UDim.new(0, 4)
+
+	Padding.Name = "Padding"
+	Padding.Parent = Tabs
+	Padding.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	Padding.BackgroundTransparency = 1.000
+	Padding.Position = UDim2.new(0.0967741907, 0, 0, 0)
+	Padding.Size = UDim2.new(0, 100, 0, 2)
+	
+	local function drag(Frame, WhatMove)
+		local dragToggle = nil
+		local dragSpeed = self.DragSpeed
+		local dragInput = nil
+		local dragStart = nil
+		local dragPos = nil
+		local startPos = nil
+
+		function updateInput(input)
+			local Delta = input.Position - dragStart
+			local Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + Delta.X, startPos.Y.Scale, startPos.Y.Offset + Delta.Y)
+			game:GetService("TweenService"):Create(WhatMove, TweenInfo.new(dragSpeed), {Position = Position}):Play()
+		end
+
+		Frame.InputBegan:Connect(function(input)
+			if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) then
+				dragToggle = true
+				dragStart = input.Position
+				startPos = WhatMove.Position
+				input.Changed:Connect(function()
+					if (input.UserInputState == Enum.UserInputState.End) then
+						dragToggle = false
+					end
+				end)
+			end
+		end)
+
+		Frame.InputChanged:Connect(function(input)
+			if (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+				dragInput = input
+			end
+		end)
+
+		game:GetService("UserInputService").InputChanged:Connect(function(input)
+			if (input == dragInput and dragToggle) then
+				updateInput(input)
+			end
+		end)
+
+	end
+
+	drag(Background, Background)
+
+	UserInputService.InputBegan:Connect(function(input)
+		if input.KeyCode == self.CloseKey then
+			Library.Enabled = not Library.Enabled;
+		end;
+	end);
+	
+	local TabHolder = {};
+	
+	function TabHolder:Tab(name)
+		local Tab = Instance.new("ImageButton")
+		local TabLabel = Instance.new("TextLabel")
+		local Circle = Instance.new("ImageLabel")
+		local Container = Instance.new("ImageLabel")
+		local ScrollingFrame = Instance.new("ScrollingFrame")
+		local Padding_2 = Instance.new("Frame")
+		local UIListLayout_2 = Instance.new("UIListLayout")
+		
+		Tab.Name = "Tab"
+		Tab.Parent = game.StarterGui.Library.Background.Tabs
+		Tab.Active = false
+		Tab.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		Tab.BackgroundTransparency = 1.000
+		Tab.Position = UDim2.new(0.0483870953, 0, 0.0168539323, 0)
+		Tab.Selectable = false
+		Tab.Size = UDim2.new(0, 112, 0, 29)
+		Tab.Image = "rbxassetid://3570695787"
+		Tab.ImageColor3 = Color3.fromRGB(36, 36, 36)
+		Tab.ScaleType = Enum.ScaleType.Slice
+		Tab.SliceCenter = Rect.new(100, 100, 100, 100)
+		Tab.SliceScale = 0.020
+
+		TabLabel.Name = "TabLabel"
+		TabLabel.Parent = Tab
+		TabLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		TabLabel.BackgroundTransparency = 1.000
+		TabLabel.Size = UDim2.new(0, 112, 0, 29)
+		TabLabel.Font = Enum.Font.GothamSemibold
+		TabLabel.Text = "Tab"
+		TabLabel.TextColor3 = Color3.fromRGB(130, 130, 130)
+		TabLabel.TextSize = 14.000
+
+		Circle.Name = "Circle"
+		Circle.Parent = Tab
+		Circle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		Circle.BackgroundTransparency = 1.000
+		Circle.Position = UDim2.new(0.8125, 0, 0.310344696, 0)
+		Circle.Size = UDim2.new(0, 10, 0, 10)
+		Circle.Image = "rbxassetid://3570695787"
+		Circle.ImageColor3 = Color3.fromRGB(49, 49, 49)
+		Circle.ScaleType = Enum.ScaleType.Slice
+		Circle.SliceCenter = Rect.new(100, 100, 100, 100)
+
+		Container.Name = "Container"
+		Container.Parent = Background
+		Container.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		Container.BackgroundTransparency = 1.000
+		Container.Position = UDim2.new(0.246376812, 0, 0.0163043477, 0)
+		Container.Size = UDim2.new(0, 409, 0, 356)
+		Container.Image = "rbxassetid://3570695787"
+		Container.ImageColor3 = Color3.fromRGB(49, 49, 49)
+		Container.ScaleType = Enum.ScaleType.Slice
+		Container.SliceCenter = Rect.new(100, 100, 100, 100)
+		Container.SliceScale = 0.020
+
+		ScrollingFrame.Parent = Container
+		ScrollingFrame.Active = true
+		ScrollingFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		ScrollingFrame.BackgroundTransparency = 1.000
+		ScrollingFrame.BorderSizePixel = 0
+		ScrollingFrame.Size = UDim2.new(0, 409, 0, 356)
+		ScrollingFrame.ScrollBarThickness = 0
+
+		Padding_2.Name = "Padding"
+		Padding_2.Parent = ScrollingFrame
+		Padding_2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		Padding_2.BackgroundTransparency = 1.000
+		Padding_2.Position = UDim2.new(0.0967741907, 0, 0, 0)
+		Padding_2.Size = UDim2.new(0, 100, 0, 2)
+
+		UIListLayout_2.Parent = ScrollingFrame
+		UIListLayout_2.HorizontalAlignment = Enum.HorizontalAlignment.Center
+		UIListLayout_2.SortOrder = Enum.SortOrder.LayoutOrder
+		UIListLayout_2.Padding = UDim.new(0, 4)
+		
+		Tab.MouseButton1Down:Connect(function()
+			TweenService:Create(Tab, TweenInfo.new(.1, Enum.EasingStyle.Bounce, Enum.EasingDirection.Out), {
+				Size = UDim2.new(0, 97, 0, 26)
+			}):Play();
+		end);
+
+		Tab.MouseButton1Up:Connect(function()
+			for i,v in next, Container.Parent:GetChildren() do
+				if v.Name == "Container" then
+					v.Visible = false;
+				end;
+			end;
+			
+			Container.Visible = true;
+			
+			TweenService:Create(Tab, TweenInfo.new(.1, Enum.EasingStyle.Bounce, Enum.EasingDirection.Out), {
+				Size = UDim2.new(0, 112, 0, 29)
+			}):Play();
+		end);
+
+		Tab.MouseEnter:Connect(function()
+			TweenService:Create(Tab, TweenInfo.new(.1, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {
+				ImageColor3 = Color3.fromRGB(45, 45, 45)
+			}):Play();
+		end);
+
+		Tab.MouseLeave:Connect(function()
+			TweenService:Create(Tab, TweenInfo.new(.1, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {
+				ImageColor3 = Color3.fromRGB(36, 36, 36)
+			}):Play();
+			TweenService:Create(Tab, TweenInfo.new(.1, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {
+				Size = UDim2.new(0, 112, 0, 29)
+			}):Play();
+		end);
+		
+		local Interact = {};
+		
+		function Interact:Button(name, callback)
+			local Button = Instance.new("ImageButton")
+			local ButtonLabel = Instance.new("TextLabel")
+			
+			Button.Name = "Button"
+			Button.Parent = ScrollingFrame
+			Button.Active = false
+			Button.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			Button.BackgroundTransparency = 1.000
+			Button.Position = UDim2.new(0.0146699268, 0, 0.0168539323, 0)
+			Button.Selectable = false
+			Button.Size = UDim2.new(0, 397, 0, 29)
+			Button.Image = "rbxassetid://3570695787"
+			Button.ImageColor3 = Color3.fromRGB(36, 36, 36)
+			Button.ScaleType = Enum.ScaleType.Slice
+			Button.SliceCenter = Rect.new(100, 100, 100, 100)
+			Button.SliceScale = 0.020
+
+			ButtonLabel.Name = "ButtonLabel"
+			ButtonLabel.Parent = Button
+			ButtonLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			ButtonLabel.BackgroundTransparency = 1.000
+			ButtonLabel.Position = UDim2.new(0.0173848718, 0, 0, 0)
+			ButtonLabel.Size = UDim2.new(0, 128, 0, 29)
+			ButtonLabel.Font = Enum.Font.GothamSemibold
+			ButtonLabel.Text = name
+			ButtonLabel.TextColor3 = Color3.fromRGB(130, 130, 130)
+			ButtonLabel.TextSize = 14.000
+			ButtonLabel.TextXAlignment = Enum.TextXAlignment.Left
+			
+			Button.MouseButton1Down:Connect(function()
+				TweenService:Create(Button, TweenInfo.new(.2, Enum.EasingStyle.Bounce, Enum.EasingDirection.Out), {
+					Size = UDim2.new(0, 388, 0, 28)
+				}):Play();
+			end);
+
+			Button.MouseButton1Up:Connect(function()
+				TweenService:Create(Button, TweenInfo.new(.2, Enum.EasingStyle.Bounce, Enum.EasingDirection.Out), {
+					Size = UDim2.new(0, 397, 0, 29)
+				}):Play();
+				--Pcall the callback
+			end);
+
+			Button.MouseLeave:Connect(function()
+				TweenService:Create(Button, TweenInfo.new(.2, Enum.EasingStyle.Bounce, Enum.EasingDirection.Out), {
+					Size = UDim2.new(0, 397, 0, 29)
+				}):Play();
+			end);
+		end;
+		
+		function Interact:Dropdown(name, tbl, callback)
+			local Dropdown = Instance.new("ImageButton")
+			local DropdownLabel = Instance.new("TextLabel")
+			local Arrow = Instance.new("ImageLabel")
+			local ScrollingFrame_2 = Instance.new("ScrollingFrame")
+			local Padding_3 = Instance.new("Frame")
+			local UIListLayout_3 = Instance.new("UIListLayout")
+			
+			Dropdown.Name = "Dropdown"
+			Dropdown.Parent = ScrollingFrame
+			Dropdown.Active = false
+			Dropdown.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			Dropdown.BackgroundTransparency = 1.000
+			Dropdown.ClipsDescendants = true
+			Dropdown.Position = UDim2.new(0.0146699268, 0, 0.109550565, 0)
+			Dropdown.Selectable = false
+			Dropdown.Size = UDim2.new(0, 397, 0, 29)
+			Dropdown.Image = "rbxassetid://3570695787"
+			Dropdown.ImageColor3 = Color3.fromRGB(36, 36, 36)
+			Dropdown.ScaleType = Enum.ScaleType.Slice
+			Dropdown.SliceCenter = Rect.new(100, 100, 100, 100)
+			Dropdown.SliceScale = 0.020
+
+			DropdownLabel.Name = "DropdownLabel"
+			DropdownLabel.Parent = Dropdown
+			DropdownLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			DropdownLabel.BackgroundTransparency = 1.000
+			DropdownLabel.Position = UDim2.new(0.0173848718, 0, 0, 0)
+			DropdownLabel.Size = UDim2.new(0, 128, 0, 29)
+			DropdownLabel.Font = Enum.Font.GothamSemibold
+			DropdownLabel.Text = name
+			DropdownLabel.TextColor3 = Color3.fromRGB(130, 130, 130)
+			DropdownLabel.TextSize = 14.000
+			DropdownLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+			Arrow.Name = "Arrow"
+			Arrow.Parent = DropdownLabel
+			Arrow.Active = true
+			Arrow.BackgroundTransparency = 1.000
+			Arrow.Position = UDim2.new(2.82790852, 0, 0.068965517, 0)
+			Arrow.Selectable = true
+			Arrow.Size = UDim2.new(0, 25, 0, 25)
+			Arrow.ZIndex = 2
+			Arrow.Image = "rbxassetid://3926305904"
+			Arrow.ImageColor3 = Color3.fromRGB(53, 53, 53)
+			Arrow.ImageRectOffset = Vector2.new(564, 284)
+			Arrow.ImageRectSize = Vector2.new(36, 36)
+
+			ScrollingFrame_2.Parent = Dropdown
+			ScrollingFrame_2.Active = true
+			ScrollingFrame_2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			ScrollingFrame_2.BackgroundTransparency = 1.000
+			ScrollingFrame_2.BorderSizePixel = 0
+			ScrollingFrame_2.Position = UDim2.new(0.01511335, 0, 0.162011147, 0)
+			ScrollingFrame_2.Size = UDim2.new(0, 391, 0, 0)
+			ScrollingFrame_2.ScrollBarThickness = 0
+
+			Padding_3.Name = "Padding"
+			Padding_3.Parent = ScrollingFrame_2
+			Padding_3.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			Padding_3.BackgroundTransparency = 1.000
+			Padding_3.Position = UDim2.new(0.0967741907, 0, 0, 0)
+			Padding_3.Size = UDim2.new(0, 100, 0, 2)
+
+			UIListLayout_3.Parent = ScrollingFrame_2
+			UIListLayout_3.HorizontalAlignment = Enum.HorizontalAlignment.Center
+			UIListLayout_3.SortOrder = Enum.SortOrder.LayoutOrder
+			UIListLayout_3.Padding = UDim.new(0, 4)
+			
+			local DropdownBool = true;
+
+			Dropdown.MouseButton1Click:Connect(function()
+				if DropdownBool then
+					DropdownBool = false;
+					TweenService:Create(Arrow, TweenInfo.new(.2, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {
+						Rotation = -180
+					}):Play();
+					TweenService:Create(Dropdown, TweenInfo.new(.2, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {
+						Size = UDim2.new(0, 397, 0, 179)
+					}):Play();
+					TweenService:Create(ScrollingFrame, TweenInfo.new(.2, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {
+						Size = UDim2.new(0, 391, 0, 144)
+					}):Play();
+				else
+					DropdownBool = true;
+					TweenService:Create(Arrow, TweenInfo.new(.2, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {
+						Rotation = 0
+					}):Play();
+					TweenService:Create(Dropdown, TweenInfo.new(.2, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {
+						Size = UDim2.new(0, 397, 0, 29)
+					}):Play();
+					TweenService:Create(ScrollingFrame, TweenInfo.new(.2, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {
+						Size = UDim2.new(0, 391, 0, 0)
+					}):Play();
+				end;
+			end);
+			
+			for i,v in next, tbl do
+				local Button_2 = Instance.new("ImageButton")
+				local ButtonLabel_2 = Instance.new("TextLabel")
+				local OldText = name
+				
+				Button_2.Name = "Button"
+				Button_2.Parent = ScrollingFrame_2
+				Button_2.Active = false
+				Button_2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+				Button_2.BackgroundTransparency = 1.000
+				Button_2.Position = UDim2.new(0.00895140693, 0, 0, 0)
+				Button_2.Selectable = false
+				Button_2.Size = UDim2.new(0, 334, 0, 28)
+
+				ButtonLabel_2.Name = "ButtonLabel"
+				ButtonLabel_2.Parent = Button_2
+				ButtonLabel_2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+				ButtonLabel_2.BackgroundTransparency = 1.000
+				ButtonLabel_2.Position = UDim2.new(0.0173848718, 0, 0, 0)
+				ButtonLabel_2.Size = UDim2.new(0, 128, 0, 29)
+				ButtonLabel_2.Font = Enum.Font.GothamSemibold
+				ButtonLabel_2.Text = v
+				ButtonLabel_2.TextColor3 = Color3.fromRGB(130, 130, 130)
+				ButtonLabel_2.TextSize = 14.000
+				ButtonLabel_2.TextXAlignment = Enum.TextXAlignment.Left
+				
+				Button_2.MouseButton1Click:Connect(function()
+					DropdownLabel.Text =  OldText .. " " .. ButtonLabel_2.Text
+				end);
+			end;
+			
+		end;
+		
+		function Interact:Toggle(name, callback)
+			local Toggle = Instance.new("ImageButton")
+			local ToggleLabel = Instance.new("TextLabel")
+			local ToggleFrame = Instance.new("ImageLabel")
+			local SquareFrame = Instance.new("ImageLabel")
+			local Check = Instance.new("ImageLabel")
+			
+			Toggle.Name = "Toggle"
+			Toggle.Parent = ScrollingFrame
+			Toggle.Active = false
+			Toggle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			Toggle.BackgroundTransparency = 1.000
+			Toggle.Position = UDim2.new(0.0146699268, 0, 0.0168539323, 0)
+			Toggle.Selectable = false
+			Toggle.Size = UDim2.new(0, 397, 0, 29)
+			Toggle.Image = "rbxassetid://3570695787"
+			Toggle.ImageColor3 = Color3.fromRGB(36, 36, 36)
+			Toggle.ScaleType = Enum.ScaleType.Slice
+			Toggle.SliceCenter = Rect.new(100, 100, 100, 100)
+			Toggle.SliceScale = 0.020
+
+			ToggleLabel.Name = "ToggleLabel"
+			ToggleLabel.Parent = Toggle
+			ToggleLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			ToggleLabel.BackgroundTransparency = 1.000
+			ToggleLabel.Position = UDim2.new(0.0173848718, 0, 0, 0)
+			ToggleLabel.Size = UDim2.new(0, 128, 0, 29)
+			ToggleLabel.Font = Enum.Font.GothamSemibold
+			ToggleLabel.Text = name
+			ToggleLabel.TextColor3 = Color3.fromRGB(130, 130, 130)
+			ToggleLabel.TextSize = 14.000
+			ToggleLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+			ToggleFrame.Name = "ToggleFrame"
+			ToggleFrame.Parent = Toggle
+			ToggleFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			ToggleFrame.BackgroundTransparency = 1.000
+			ToggleFrame.Position = UDim2.new(0.937027693, 0, 0.172413796, 0)
+			ToggleFrame.Size = UDim2.new(0, 19, 0, 19)
+			ToggleFrame.Image = "rbxassetid://3570695787"
+			ToggleFrame.ImageColor3 = Color3.fromRGB(57, 57, 57)
+			ToggleFrame.ScaleType = Enum.ScaleType.Slice
+			ToggleFrame.SliceCenter = Rect.new(100, 100, 100, 100)
+			ToggleFrame.SliceScale = 0.020
+
+			SquareFrame.Name = "SquareFrame"
+			SquareFrame.Parent = ToggleFrame
+			SquareFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			SquareFrame.BackgroundTransparency = 1.000
+			SquareFrame.Position = UDim2.new(0.105263151, 0, 0.105263151, 0)
+			SquareFrame.Size = UDim2.new(0, 15, 0, 15)
+			SquareFrame.Image = "rbxassetid://3570695787"
+			SquareFrame.ImageColor3 = Color3.fromRGB(36, 36, 36)
+			SquareFrame.ScaleType = Enum.ScaleType.Slice
+			SquareFrame.SliceCenter = Rect.new(100, 100, 100, 100)
+			SquareFrame.SliceScale = 0.020
+
+			Check.Name = "Check"
+			Check.Parent = SquareFrame
+			Check.Active = true
+			Check.BackgroundTransparency = 1.000
+			Check.Selectable = true
+			Check.Size = UDim2.new(0, 15, 0, 15)
+			Check.ZIndex = 2
+			Check.Image = "rbxassetid://3926305904"
+			Check.ImageColor3 = Color3.fromRGB(36, 36, 36)
+			Check.ImageRectOffset = Vector2.new(312, 4)
+			Check.ImageRectSize = Vector2.new(24, 24)
+			
+			local ToggleBool = true;
+			
+			Toggle.MouseButton1Down:Connect(function()
+				TweenService:Create(Toggle, TweenInfo.new(.2, Enum.EasingStyle.Bounce, Enum.EasingDirection.Out), {
+					Size = UDim2.new(0, 388, 0, 28)
+				}):Play();
+			end);
+
+			Toggle.MouseButton1Up:Connect(function()
+				coroutine.wrap(function()
+					TweenService:Create(Toggle, TweenInfo.new(.2, Enum.EasingStyle.Bounce, Enum.EasingDirection.Out), {
+						Size = UDim2.new(0, 397, 0, 29)
+					}):Play();
+				end)()
+				if ToggleBool then
+					ToggleBool = false;
+					TweenService:Create(SquareFrame, TweenInfo.new(.2, Enum.EasingStyle.Bounce, Enum.EasingDirection.Out), {
+						ImageColor3 = Color3.fromRGB(230, 230, 230)
+					}):Play();
+				else
+					ToggleBool = true;
+					TweenService:Create(SquareFrame, TweenInfo.new(.2, Enum.EasingStyle.Bounce, Enum.EasingDirection.Out), {
+						ImageColor3 = Color3.fromRGB(36, 36, 36)
+					}):Play();
+				end;
+			end);
+			
+			Toggle.MouseLeave:Connect(function()
+				TweenService:Create(Toggle, TweenInfo.new(.2, Enum.EasingStyle.Bounce, Enum.EasingDirection.Out), {
+					Size = UDim2.new(0, 397, 0, 29)
+				}):Play();
+			end);
+			
+		end;
+		
+		function Interact:Slider(name, min, max, callback)
+			local Slider = Instance.new("ImageLabel")
+			local SliderLabel = Instance.new("TextLabel")
+			local Slider_2 = Instance.new("ImageButton")
+			local SliderInside = Instance.new("ImageLabel")
+			local Value = Instance.new("TextLabel")
+			
+			Slider.Name = "Slider"
+			Slider.Parent = ScrollingFrame
+			Slider.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			Slider.BackgroundTransparency = 1.000
+			Slider.Position = UDim2.new(0.0146699268, 0, 0.0168539323, 0)
+			Slider.Size = UDim2.new(0, 397, 0, 29)
+			Slider.Image = "rbxassetid://3570695787"
+			Slider.ImageColor3 = Color3.fromRGB(36, 36, 36)
+			Slider.ScaleType = Enum.ScaleType.Slice
+			Slider.SliceCenter = Rect.new(100, 100, 100, 100)
+			Slider.SliceScale = 0.020
+
+			SliderLabel.Name = "SliderLabel"
+			SliderLabel.Parent = Slider
+			SliderLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			SliderLabel.BackgroundTransparency = 1.000
+			SliderLabel.Position = UDim2.new(0.0173848718, 0, 0, 0)
+			SliderLabel.Size = UDim2.new(0, 128, 0, 29)
+			SliderLabel.Font = Enum.Font.GothamSemibold
+			SliderLabel.Text = "Slider"
+			SliderLabel.TextColor3 = Color3.fromRGB(130, 130, 130)
+			SliderLabel.TextSize = 14.000
+			SliderLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+			Slider_2.Name = "Slider"
+			Slider_2.Parent = Slider
+			Slider_2.Active = false
+			Slider_2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			Slider_2.BackgroundTransparency = 1.000
+			Slider_2.Position = UDim2.new(0.727999985, 0, 0.600000024, 0)
+			Slider_2.Selectable = false
+			Slider_2.Size = UDim2.new(0, 100, 0, 7)
+			Slider_2.Image = "rbxassetid://3570695787"
+			Slider_2.ImageColor3 = Color3.fromRGB(49, 49, 49)
+			Slider_2.ScaleType = Enum.ScaleType.Slice
+			Slider_2.SliceCenter = Rect.new(100, 100, 100, 100)
+			Slider_2.SliceScale = 0.020
+
+			SliderInside.Name = "SliderInside"
+			SliderInside.Parent = Slider_2
+			SliderInside.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			SliderInside.BackgroundTransparency = 1.000
+			SliderInside.Size = UDim2.new(0, 0, 0, 7)
+			SliderInside.Image = "rbxassetid://3570695787"
+			SliderInside.ImageColor3 = Color3.fromRGB(113, 113, 113)
+			SliderInside.ScaleType = Enum.ScaleType.Slice
+			SliderInside.SliceCenter = Rect.new(100, 100, 100, 100)
+			SliderInside.SliceScale = 0.020
+
+			Value.Name = "Value"
+			Value.Parent = Slider
+			Value.Active = true
+			Value.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			Value.BackgroundTransparency = 1.000
+			Value.Position = UDim2.new(0.727999985, 0, 0, 0)
+			Value.Selectable = true
+			Value.Size = UDim2.new(0, 99, 0, 17)
+			Value.Font = Enum.Font.GothamSemibold
+			Value.Text = "0"
+			Value.TextColor3 = Color3.fromRGB(107, 107, 107)
+			Value.TextSize = 12.000
+			
+			local Sliding = false;
+			
+			Value.Text = min .. "/" .. max
+
+			local function moveBar(input)
+				local pos1 = UDim2.new(math.clamp((input.Position.X - Slider.AbsolutePosition.X) / Slider.AbsoluteSize.X, 0, 1), 0, 0, 7);
+				SliderInside:TweenSize(pos1, "Out", "Sine", .1, true);
+				local retVal = math.floor(((pos1.X.Scale * max) / max) * (max - min) + min);
+				Value.Text = tostring(retVal .. "/" .. max);
+				print(Value.Text);
+			end;
+
+			Slider.InputBegan:Connect(function(input)
+				if input.UserInputType == Enum.UserInputType.MouseButton1 then
+					Sliding = true;
+				end;
+			end);
+
+			Slider.InputEnded:Connect(function(input)
+				if input.UserInputType == Enum.UserInputType.MouseButton1 then
+					Sliding = false;
+				end;
+			end);
+
+			UserInputService.InputChanged:Connect(function(input)
+				if Sliding and input.UserInputType == Enum.UserInputType.MouseMovement then
+					moveBar(input);
+				end;
+			end);
+		end;
+		
+		function Interact:TextBox(name, callback)
+			local TextBox = Instance.new("ImageLabel")
+			local TextBoxLabel = Instance.new("TextLabel")
+			local TextBoxValue = Instance.new("TextBox")
+			
+			TextBox.Name = "TextBox"
+			TextBox.Parent = ScrollingFrame
+			TextBox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			TextBox.BackgroundTransparency = 1.000
+			TextBox.Position = UDim2.new(0.0146699268, 0, 0.0168539323, 0)
+			TextBox.Size = UDim2.new(0, 397, 0, 29)
+			TextBox.Image = "rbxassetid://3570695787"
+			TextBox.ImageColor3 = Color3.fromRGB(36, 36, 36)
+			TextBox.ScaleType = Enum.ScaleType.Slice
+			TextBox.SliceCenter = Rect.new(100, 100, 100, 100)
+			TextBox.SliceScale = 0.020
+
+			TextBoxLabel.Name = "TextBoxLabel"
+			TextBoxLabel.Parent = TextBox
+			TextBoxLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			TextBoxLabel.BackgroundTransparency = 1.000
+			TextBoxLabel.Position = UDim2.new(0.0173848718, 0, 0, 0)
+			TextBoxLabel.Size = UDim2.new(0, 128, 0, 29)
+			TextBoxLabel.Font = Enum.Font.GothamSemibold
+			TextBoxLabel.Text = "TextBox"
+			TextBoxLabel.TextColor3 = Color3.fromRGB(130, 130, 130)
+			TextBoxLabel.TextSize = 14.000
+			TextBoxLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+			TextBoxValue.Name = "TextBoxValue"
+			TextBoxValue.Parent = TextBox
+			TextBoxValue.Active = false
+			TextBoxValue.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			TextBoxValue.BackgroundTransparency = 1.000
+			TextBoxValue.Position = UDim2.new(0.727999985, 0, 0, 0)
+			TextBoxValue.Selectable = false
+			TextBoxValue.Size = UDim2.new(0, 107, 0, 29)
+			TextBoxValue.Font = Enum.Font.GothamSemibold
+			TextBoxValue.PlaceholderColor3 = Color3.fromRGB(120, 120, 120)
+			TextBoxValue.PlaceholderText = "Enter Value..."
+			TextBoxValue.Text = ""
+			TextBoxValue.TextColor3 = Color3.fromRGB(130, 130, 130)
+			TextBoxValue.TextSize = 14.000
+			TextBoxValue.TextWrapped = true
+			
+			TextBoxValue.FocusLost:Connect(function(Enter)
+				if Enter then
+					pcall(callback, TextBoxValue.Text);
+				end;
+			end);
+			
+		end;
+		
+		return Interact;
+		
+	end;
+	
+	return TabHolder;
+	
+end;
+
+return Library;
