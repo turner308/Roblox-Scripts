@@ -106,7 +106,6 @@ function Library:Window()
 	function TabHolder:Tab(name)
 		local Tab = Instance.new("ImageButton")
 		local TabLabel = Instance.new("TextLabel")
-		local Circle = Instance.new("ImageLabel")
 		local Container = Instance.new("ImageLabel")
 		local ScrollingFrame = Instance.new("ScrollingFrame")
 		local Padding_2 = Instance.new("Frame")
@@ -135,17 +134,6 @@ function Library:Window()
 		TabLabel.Text = "Tab"
 		TabLabel.TextColor3 = Color3.fromRGB(130, 130, 130)
 		TabLabel.TextSize = 14.000
-
-		Circle.Name = "Circle"
-		Circle.Parent = Tab
-		Circle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-		Circle.BackgroundTransparency = 1.000
-		Circle.Position = UDim2.new(0.8125, 0, 0.310344696, 0)
-		Circle.Size = UDim2.new(0, 10, 0, 10)
-		Circle.Image = "rbxassetid://3570695787"
-		Circle.ImageColor3 = Color3.fromRGB(49, 49, 49)
-		Circle.ScaleType = Enum.ScaleType.Slice
-		Circle.SliceCenter = Rect.new(100, 100, 100, 100)
 
 		Container.Name = "Container"
 		Container.Parent = Background
