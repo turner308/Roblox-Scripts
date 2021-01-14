@@ -14,7 +14,7 @@ function Library:Window()
 	local Padding = Instance.new("Frame")
 	
 	Library.Name = "Library"
-	Library.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+	Library.Parent = game:GetService("CoreGui")
 	
 	Background.Name = "Background"
 	Background.Parent = Library
@@ -112,7 +112,7 @@ function Library:Window()
 		local UIListLayout_2 = Instance.new("UIListLayout")
 		
 		Tab.Name = "Tab"
-		Tab.Parent = game.StarterGui.Library.Background.Tabs
+		Tab.Parent = Tabs
 		Tab.Active = false
 		Tab.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 		Tab.BackgroundTransparency = 1.000
