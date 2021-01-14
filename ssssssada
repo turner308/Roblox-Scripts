@@ -134,7 +134,7 @@ function Library:Window()
 		TabLabel.Text = "Tab"
 		TabLabel.TextColor3 = Color3.fromRGB(130, 130, 130)
 		TabLabel.TextSize = 14.000
-
+		
 		Container.Name = "Container"
 		Container.Parent = Background
 		Container.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -241,10 +241,10 @@ function Library:Window()
 			end);
 
 			Button.MouseButton1Up:Connect(function()
+				pcall(callback)
 				TweenService:Create(Button, TweenInfo.new(.2, Enum.EasingStyle.Bounce, Enum.EasingDirection.Out), {
 					Size = UDim2.new(0, 397, 0, 29)
 				}):Play();
-				--Pcall the callback
 			end);
 
 			Button.MouseLeave:Connect(function()
@@ -378,6 +378,7 @@ function Library:Window()
 				ButtonLabel_2.TextXAlignment = Enum.TextXAlignment.Left
 				
 				Button_2.MouseButton1Click:Connect(function()
+					pcall(callback, ButtonLabel_2.Text)
 					DropdownLabel.Text =  OldText .. " " .. ButtonLabel_2.Text
 				end);
 			end;
@@ -462,6 +463,7 @@ function Library:Window()
 			end);
 
 			Toggle.MouseButton1Up:Connect(function()
+				pcall(callback, ToggleBool)
 				coroutine.wrap(function()
 					TweenService:Create(Toggle, TweenInfo.new(.2, Enum.EasingStyle.Bounce, Enum.EasingDirection.Out), {
 						Size = UDim2.new(0, 397, 0, 29)
@@ -566,7 +568,7 @@ function Library:Window()
 				SliderInside:TweenSize(pos1, "Out", "Sine", .1, true);
 				local retVal = math.floor(((pos1.X.Scale * max) / max) * (max - min) + min);
 				Value.Text = tostring(retVal .. "/" .. max);
-				print(Value.Text);
+				pcall(callback, Value.Text)
 			end;
 
 			Slider.InputBegan:Connect(function(input)
