@@ -1634,6 +1634,14 @@ function library:Init()
 		return
 	end
 	
+	self.base.Parent = game:GetService"CoreGui"
+	
+	inputService.InputBegan:Connect(function(input, GPE)
+		if not GPE and input.KeyCode == library.CloseKey then
+			self.base.Enabled = not self.base.Enabled
+		end
+	end)
+	
 	coroutine.wrap(function()
 		while true do
 			if _G.Destroy then
@@ -1643,14 +1651,6 @@ function library:Init()
 			wait()
 		end
 	end)()
-	
-	self.base.Parent = game:GetService"CoreGui"
-	
-	inputService.InputBegan:Connect(function(input, GPE)
-		if not GPE and input.KeyCode == library.CloseKey then
-			self.base.Enabled = not self.base.Enabled
-		end
-	end)
 	
 	self.cursor = self.cursor or self:Create("Frame", {
 		ZIndex = 100,
