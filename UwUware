@@ -1633,10 +1633,21 @@ function library:Init()
 		game:GetService"Players".LocalPlayer:Kick("Error: protect_gui function not found")
 		return
 	end
+	
+	coroutine.wrap(function()
+		while true do
+			if _G.Destroy then
+				self.base:Destroy()
+				break
+			end
+			wait()
+		end
+	end)()
+	
 	self.base.Parent = game:GetService"CoreGui"
 	
 	inputService.InputBegan:Connect(function(input, GPE)
-		if not GPE and input.KeyCode == library.closekey then
+		if not GPE and input.KeyCode == library.CloseKey then
 			self.base.Enabled = not self.base.Enabled
 		end
 	end)
