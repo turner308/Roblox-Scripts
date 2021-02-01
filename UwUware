@@ -1635,8 +1635,7 @@ function library:Init()
 	end
 	
 	self.base.Parent = game:GetService"CoreGui"
-	_G.PreviousGUI = self.base
-	
+
 	inputService.InputBegan:Connect(function(input, GPE)
 		if not GPE and input.KeyCode == library.CloseKey then
 			self.base.Enabled = not self.base.Enabled
