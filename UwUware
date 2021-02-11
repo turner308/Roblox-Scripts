@@ -1,11 +1,9 @@
-local GlobalSettings = getgenv().Settings
-
-if typeof(GlobalSettings) == "table" then
-	for i,v in pairs(GlobalSettings) do
-	    if typeof(v) == "boolean" then
-		v = false
-	    end
-	end 
+--// Other Exploit Support // Thanks Egg salad 😳
+if not pcall(function() return syn.protect_gui end) then
+    getgenv().syn = {}
+    syn.protect_gui = function(gui)
+        gui.Parent = game:GetService("CoreGui")
+    end
 end
 
 for i,v in pairs(game:GetService("CoreGui"):GetDescendants()) do
