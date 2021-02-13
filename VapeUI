@@ -1497,6 +1497,8 @@ function lib:Window(text, preset, closebind)
             
             Tab.CanvasSize = UDim2.new(0, 0, 0, TabLayout.AbsoluteContentSize.Y)
             
+            pcall(callback, keypreset)
+            
             Bind.MouseButton1Click:Connect(function()
                 BindText.Text = "..."
                 binding = true
