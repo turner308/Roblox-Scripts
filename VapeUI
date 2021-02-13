@@ -750,6 +750,7 @@ function lib:Window(text, preset, closebind)
             Tab.CanvasSize = UDim2.new(0, 0, 0, TabLayout.AbsoluteContentSize.Y)
         end
         function tabcontent:Dropdown(text, list, callback)
+            --Add refresh function :)
             local droptog = false
             local framesize = 0
             local itemcount = 0
