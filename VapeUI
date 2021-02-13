@@ -696,6 +696,8 @@ function lib:Window(text, preset, closebind)
             SlideCircle.Image = "rbxassetid://3570695787"
             SlideCircle.ImageColor3 = PresetColor
             
+            pcall(callback, start)
+            
             coroutine.wrap(
                 function()
                     while wait() do
