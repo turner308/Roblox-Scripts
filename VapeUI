@@ -776,9 +776,7 @@ function lib:Window(text, preset, closebind)
 
             return ExtraFunctions
         end
-        function tabcontent:Dropdown(text, list, callback, refresh)
-            refresh = refresh or list
-
+        function tabcontent:Dropdown(text, list, callback)
             local droptog = false
             local framesize = 0
             local itemcount = 0
@@ -920,9 +918,6 @@ function lib:Window(text, preset, closebind)
             end
             
             DropdownBtn.MouseButton1Click:Connect(function()
-
-                ExtraFunctions:Refresh(refresh)
-
                 if droptog == false then
                     Dropdown:TweenSize(UDim2.new(0, 363, 0, 55 + framesize), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, .2, true)
                     TweenService:Create(
@@ -951,6 +946,7 @@ function lib:Window(text, preset, closebind)
                     framesize = framesize + 26
                     DropItemHolder.Size = UDim2.new(0, 342, 0, framesize)
                 end
+
                 local Item = Instance.new("TextButton")
                 local ItemCorner = Instance.new("UICorner")
 
