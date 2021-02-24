@@ -947,7 +947,6 @@ function lib:Window(text, preset, closebind)
             if default ~= nil then
                 table.insert(list, default)
                 DropdownTitle.Text = text .. " - " .. default
-                Dropdown:TweenSize(UDim2.new(0, 363, 0, 55 + framesize), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, .2, true)
                 TweenService:Create(
                     ArrowImg,
                     TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
