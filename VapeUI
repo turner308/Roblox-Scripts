@@ -947,12 +947,6 @@ function lib:Window(text, preset, closebind)
             if default ~= nil then
                 table.insert(list, default)
                 DropdownTitle.Text = text .. " - " .. default
-                TweenService:Create(
-                    ArrowImg,
-                    TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-                    {Rotation = 270}
-                ):Play()
-                droptog = true
                 pcall(callback, default)
             end 
             
