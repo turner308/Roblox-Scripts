@@ -96,7 +96,7 @@ local defaults; do
                     Name = 'Underline';
                     Size = UDim2.new(1, 0, 0, 2);
                     Position = UDim2.new(0, 0, 1, -2);
-                    BackgroundColor3 = (options.underlinecolor ~= "rainbow" and options.underlinecolor or Color3.new());
+                    BackgroundColor3 = (library.options.underlinecolor ~= "rainbow" and library.options.underlinecolor or Color3.new());
                     BorderSizePixel = 0;
                     ZIndex = 3;
                 });
