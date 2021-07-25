@@ -946,6 +946,7 @@ local defaults; do
                 
                 input = game:GetService('UserInputService').InputBegan:connect(function(a)
                     if a.UserInputType == Enum.UserInputType.MouseButton1 and (not isInGui(container)) then
+                     pcall(function()
                         check:FindFirstChild('dropdown_lbl'):WaitForChild('Selection').TextColor3 = library.options.textcolor
                         check:FindFirstChild('dropdown_lbl'):WaitForChild('Selection').Text       = location[flag];
 
@@ -954,6 +955,7 @@ local defaults; do
 
                         game:GetService('Debris'):AddItem(container, 0)
                         input:disconnect();
+                     end)
                     end
                 end)
             end)
