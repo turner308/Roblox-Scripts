@@ -1,2 +1,2 @@
 # Roblox-Scripts
-yes yes script man do the script
+This is full of some random scripts I and others have made.
