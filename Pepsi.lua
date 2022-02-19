@@ -4895,7 +4895,7 @@ function library:CreateWindow(options)
 		}}, {"AddToggle", "__Designer.Toggle.UseBackgroundImage", backgroundsection, {
 			Name = "Use Background Image",
 			Flag = "__Designer.Background.UseBackgroundImage",
-			Value = true,
+			Value = false,
 			Callback = updatecolors
 		}}, {"AddPersistence", "__Designer.Persistence.ThemeFile", filessection, {
 			Name = "Theme Profile",
