@@ -1317,488 +1317,488 @@ function Flux:Window(text, bottom, mainclr, toclose)
             end
 			return SliderFunc
 		end
-		function ContainerContent:Dropdown(text,list,callback)
-			local DropFunc = {}
-			local Selected = text
-			local FrameSize = 43
-			local ItemCount = 0
-			local DropToggled = false
-			local Dropdown = Instance.new("TextButton")
-			local DropdownCorner = Instance.new("UICorner")
-			local Title = Instance.new("TextLabel")
-			local Circle = Instance.new("Frame")
-			local CircleCorner = Instance.new("UICorner")
-			local CircleSmall = Instance.new("Frame")
-			local CircleSmallCorner = Instance.new("UICorner")
-			local ArrowIco = Instance.new("ImageLabel")
-			local DropItemHolder = Instance.new("ScrollingFrame")
-			local DropLayout = Instance.new("UIListLayout")
-
-			Dropdown.Name = "Dropdown"
-			Dropdown.Parent = Container
-			Dropdown.BackgroundColor3 = Color3.fromRGB(64, 68, 75)
-			Dropdown.ClipsDescendants = true
-			Dropdown.Position = UDim2.new(0.110937499, 0, 0.67653507, 0)
-			Dropdown.Size = UDim2.new(0, 457, 0, 43)
-			Dropdown.AutoButtonColor = false
-			Dropdown.Font = Enum.Font.SourceSans
-			Dropdown.Text = ""
-			Dropdown.TextColor3 = Color3.fromRGB(0, 0, 0)
-			Dropdown.TextSize = 14.000
-
-			DropdownCorner.CornerRadius = UDim.new(0, 4)
-			DropdownCorner.Name = "DropdownCorner"
-			DropdownCorner.Parent = Dropdown
-
-			Title.Name = "Title"
-			Title.Parent = Dropdown
-			Title.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-			Title.BackgroundTransparency = 1.000
-			Title.Position = UDim2.new(0.0822437406, 0, 0, 0)
-			Title.Size = UDim2.new(0, 113, 0, 42)
-			Title.Font = Enum.Font.Gotham
-			Title.Text = text
-			Title.TextColor3 = Color3.fromRGB(255, 255, 255)
-			Title.TextSize = 15.000
-			Title.TextTransparency = 0.300
-			Title.TextXAlignment = Enum.TextXAlignment.Left
-
-			Circle.Name = "Circle"
-			Circle.Parent = Title
-			Circle.Active = true
-			Circle.AnchorPoint = Vector2.new(0.5, 0.5)
-			Circle.BackgroundColor3 = Color3.fromRGB(211, 211, 211)
-			Circle.Position = UDim2.new(-0.150690272, 0, 0.503000021, 0)
-			Circle.Size = UDim2.new(0, 11, 0, 11)
-
-			CircleCorner.CornerRadius = UDim.new(2, 6)
-			CircleCorner.Name = "CircleCorner"
-			CircleCorner.Parent = Circle
-
-			CircleSmall.Name = "CircleSmall"
-			CircleSmall.Parent = Circle
-			CircleSmall.Active = true
-			CircleSmall.AnchorPoint = Vector2.new(0.5, 0.5)
-			CircleSmall.BackgroundColor3 = Color3.fromRGB(64, 68, 75)
-			CircleSmall.BackgroundTransparency = 1.000
-			CircleSmall.Position = UDim2.new(0.485673368, 0, 0.503000021, 0)
-			CircleSmall.Size = UDim2.new(0, 9, 0, 9)
-
-			CircleSmallCorner.CornerRadius = UDim.new(2, 6)
-			CircleSmallCorner.Name = "CircleSmallCorner"
-			CircleSmallCorner.Parent = CircleSmall
-
-			ArrowIco.Name = "ArrowIco"
-			ArrowIco.Parent = Title
-			ArrowIco.AnchorPoint = Vector2.new(0.5, 0.5)
-			ArrowIco.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-			ArrowIco.BackgroundTransparency = 1.000
-			ArrowIco.Position = UDim2.new(3.45979357, 0, 0.508096159, 0)
-			ArrowIco.Selectable = true
-			ArrowIco.Size = UDim2.new(0, 28, 0, 24)
-			ArrowIco.Image = "http://www.roblox.com/asset/?id=6035047377"
-			ArrowIco.ImageTransparency = .3
-
-			DropItemHolder.Name = "DropItemHolder"
-			DropItemHolder.Parent = Title
-			DropItemHolder.Active = true
-			DropItemHolder.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-			DropItemHolder.BackgroundTransparency = 1.000
-			DropItemHolder.BorderSizePixel = 0
-			DropItemHolder.Position = UDim2.new(-0.203539819, 0, 1.02380955, 0)
-			DropItemHolder.Size = UDim2.new(0, 436, 0, 82)
-			DropItemHolder.CanvasSize = UDim2.new(0, 0, 0, 0)
-			DropItemHolder.ScrollBarThickness = 5
-			DropItemHolder.ScrollBarImageColor3 = Color3.fromRGB(41, 42, 48)
-
-			DropLayout.Name = "DropLayout"
-			DropLayout.Parent = DropItemHolder
-			DropLayout.SortOrder = Enum.SortOrder.LayoutOrder
-			DropLayout.Padding = UDim.new(0, 2)
-			
-			Dropdown.MouseEnter:Connect(function()
-				TweenService:Create(
-					Title,
-					TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-					{TextTransparency = 0}
-				):Play()
-			end)
-
-			Dropdown.MouseLeave:Connect(function()
-				TweenService:Create(
-					Title,
-					TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-					{TextTransparency = 0.3}
-				):Play()
-			end)
-
-			
-			Dropdown.MouseButton1Click:Connect(function()
-				if DropToggled == false then
-					Title.Text = Selected
-					Dropdown:TweenSize(UDim2.new(0, 457, 0, FrameSize), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, .6, true)
-					TweenService:Create(
-						Title,
-						TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-						{TextColor3 = PresetColor}
-					):Play()
-					TweenService:Create(
-						ArrowIco,
-						TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-						{ImageColor3 = PresetColor}
-					):Play()
-					TweenService:Create(
-						ArrowIco,
-						TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-						{ImageTransparency = 0}
-					):Play()
-					TweenService:Create(
-						ArrowIco,
-						TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-						{Rotation = 180}
-					):Play()
-					TweenService:Create(
-						Circle,
-						TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-						{BackgroundColor3 = PresetColor}
-					):Play()
-					TweenService:Create(
-						CircleSmall,
-						TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-						{BackgroundTransparency = 0}
-					):Play()
-					TweenService:Create(
-						Title,
-						TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-						{TextTransparency = 0}
-					):Play()
-					wait(.4)
-					Container.CanvasSize = UDim2.new(0, 0, 0, ContainerLayout.AbsoluteContentSize.Y)
-				else
-					Title.Text = Selected
-					Dropdown:TweenSize(UDim2.new(0, 457, 0, 43), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, .6, true)
-					TweenService:Create(
-						Title,
-						TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-						{TextColor3 = Color3.fromRGB(255,255,255)}
-					):Play()
-					TweenService:Create(
-						ArrowIco,
-						TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-						{ImageColor3 = Color3.fromRGB(255,255,255)}
-					):Play()
-					TweenService:Create(
-						ArrowIco,
-						TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-						{ImageTransparency = .3}
-					):Play()
-					TweenService:Create(
-						ArrowIco,
-						TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-						{Rotation = 0}
-					):Play()
-					TweenService:Create(
-						Circle,
-						TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-						{BackgroundColor3 = Color3.fromRGB(211, 211, 211)}
-					):Play()
-					TweenService:Create(
-						CircleSmall,
-						TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-						{BackgroundTransparency = 1}
-					):Play()
-					TweenService:Create(
-						Title,
-						TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-						{TextTransparency = 0.3}
-					):Play()
-					wait(.4)
-					Container.CanvasSize = UDim2.new(0, 0, 0, ContainerLayout.AbsoluteContentSize.Y)
-				end
-			    DropToggled = not DropToggled
-			end)
-			
-			for i,v in next, list do
-				ItemCount = ItemCount + 1
-				
-				if ItemCount == 1 then
-					FrameSize = 78
-				elseif ItemCount == 2 then
-					FrameSize = 107
-				elseif ItemCount >= 3 then
-					FrameSize = 133
-				end
-				local Item = Instance.new("TextButton")
-				local ItemCorner = Instance.new("UICorner")
-				
-			Item.Name = "Item"
-			Item.Parent = DropItemHolder
-			Item.BackgroundColor3 = Color3.fromRGB(64, 68, 75)
-			Item.ClipsDescendants = true
-			Item.Size = UDim2.new(0, 427, 0, 25)
-			Item.AutoButtonColor = false
-			Item.Font = Enum.Font.Gotham
-			Item.Text = v
-			Item.TextColor3 = Color3.fromRGB(255, 255, 255)
-			Item.TextSize = 15.000
-			Item.TextTransparency = 0.300
-
-			ItemCorner.CornerRadius = UDim.new(0, 4)
-			ItemCorner.Name = "ItemCorner"
-				ItemCorner.Parent = Item
-				DropItemHolder.CanvasSize = UDim2.new(0, 0, 0, DropLayout.AbsoluteContentSize.Y)
-				
-				Item.MouseEnter:Connect(function()
-					TweenService:Create(
-						Item,
-						TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-						{TextTransparency = 0}
-					):Play()
-				end)
-
-				Item.MouseLeave:Connect(function()
-					TweenService:Create(
-						Item,
-						TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-						{TextTransparency = 0.3}
-					):Play()
-				end)
-				
-				Item.MouseButton1Click:Connect(function()
-					pcall(callback, v)
-					Title.Text = text
-					Selected = v
-					DropToggled = not DropToggled
-					Dropdown:TweenSize(UDim2.new(0, 457, 0, 43), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, .6, true)
-					TweenService:Create(
-						Title,
-						TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-						{TextColor3 = Color3.fromRGB(255,255,255)}
-					):Play()
-					TweenService:Create(
-						ArrowIco,
-						TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-						{ImageColor3 = Color3.fromRGB(255,255,255)}
-					):Play()
-					TweenService:Create(
-						ArrowIco,
-						TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-						{ImageTransparency = .3}
-					):Play()
-					TweenService:Create(
-						ArrowIco,
-						TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-						{Rotation = 0}
-					):Play()
-					TweenService:Create(
-						Circle,
-						TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-						{BackgroundColor3 = Color3.fromRGB(211, 211, 211)}
-					):Play()
-					TweenService:Create(
-						CircleSmall,
-						TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-						{BackgroundTransparency = 1}
-					):Play()
-					TweenService:Create(
-						Title,
-						TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-						{TextTransparency = 0.3}
-					):Play()
-					wait(.4)
-					Container.CanvasSize = UDim2.new(0, 0, 0, ContainerLayout.AbsoluteContentSize.Y)
-					
-				end)
-			end
-			function DropFunc:Add(addtext)
-				ItemCount = ItemCount + 1
-
-				if ItemCount == 1 then
-					FrameSize = 78
-				elseif ItemCount == 2 then
-					FrameSize = 107
-				elseif ItemCount >= 3 then
-					FrameSize = 133
-				end
-				local Item = Instance.new("TextButton")
-				local ItemCorner = Instance.new("UICorner")
-
-				Item.Name = "Item"
-				Item.Parent = DropItemHolder
-				Item.BackgroundColor3 = Color3.fromRGB(64, 68, 75)
-				Item.ClipsDescendants = true
-				Item.Size = UDim2.new(0, 427, 0, 25)
-				Item.AutoButtonColor = false
-				Item.Font = Enum.Font.Gotham
-				Item.Text = addtext
-				Item.TextColor3 = Color3.fromRGB(255, 255, 255)
-				Item.TextSize = 15.000
-				Item.TextTransparency = 0.300
-
-				ItemCorner.CornerRadius = UDim.new(0, 4)
-				ItemCorner.Name = "ItemCorner"
-				ItemCorner.Parent = Item
-				DropItemHolder.CanvasSize = UDim2.new(0, 0, 0, DropLayout.AbsoluteContentSize.Y)
-
-				Item.MouseEnter:Connect(function()
-					TweenService:Create(
-						Item,
-						TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-						{TextTransparency = 0}
-					):Play()
-				end)
-
-				Item.MouseLeave:Connect(function()
-					TweenService:Create(
-						Item,
-						TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-						{TextTransparency = 0.3}
-					):Play()
-				end)
-
-				Item.MouseButton1Click:Connect(function()
-					pcall(callback, addtext)
-					Title.Text = text
-					Selected = addtext
-					DropToggled = not DropToggled
-					Dropdown:TweenSize(UDim2.new(0, 457, 0, 43), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, .6, true)
-					TweenService:Create(
-						Title,
-						TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-						{TextColor3 = Color3.fromRGB(255,255,255)}
-					):Play()
-					TweenService:Create(
-						ArrowIco,
-						TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-						{ImageColor3 = Color3.fromRGB(255,255,255)}
-					):Play()
-					TweenService:Create(
-						ArrowIco,
-						TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-						{ImageTransparency = .3}
-					):Play()
-					TweenService:Create(
-						ArrowIco,
-						TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-						{Rotation = 0}
-					):Play()
-					TweenService:Create(
-						Circle,
-						TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-						{BackgroundColor3 = Color3.fromRGB(211, 211, 211)}
-					):Play()
-					TweenService:Create(
-						CircleSmall,
-						TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-						{BackgroundTransparency = 1}
-					):Play()
-					TweenService:Create(
-						Title,
-						TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-						{TextTransparency = 0.3}
-					):Play()
-					wait(.4)
-					Container.CanvasSize = UDim2.new(0, 0, 0, ContainerLayout.AbsoluteContentSize.Y)
-				end)
-				if DropToggled == true then
-					Title.Text = Selected
-					Dropdown:TweenSize(UDim2.new(0, 457, 0, 43), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, .6, true)
-					TweenService:Create(
-						Title,
-						TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-						{TextColor3 = Color3.fromRGB(255,255,255)}
-					):Play()
-					TweenService:Create(
-						ArrowIco,
-						TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-						{ImageColor3 = Color3.fromRGB(255,255,255)}
-					):Play()
-					TweenService:Create(
-						ArrowIco,
-						TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-						{ImageTransparency = .3}
-					):Play()
-					TweenService:Create(
-						ArrowIco,
-						TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-						{Rotation = 0}
-					):Play()
-					TweenService:Create(
-						Circle,
-						TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-						{BackgroundColor3 = Color3.fromRGB(211, 211, 211)}
-					):Play()
-					TweenService:Create(
-						CircleSmall,
-						TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-						{BackgroundTransparency = 1}
-					):Play()
-					TweenService:Create(
-						Title,
-						TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-						{TextTransparency = 0.3}
-					):Play()
-					wait(.4)
-					Container.CanvasSize = UDim2.new(0, 0, 0, ContainerLayout.AbsoluteContentSize.Y)
-				end
-			end
-			function DropFunc:Clear()
-				Title.Text = text
-				FrameSize = 0
-				ItemCount = 0
-				for i, v in next, DropItemHolder:GetChildren() do
-					if v.Name == "Item" then
-						v:Destroy()
-					end
-				end
-				if DropToggled == true then
-					Title.Text = Selected
-					Dropdown:TweenSize(UDim2.new(0, 457, 0, 43), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, .6, true)
-					TweenService:Create(
-						Title,
-						TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-						{TextColor3 = Color3.fromRGB(255,255,255)}
-					):Play()
-					TweenService:Create(
-						ArrowIco,
-						TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-						{ImageColor3 = Color3.fromRGB(255,255,255)}
-					):Play()
-					TweenService:Create(
-						ArrowIco,
-						TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-						{ImageTransparency = .3}
-					):Play()
-					TweenService:Create(
-						ArrowIco,
-						TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-						{Rotation = 0}
-					):Play()
-					TweenService:Create(
-						Circle,
-						TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-						{BackgroundColor3 = Color3.fromRGB(211, 211, 211)}
-					):Play()
-					TweenService:Create(
-						CircleSmall,
-						TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-						{BackgroundTransparency = 1}
-					):Play()
-					TweenService:Create(
-						Title,
-						TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-						{TextTransparency = 0.3}
-					):Play()
-					wait(.4)
-					Container.CanvasSize = UDim2.new(0, 0, 0, ContainerLayout.AbsoluteContentSize.Y)
-				end
-			end
+        function ContainerContent:Dropdown(text,list,callback)
+            local DropFunc = {}
+            local Selected = text
+            local FrameSize = 43
+            local ItemCount = 0
+            local DropToggled = false
+            local Dropdown = Instance.new("TextButton")
+            local DropdownCorner = Instance.new("UICorner")
+            local Title = Instance.new("TextLabel")
+            local Circle = Instance.new("Frame")
+            local CircleCorner = Instance.new("UICorner")
+            local CircleSmall = Instance.new("Frame")
+            local CircleSmallCorner = Instance.new("UICorner")
+            local ArrowIco = Instance.new("ImageLabel")
+            local DropItemHolder = Instance.new("ScrollingFrame")
+            local DropLayout = Instance.new("UIListLayout")
+        
+            Dropdown.Name = "Dropdown"
+            Dropdown.Parent = Container
+            Dropdown.BackgroundColor3 = Color3.fromRGB(64, 68, 75)
+            Dropdown.ClipsDescendants = true
+            Dropdown.Position = UDim2.new(0.110937499, 0, 0.67653507, 0)
+            Dropdown.Size = UDim2.new(0, 457, 0, 43)
+            Dropdown.AutoButtonColor = false
+            Dropdown.Font = Enum.Font.SourceSans
+            Dropdown.Text = ""
+            Dropdown.TextColor3 = Color3.fromRGB(0, 0, 0)
+            Dropdown.TextSize = 14.000
+        
+            DropdownCorner.CornerRadius = UDim.new(0, 4)
+            DropdownCorner.Name = "DropdownCorner"
+            DropdownCorner.Parent = Dropdown
+        
+            Title.Name = "Title"
+            Title.Parent = Dropdown
+            Title.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+            Title.BackgroundTransparency = 1.000
+            Title.Position = UDim2.new(0.0822437406, 0, 0, 0)
+            Title.Size = UDim2.new(0, 113, 0, 42)
+            Title.Font = Enum.Font.Gotham
+            Title.Text = text
+            Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+            Title.TextSize = 15.000
+            Title.TextTransparency = 0.300
+            Title.TextXAlignment = Enum.TextXAlignment.Left
+        
+            Circle.Name = "Circle"
+            Circle.Parent = Title
+            Circle.Active = true
+            Circle.AnchorPoint = Vector2.new(0.5, 0.5)
+            Circle.BackgroundColor3 = Color3.fromRGB(211, 211, 211)
+            Circle.Position = UDim2.new(-0.150690272, 0, 0.503000021, 0)
+            Circle.Size = UDim2.new(0, 11, 0, 11)
+        
+            CircleCorner.CornerRadius = UDim.new(2, 6)
+            CircleCorner.Name = "CircleCorner"
+            CircleCorner.Parent = Circle
+        
+            CircleSmall.Name = "CircleSmall"
+            CircleSmall.Parent = Circle
+            CircleSmall.Active = true
+            CircleSmall.AnchorPoint = Vector2.new(0.5, 0.5)
+            CircleSmall.BackgroundColor3 = Color3.fromRGB(64, 68, 75)
+            CircleSmall.BackgroundTransparency = 1.000
+            CircleSmall.Position = UDim2.new(0.485673368, 0, 0.503000021, 0)
+            CircleSmall.Size = UDim2.new(0, 9, 0, 9)
+        
+            CircleSmallCorner.CornerRadius = UDim.new(2, 6)
+            CircleSmallCorner.Name = "CircleSmallCorner"
+            CircleSmallCorner.Parent = CircleSmall
+        
+            ArrowIco.Name = "ArrowIco"
+            ArrowIco.Parent = Title
+            ArrowIco.AnchorPoint = Vector2.new(0.5, 0.5)
+            ArrowIco.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+            ArrowIco.BackgroundTransparency = 1.000
+            ArrowIco.Position = UDim2.new(3.45979357, 0, 0.508096159, 0)
+            ArrowIco.Selectable = true
+            ArrowIco.Size = UDim2.new(0, 28, 0, 24)
+            ArrowIco.Image = "http://www.roblox.com/asset/?id=6035047377"
+            ArrowIco.ImageTransparency = .3
+        
+            DropItemHolder.Name = "DropItemHolder"
+            DropItemHolder.Parent = Title
+            DropItemHolder.Active = true
+            DropItemHolder.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+            DropItemHolder.BackgroundTransparency = 1.000
+            DropItemHolder.BorderSizePixel = 0
+            DropItemHolder.Position = UDim2.new(-0.203539819, 0, 1.02380955, 0)
+            DropItemHolder.Size = UDim2.new(0, 436, 0, 82)
+            DropItemHolder.CanvasSize = UDim2.new(0, 0, 0, 0)
+            DropItemHolder.ScrollBarThickness = 5
+            DropItemHolder.ScrollBarImageColor3 = Color3.fromRGB(41, 42, 48)
+        
+            DropLayout.Name = "DropLayout"
+            DropLayout.Parent = DropItemHolder
+            DropLayout.SortOrder = Enum.SortOrder.LayoutOrder
+            DropLayout.Padding = UDim.new(0, 2)
+            
+            Dropdown.MouseEnter:Connect(function()
+                TweenService:Create(
+                    Title,
+                    TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                    {TextTransparency = 0}
+                ):Play()
+            end)
+        
+            Dropdown.MouseLeave:Connect(function()
+                TweenService:Create(
+                    Title,
+                    TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                    {TextTransparency = 0.3}
+                ):Play()
+            end)
+        
+            
+            Dropdown.MouseButton1Click:Connect(function()
+                if DropToggled == false then
+                    Title.Text = Selected
+                    Dropdown:TweenSize(UDim2.new(0, 457, 0, FrameSize), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, .6, true)
+                    TweenService:Create(
+                        Title,
+                        TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {TextColor3 = PresetColor}
+                    ):Play()
+                    TweenService:Create(
+                        ArrowIco,
+                        TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {ImageColor3 = PresetColor}
+                    ):Play()
+                    TweenService:Create(
+                        ArrowIco,
+                        TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {ImageTransparency = 0}
+                    ):Play()
+                    TweenService:Create(
+                        ArrowIco,
+                        TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {Rotation = 180}
+                    ):Play()
+                    TweenService:Create(
+                        Circle,
+                        TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {BackgroundColor3 = PresetColor}
+                    ):Play()
+                    TweenService:Create(
+                        CircleSmall,
+                        TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {BackgroundTransparency = 0}
+                    ):Play()
+                    TweenService:Create(
+                        Title,
+                        TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {TextTransparency = 0}
+                    ):Play()
+                    wait(.4)
+                    Container.CanvasSize = UDim2.new(0, 0, 0, ContainerLayout.AbsoluteContentSize.Y)
+                else
+                    Title.Text = Selected
+                    Dropdown:TweenSize(UDim2.new(0, 457, 0, 43), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, .6, true)
+                    TweenService:Create(
+                        Title,
+                        TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {TextColor3 = Color3.fromRGB(255,255,255)}
+                    ):Play()
+                    TweenService:Create(
+                        ArrowIco,
+                        TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {ImageColor3 = Color3.fromRGB(255,255,255)}
+                    ):Play()
+                    TweenService:Create(
+                        ArrowIco,
+                        TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {ImageTransparency = .3}
+                    ):Play()
+                    TweenService:Create(
+                        ArrowIco,
+                        TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {Rotation = 0}
+                    ):Play()
+                    TweenService:Create(
+                        Circle,
+                        TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {BackgroundColor3 = Color3.fromRGB(211, 211, 211)}
+                    ):Play()
+                    TweenService:Create(
+                        CircleSmall,
+                        TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {BackgroundTransparency = 1}
+                    ):Play()
+                    TweenService:Create(
+                        Title,
+                        TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {TextTransparency = 0.3}
+                    ):Play()
+                    wait(.4)
+                    Container.CanvasSize = UDim2.new(0, 0, 0, ContainerLayout.AbsoluteContentSize.Y)
+                end
+                DropToggled = not DropToggled
+            end)
+            
+            for i,v in next, list do
+                ItemCount = ItemCount + 1
+                
+                if ItemCount == 1 then
+                    FrameSize = 78
+                elseif ItemCount == 2 then
+                    FrameSize = 107
+                elseif ItemCount >= 3 then
+                    FrameSize = 133
+                end
+                local Item = Instance.new("TextButton")
+                local ItemCorner = Instance.new("UICorner")
+                
+            Item.Name = "Item"
+            Item.Parent = DropItemHolder
+            Item.BackgroundColor3 = Color3.fromRGB(64, 68, 75)
+            Item.ClipsDescendants = true
+            Item.Size = UDim2.new(0, 427, 0, 25)
+            Item.AutoButtonColor = false
+            Item.Font = Enum.Font.Gotham
+            Item.Text = v
+            Item.TextColor3 = Color3.fromRGB(255, 255, 255)
+            Item.TextSize = 15.000
+            Item.TextTransparency = 0.300
+        
+            ItemCorner.CornerRadius = UDim.new(0, 4)
+            ItemCorner.Name = "ItemCorner"
+                ItemCorner.Parent = Item
+                DropItemHolder.CanvasSize = UDim2.new(0, 0, 0, DropLayout.AbsoluteContentSize.Y)
+                
+                Item.MouseEnter:Connect(function()
+                    TweenService:Create(
+                        Item,
+                        TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {TextTransparency = 0}
+                    ):Play()
+                end)
+        
+                Item.MouseLeave:Connect(function()
+                    TweenService:Create(
+                        Item,
+                        TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {TextTransparency = 0.3}
+                    ):Play()
+                end)
+                
+                Item.MouseButton1Click:Connect(function()
+                    pcall(callback, v)
+                    Title.Text = Selected
+                    Selected = v
+                    DropToggled = not DropToggled
+                    Dropdown:TweenSize(UDim2.new(0, 457, 0, 43), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, .6, true)
+                    TweenService:Create(
+                        Title,
+                        TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {TextColor3 = Color3.fromRGB(255,255,255)}
+                    ):Play()
+                    TweenService:Create(
+                        ArrowIco,
+                        TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {ImageColor3 = Color3.fromRGB(255,255,255)}
+                    ):Play()
+                    TweenService:Create(
+                        ArrowIco,
+                        TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {ImageTransparency = .3}
+                    ):Play()
+                    TweenService:Create(
+                        ArrowIco,
+                        TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {Rotation = 0}
+                    ):Play()
+                    TweenService:Create(
+                        Circle,
+                        TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {BackgroundColor3 = Color3.fromRGB(211, 211, 211)}
+                    ):Play()
+                    TweenService:Create(
+                        CircleSmall,
+                        TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {BackgroundTransparency = 1}
+                    ):Play()
+                    TweenService:Create(
+                        Title,
+                        TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {TextTransparency = 0.3}
+                    ):Play()
+                    wait(.4)
+                    Container.CanvasSize = UDim2.new(0, 0, 0, ContainerLayout.AbsoluteContentSize.Y)
+                    
+                end)
+            end
+            function DropFunc:Add(addtext)
+                ItemCount = ItemCount + 1
+        
+                if ItemCount == 1 then
+                    FrameSize = 78
+                elseif ItemCount == 2 then
+                    FrameSize = 107
+                elseif ItemCount >= 3 then
+                    FrameSize = 133
+                end
+                local Item = Instance.new("TextButton")
+                local ItemCorner = Instance.new("UICorner")
+        
+                Item.Name = "Item"
+                Item.Parent = DropItemHolder
+                Item.BackgroundColor3 = Color3.fromRGB(64, 68, 75)
+                Item.ClipsDescendants = true
+                Item.Size = UDim2.new(0, 427, 0, 25)
+                Item.AutoButtonColor = false
+                Item.Font = Enum.Font.Gotham
+                Item.Text = addtext
+                Item.TextColor3 = Color3.fromRGB(255, 255, 255)
+                Item.TextSize = 15.000
+                Item.TextTransparency = 0.300
+        
+                ItemCorner.CornerRadius = UDim.new(0, 4)
+                ItemCorner.Name = "ItemCorner"
+                ItemCorner.Parent = Item
+                DropItemHolder.CanvasSize = UDim2.new(0, 0, 0, DropLayout.AbsoluteContentSize.Y)
+        
+                Item.MouseEnter:Connect(function()
+                    TweenService:Create(
+                        Item,
+                        TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {TextTransparency = 0}
+                    ):Play()
+                end)
+        
+                Item.MouseLeave:Connect(function()
+                    TweenService:Create(
+                        Item,
+                        TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {TextTransparency = 0.3}
+                    ):Play()
+                end)
+        
+                Item.MouseButton1Click:Connect(function()
+                    pcall(callback, addtext)
+                    Title.Text = Selected
+                    Selected = addtext
+                    DropToggled = not DropToggled
+                    Dropdown:TweenSize(UDim2.new(0, 457, 0, 43), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, .6, true)
+                    TweenService:Create(
+                        Title,
+                        TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {TextColor3 = Color3.fromRGB(255,255,255)}
+                    ):Play()
+                    TweenService:Create(
+                        ArrowIco,
+                        TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {ImageColor3 = Color3.fromRGB(255,255,255)}
+                    ):Play()
+                    TweenService:Create(
+                        ArrowIco,
+                        TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {ImageTransparency = .3}
+                    ):Play()
+                    TweenService:Create(
+                        ArrowIco,
+                        TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {Rotation = 0}
+                    ):Play()
+                    TweenService:Create(
+                        Circle,
+                        TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {BackgroundColor3 = Color3.fromRGB(211, 211, 211)}
+                    ):Play()
+                    TweenService:Create(
+                        CircleSmall,
+                        TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {BackgroundTransparency = 1}
+                    ):Play()
+                    TweenService:Create(
+                        Title,
+                        TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {TextTransparency = 0.3}
+                    ):Play()
+                    wait(.4)
+                    Container.CanvasSize = UDim2.new(0, 0, 0, ContainerLayout.AbsoluteContentSize.Y)
+                end)
+                if DropToggled == true then
+                    Title.Text = Selected
+                    Dropdown:TweenSize(UDim2.new(0, 457, 0, 43), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, .6, true)
+                    TweenService:Create(
+                        Title,
+                        TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {TextColor3 = Color3.fromRGB(255,255,255)}
+                    ):Play()
+                    TweenService:Create(
+                        ArrowIco,
+                        TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {ImageColor3 = Color3.fromRGB(255,255,255)}
+                    ):Play()
+                    TweenService:Create(
+                        ArrowIco,
+                        TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {ImageTransparency = .3}
+                    ):Play()
+                    TweenService:Create(
+                        ArrowIco,
+                        TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {Rotation = 0}
+                    ):Play()
+                    TweenService:Create(
+                        Circle,
+                        TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {BackgroundColor3 = Color3.fromRGB(211, 211, 211)}
+                    ):Play()
+                    TweenService:Create(
+                        CircleSmall,
+                        TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {BackgroundTransparency = 1}
+                    ):Play()
+                    TweenService:Create(
+                        Title,
+                        TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {TextTransparency = 0.3}
+                    ):Play()
+                    wait(.4)
+                    Container.CanvasSize = UDim2.new(0, 0, 0, ContainerLayout.AbsoluteContentSize.Y)
+                end
+            end
+            function DropFunc:Clear()
+                Title.Text = text
+                FrameSize = 0
+                ItemCount = 0
+                for i, v in next, DropItemHolder:GetChildren() do
+                    if v.Name == "Item" then
+                        v:Destroy()
+                    end
+                end
+                if DropToggled == true then
+                    Title.Text = Selected
+                    Dropdown:TweenSize(UDim2.new(0, 457, 0, 43), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, .6, true)
+                    TweenService:Create(
+                        Title,
+                        TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {TextColor3 = Color3.fromRGB(255,255,255)}
+                    ):Play()
+                    TweenService:Create(
+                        ArrowIco,
+                        TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {ImageColor3 = Color3.fromRGB(255,255,255)}
+                    ):Play()
+                    TweenService:Create(
+                        ArrowIco,
+                        TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {ImageTransparency = .3}
+                    ):Play()
+                    TweenService:Create(
+                        ArrowIco,
+                        TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {Rotation = 0}
+                    ):Play()
+                    TweenService:Create(
+                        Circle,
+                        TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {BackgroundColor3 = Color3.fromRGB(211, 211, 211)}
+                    ):Play()
+                    TweenService:Create(
+                        CircleSmall,
+                        TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {BackgroundTransparency = 1}
+                    ):Play()
+                    TweenService:Create(
+                        Title,
+                        TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {TextTransparency = 0.3}
+                    ):Play()
+                    wait(.4)
+                    Container.CanvasSize = UDim2.new(0, 0, 0, ContainerLayout.AbsoluteContentSize.Y)
+                end
+            end
             function DropFunc:SetText(text)
                 Selected = text
                 Title.Text = text
             end
-			return DropFunc
-		end
+            return DropFunc
+        end
 		function ContainerContent:Colorpicker(text,preset,callback)
 			local ColorPickerToggled = false
 			local OldToggleColor = Color3.fromRGB(0, 0, 0)
