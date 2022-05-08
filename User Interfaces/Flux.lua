@@ -6,6 +6,7 @@ local RunService = game:GetService("RunService")
 local LocalPlayer = game:GetService("Players").LocalPlayer
 local Mouse = LocalPlayer:GetMouse()
 local CloseBind = Enum.KeyCode.RightControl
+local wait = task.wait
 
 local FluxLib = Instance.new("ScreenGui")
 FluxLib.Name = "FluxLib"
@@ -87,7 +88,7 @@ end
 
 
 
-function Flux:Window(text, bottom,mainclr,toclose)
+function Flux:Window(text, bottom, mainclr, toclose)
 	CloseBind = toclose or Enum.KeyCode.RightControl
 	PresetColor = mainclr or Color3.fromRGB(66, 134, 255)
 	local fs = false
@@ -145,6 +146,7 @@ function Flux:Window(text, bottom,mainclr,toclose)
 	Title.Size = UDim2.new(0, 111, 0, 34)
 	Title.Font = Enum.Font.GothamBold
 	Title.Text = text
+
 	Title.TextColor3 = Color3.fromRGB(255, 255, 255)
 	Title.TextSize = 25.000
 	Title.TextXAlignment = Enum.TextXAlignment.Left
@@ -395,6 +397,11 @@ function Flux:Window(text, bottom,mainclr,toclose)
 			TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
 			{BackgroundTransparency = 0}
 		):Play()
+        local z = {}
+        function z:SetText(text)
+            NotificationDesc.Text = text
+        end
+        return z
 	end
 	local Tabs = {}
 	function Tabs:Tab(text,ico)
@@ -726,6 +733,11 @@ function Flux:Window(text, bottom,mainclr,toclose)
 				BtnDescToggled = not BtnDescToggled
 			end)
 			Container.CanvasSize = UDim2.new(0, 0, 0, ContainerLayout.AbsoluteContentSize.Y)
+            local z = {}
+            function z:SetText(text)
+                Title.Text = text
+            end
+            return z
 		end
 		function ContainerContent:Toggle(text, desc,default, callback)
 			local ToggleDescToggled = false
@@ -995,6 +1007,11 @@ function Flux:Window(text, bottom,mainclr,toclose)
 				pcall(callback, Toggled)
 			end
 			Container.CanvasSize = UDim2.new(0, 0, 0, ContainerLayout.AbsoluteContentSize.Y)
+            local z = {}
+            function z:SetText(text)
+                Title.Text = text
+            end
+            return z
 		end
 		
 		function ContainerContent:Slider(text,desc,min,max,start,callback)
@@ -1295,6 +1312,9 @@ function Flux:Window(text, bottom,mainclr,toclose)
 				Value.Text = tostring(tochange and math.floor((tochange / max) * (max - min) + min) or 0)
 				pcall(callback,tochange)
 			end
+            function SliderFunc:SetText(text)
+                Title.Text = text
+            end
 			return SliderFunc
 		end
 		function ContainerContent:Dropdown(text,list,callback)
@@ -1773,6 +1793,9 @@ function Flux:Window(text, bottom,mainclr,toclose)
 					Container.CanvasSize = UDim2.new(0, 0, 0, ContainerLayout.AbsoluteContentSize.Y)
 				end
 			end
+            function DropFunc:SetText(text)
+                Title.Text = text
+            end
 			return DropFunc
 		end
 		function ContainerContent:Colorpicker(text,preset,callback)
@@ -2273,6 +2296,11 @@ function Flux:Window(text, bottom,mainclr,toclose)
 				end
 			)
 			Container.CanvasSize = UDim2.new(0, 0, 0, ContainerLayout.AbsoluteContentSize.Y)
+            local z = {}
+            function z:SetText(text)
+                Title.Text = text
+            end
+            return z
 		end
 		function ContainerContent:Line()
 			local Line = Instance.new("TextButton")
@@ -2295,6 +2323,11 @@ function Flux:Window(text, bottom,mainclr,toclose)
 			LineCorner.Parent = Line
 			
 			Container.CanvasSize = UDim2.new(0, 0, 0, ContainerLayout.AbsoluteContentSize.Y)
+            local z = {}
+            function z:SetText(text)
+                Line.Text = text
+            end
+            return z
 		end
 		function ContainerContent:Label(text)
 			local Label = Instance.new("TextButton")
@@ -2331,6 +2364,11 @@ function Flux:Window(text, bottom,mainclr,toclose)
 			Title.TextXAlignment = Enum.TextXAlignment.Left
 			
 			Container.CanvasSize = UDim2.new(0, 0, 0, ContainerLayout.AbsoluteContentSize.Y)
+            local z = {}
+            function z:SetText(text)
+                Title.Text = text
+            end
+            return z
 		end
 		function ContainerContent:Textbox(text,desc,disapper,callback)
 			if desc == "" then
@@ -2564,6 +2602,11 @@ function Flux:Window(text, bottom,mainclr,toclose)
 				TextboxDescToggled = not TextboxDescToggled
 			end)
 			Container.CanvasSize = UDim2.new(0, 0, 0, ContainerLayout.AbsoluteContentSize.Y)
+            local z = {}
+            function z:SetText(text)
+                Title.Text = text
+            end
+            return z
 		end
 		function ContainerContent:Bind(text,presetbind,callback)
 			local Key = presetbind.Name
@@ -2741,6 +2784,11 @@ function Flux:Window(text, bottom,mainclr,toclose)
 			)
 			
 			Container.CanvasSize = UDim2.new(0, 0, 0, ContainerLayout.AbsoluteContentSize.Y)
+            local z = {}
+            function z:SetText(text)
+                Title.Text = text
+            end
+            return z
 		end
 		return ContainerContent
 	end
