@@ -1515,7 +1515,7 @@ function Flux:Window(text, bottom, mainclr, toclose)
 					wait(.4)
 					Container.CanvasSize = UDim2.new(0, 0, 0, ContainerLayout.AbsoluteContentSize.Y)
 				end
-			DropToggled = not DropToggled
+			    DropToggled = not DropToggled
 			end)
 			
 			for i,v in next, list do
@@ -1794,6 +1794,7 @@ function Flux:Window(text, bottom, mainclr, toclose)
 				end
 			end
             function DropFunc:SetText(text)
+                Selected = text
                 Title.Text = text
             end
 			return DropFunc
