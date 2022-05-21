@@ -3159,3 +3159,4 @@ function Flux:Window(text, bottom, mainclr, toclose)
 	end
 	return Tabs
 end
+return Flux
