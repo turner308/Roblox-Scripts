@@ -1,4 +1,3 @@
-local Lighting = game:GetService('Lighting')
 local TweenService = game:GetService('TweenService')
 local Flux = {RainbowColorValue = 0, HueSelectionPosition = 0}
 local PresetColor = Color3.fromRGB(66, 134, 255)
@@ -453,7 +452,7 @@ function Flux:Window(text, bottom, mainclr, toclose)
 		Container.ScrollBarThickness = 5
 		Container.Visible = false
 		Container.ScrollBarImageColor3 = Color3.fromRGB(71, 76, 84)
-
+		
 		ContainerLayout.Name = "ContainerLayout"
 		ContainerLayout.Parent = Container
 		ContainerLayout.SortOrder = Enum.SortOrder.LayoutOrder
@@ -2143,6 +2142,90 @@ function Flux:Window(text, bottom, mainclr, toclose)
 					Container.CanvasSize = UDim2.new(0, 0, 0, ContainerLayout.AbsoluteContentSize.Y)
 				end
 			end
+			function DropFunc:Toggle()
+				if DropToggled == false then
+					Title.Text = text
+					Dropdown:TweenSize(UDim2.new(0, 457, 0, FrameSize), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, .6, true)
+					TweenService:Create(
+						Title,
+						TweenInfo.new(0, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+						{TextColor3 = PresetColor}
+					):Play()
+					TweenService:Create(
+						ArrowIco,
+						TweenInfo.new(0, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+						{ImageColor3 = PresetColor}
+					):Play()
+					TweenService:Create(
+						ArrowIco,
+						TweenInfo.new(0, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+						{ImageTransparency = 0}
+					):Play()
+					TweenService:Create(
+						ArrowIco,
+						TweenInfo.new(0, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+						{Rotation = 180}
+					):Play()
+					TweenService:Create(
+						Circle,
+						TweenInfo.new(0, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+						{BackgroundColor3 = PresetColor}
+					):Play()
+					TweenService:Create(
+						CircleSmall,
+						TweenInfo.new(0, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+						{BackgroundTransparency = 0}
+					):Play()
+					TweenService:Create(
+						Title,
+						TweenInfo.new(0, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+						{TextTransparency = 0}
+					):Play()
+					Container.CanvasSize = UDim2.new(0, 0, 0, ContainerLayout.AbsoluteContentSize.Y)
+				else
+					Dropdown:TweenSize(UDim2.new(0, 457, 0, 43), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, .6, true)
+					TweenService:Create(
+						Title,
+						TweenInfo.new(0, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+						{TextColor3 = Color3.fromRGB(255,255,255)}
+					):Play()
+					TweenService:Create(
+						ArrowIco,
+						TweenInfo.new(0, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+						{ImageColor3 = Color3.fromRGB(255,255,255)}
+					):Play()
+					TweenService:Create(
+						ArrowIco,
+						TweenInfo.new(0, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+						{ImageTransparency = .3}
+					):Play()
+					TweenService:Create(
+						ArrowIco,
+						TweenInfo.new(0, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+						{Rotation = 0}
+					):Play()
+					TweenService:Create(
+						Circle,
+						TweenInfo.new(0, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+						{BackgroundColor3 = Color3.fromRGB(211, 211, 211)}
+					):Play()
+					TweenService:Create(
+						CircleSmall,
+						TweenInfo.new(0, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+						{BackgroundTransparency = 1}
+					):Play()
+					TweenService:Create(
+						Title,
+						TweenInfo.new(0, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+						{TextTransparency = 0.3}
+					):Play()
+					Container.CanvasSize = UDim2.new(0, 0, 0, ContainerLayout.AbsoluteContentSize.Y)
+				end
+				DropToggled = not DropToggled
+			end
+			--Scuffed fix for scroll bar not showing up
+			DropFunc:Toggle()
+			DropFunc:Toggle()
 			function DropFunc:Sort(func)
 				func = func or (function(a, b)
 					return a < b
