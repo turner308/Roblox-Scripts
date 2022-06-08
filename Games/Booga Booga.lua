@@ -11,42 +11,6 @@ local lastPlayerTeleportCFrame
 local ItemData = require(ReplicatedStorage.Modules.ItemData)
 local ESPCache = {}
 --Functions
-local function retrieveFromGC(data)
-    local in_table = data.in_table
-    local name = data.name
-    local all_in_script = data.all_in_script
-    local script = data.script
-    if script and name then
-        for _, v in next, getgc() do
-            if type(v) == 'function' and getfenv(v).script.Name == script and getinfo(v).name == name then
-                return v
-            end
-        end
-    end
-    if name then
-        for _, v in next, getgc() do
-            if type(v) == 'function' and getinfo(v).name == name then
-                return v
-            end
-        end
-    end
-    if all_in_script then
-        local collected = {}
-        for _, v in next, getgc() do
-            if type(v) == 'function' and getfenv(v).script and getfenv(v).script.Name == all_in_script then
-                collected[getinfo(v).name] = v
-            end
-        end
-        return collected
-    end
-    if in_table then
-        for _, v in next, getgc(true) do
-            if type(v) == 'table' and rawget(v, name) then
-                return v
-            end
-        end
-    end
-end
 local function playerAlive(player)
     player = player or LocalPlayer
     local Player = Players:FindFirstChild(tostring(player))
@@ -150,8 +114,6 @@ Players.PlayerRemoving:Connect(function(player)
         ESPCache[player.Name] = nil
     end
 end)
---
-local SwingTool = retrieveFromGC({script = 'Local_Handler', name = 'SwingTool'})
 --grab items
 local items = {}
 for i, _ in next, ItemData do
