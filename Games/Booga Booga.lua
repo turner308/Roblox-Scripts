@@ -236,7 +236,7 @@ Crafting:AddInput('Selected Craft Item Text', {Text = 'Item Name', Numeric = fal
 end)
 Crafting:AddButton('Craft Item', function() ReplicatedStorage.Events.CraftItem:FireServer(Options['Selected Craft Item Text'].Value) end)
 Crafting:AddDivider()
-Crafting:AddDropdown('Selected Craft Item', {Text = 'Select Item to Craft', Values = (function()
+Crafting:AddDropdown('Selected Craft Item', {Text = 'Select Item To Craft', Values = (function()
     local craftables = {}
     for i, v in next, ItemData do
         if v.craftLevel then
