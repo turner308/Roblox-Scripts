@@ -1,4 +1,4 @@
--- locals
+--locals
 local sleep = task.wait
 local spawn = task.spawn
 local Camera = workspace.CurrentCamera
