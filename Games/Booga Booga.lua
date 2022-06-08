@@ -162,9 +162,12 @@ Player:AddToggle('Ignore Bloodfruit', {Text = 'Ignore Bloodfruit', Default = fal
 Player:AddSlider('Eat When Below', {Text = 'Eat When Hunger Below', Default = 50, Min = 10, Max = 90, Rounding = 0.1, Compact = false})
 Player:AddDivider()
 Player:AddToggle('Auto Spawn', {Text = 'Auto Spawn', Default = false, Tooltip = 'Automatically respawns you.'})
-Player:AddToggle('Auto Swing', {Text = 'Auto Swing', Default = false, Tooltip = 'Automatically swings selected item.'})
 Player:AddToggle('Auto Equip', {Text = 'Auto Equip', Default = false, Tooltip = 'Automatically equips an item from hotbar.'})
 Player:AddDropdown('Slot Selection', {Text = 'Slot Selection', Values = {'One', 'Two', 'Three', 'Four', 'Five', 'Six'}, Default = 1, Multi = false, Tooltip = 'Selects the slot to equip from.'})
+Player:AddDivider()
+Player:AddToggle('Player Damage', {Text = 'Player Damage Aura', Default = false, Tooltip = 'Activates player damage aura.'})
+Player:AddToggle('Animal Damage', {Text = 'Animal Damage Aura', Default = false, Tooltip = 'Activates animal damage aura.'})
+Player:AddToggle('Resource Damage', {Text = 'Resource Damage Aura', Default = false, Tooltip = 'Activates resource damage aura.'})
 local Farming = Main:AddLeftGroupbox('Farming')
 Farming:AddDropdown('Resource Selection', {Text = 'Resource Selection', Values = (function()
     local drops = {}
@@ -266,6 +269,58 @@ game:GetService('RunService').RenderStepped:Connect(function()
         else
             esp:SetAllVisible(false)
         end
+    end
+end)
+spawn(function()
+    while true do
+        if Toggles['Player Damage'].Value and playerAlive() then
+            for _, v in next, Players:GetPlayers() do
+                if v ~= LocalPlayer then
+                    local Character = v.Character
+                    if Character then
+                        local HumanoidRootPart = Character:FindFirstChild('HumanoidRootPart')
+                        if HumanoidRootPart then
+                            local Distance = LocalPlayer:DistanceFromCharacter(HumanoidRootPart.Position)
+                            if Distance <= 10 then
+                                ReplicatedStorage.Events.SwingTool:FireServer(ReplicatedStorage.RelativeTime.Value, getIsAInstances(Character, 'BasePart'))
+                            end
+                        end
+                    end
+                end
+            end
+        end
+        if Toggles['Resource Damage'].Value and playerAlive() then
+            for _, v in next, workspace.Resources:GetChildren() do
+                local part = v:FindFirstChildWhichIsA('BasePart')
+                if part then
+                    local Distance = LocalPlayer:DistanceFromCharacter(part.Position)
+                    if Distance <= 10 then
+                        ReplicatedStorage.Events.SwingTool:FireServer(ReplicatedStorage.RelativeTime.Value, getIsAInstances(v, 'BasePart'))
+                    end
+                end
+            end
+        end
+        if Toggles['Animal Damage'].Value and playerAlive() then
+            for _, v in next, workspace.Critters:GetChildren() do
+                local part = v:FindFirstChildWhichIsA('BasePart')
+                if part then
+                    local Distance = LocalPlayer:DistanceFromCharacter(part.Position)
+                    if Distance <= 10 then
+                        ReplicatedStorage.Events.SwingTool:FireServer(ReplicatedStorage.RelativeTime.Value, getIsAInstances(v, 'BasePart'))
+                    end
+                end
+            end
+            for _, v in next, workspace:GetChildren() do
+                local torso = v:FindFirstChild('Torso')
+                if torso then
+                    local Distance = LocalPlayer:DistanceFromCharacter(torso.Position)
+                    if Distance <= 10 then
+                        ReplicatedStorage.Events.SwingTool:FireServer(ReplicatedStorage.RelativeTime.Value, getIsAInstances(v, 'BasePart'))
+                    end
+                end
+            end
+        end
+        sleep(0.5)
     end
 end)
 spawn(function()
@@ -386,7 +441,7 @@ spawn(function()
             sleep(3)
         end
         if Toggles['Auto Swing'].Value and playerAlive() and LocalPlayer.Character:FindFirstChild('ToolWeld', true) then
-            game:GetService("ReplicatedStorage").Events.SwingTool:FireServer(ReplicatedStorage.RelativeTime.Value, {})
+            ReplicatedStorage.Events.SwingTool:FireServer(ReplicatedStorage.RelativeTime.Value, {})
         end
         sleep()
     end
