@@ -11,6 +11,42 @@ local lastPlayerTeleportCFrame
 local ItemData = require(ReplicatedStorage.Modules.ItemData)
 local ESPCache = {}
 --Functions
+local function retrieveFromGC(data)
+    local in_table = data.in_table
+    local name = data.name
+    local all_in_script = data.all_in_script
+    local script = data.script
+    if script and name then
+        for _, v in next, getgc() do
+            if type(v) == 'function' and getfenv(v).script.Name == script and getinfo(v).name == name then
+                return v
+            end
+        end
+    end
+    if name then
+        for _, v in next, getgc() do
+            if type(v) == 'function' and getinfo(v).name == name then
+                return v
+            end
+        end
+    end
+    if all_in_script then
+        local collected = {}
+        for _, v in next, getgc() do
+            if type(v) == 'function' and getfenv(v).script and getfenv(v).script.Name == all_in_script then
+                collected[getinfo(v).name] = v
+            end
+        end
+        return collected
+    end
+    if in_table then
+        for _, v in next, getgc(true) do
+            if type(v) == 'table' and rawget(v, name) then
+                return v
+            end
+        end
+    end
+end
 local function playerAlive(player)
     player = player or LocalPlayer
     local Player = Players:FindFirstChild(tostring(player))
@@ -114,6 +150,11 @@ Players.PlayerRemoving:Connect(function(player)
         ESPCache[player.Name] = nil
     end
 end)
+--swing tool
+local SwingTool = retrieveFromGC({
+    script = 'Local_Handler',
+    name = 'SwingTool'
+})
 --grab items
 local items = {}
 for i, _ in next, ItemData do
@@ -163,12 +204,14 @@ Player:AddSlider('Eat When Below', {Text = 'Eat When Hunger Below', Default = 50
 Player:AddDivider()
 Player:AddToggle('Auto Spawn', {Text = 'Auto Spawn', Default = false, Tooltip = 'Automatically respawns you.'})
 Player:AddToggle('Auto Equip', {Text = 'Auto Equip', Default = false, Tooltip = 'Automatically equips an item from hotbar.'})
+Player:AddToggle('Auto Swing', {Text = 'Auto Swing', Default = false, Tooltip = 'Automatically swings current tool.'})
 Player:AddDropdown('Slot Selection', {Text = 'Slot Selection', Values = {'One', 'Two', 'Three', 'Four', 'Five', 'Six'}, Default = 1, Multi = false, Tooltip = 'Selects the slot to equip from.'})
 Player:AddDivider()
+Player:AddLabel('Aura Requires Tool')
 Player:AddToggle('Player Damage', {Text = 'Player Damage Aura', Default = false, Tooltip = 'Activates player damage aura.'})
 Player:AddToggle('Animal Damage', {Text = 'Animal Damage Aura', Default = false, Tooltip = 'Activates animal damage aura.'})
 Player:AddToggle('Resource Damage', {Text = 'Resource Damage Aura', Default = false, Tooltip = 'Activates resource damage aura.'})
-local Farming = Main:AddLeftGroupbox('Farming')
+local Farming = Main:AddRightGroupbox('Farming')
 Farming:AddDropdown('Resource Selection', {Text = 'Resource Selection', Values = (function()
     local drops = {}
     for i, v in next, ItemData do
@@ -181,7 +224,7 @@ Farming:AddDropdown('Resource Selection', {Text = 'Resource Selection', Values =
 end)(), Default = 1, Multi = false, Tooltip = 'Selects the resource to farm.'})
 Farming:AddToggle('Collect Resource', {Text = 'Farm Resource', Default = false, Tooltip = 'Automatically collects selected resources.'})
 Farming:AddSlider('Collect Resource Distance', {Text = 'Distance', Default = 2, Min = -15, Max = 15, Rounding = 0.1, Compact = false})
-local Crafting = Main:AddRightGroupbox('Crafting')
+local Crafting = Main:AddLeftGroupbox('Crafting')
 Crafting:AddInput('Selected Craft Item Text', {Text = 'Item Name', Numeric = false, Finished = false, Tooltip = 'Select item to craft.'}):OnChanged(function()
     for _, v in next, items do
         if v:lower() == Options['Selected Craft Item Text'].Value:lower() then
@@ -294,7 +337,7 @@ spawn(function()
                 local part = v:FindFirstChildWhichIsA('BasePart')
                 if part then
                     local Distance = LocalPlayer:DistanceFromCharacter(part.Position)
-                    if Distance <= 10 then
+                    if Distance <= 20 then
                         ReplicatedStorage.Events.SwingTool:FireServer(ReplicatedStorage.RelativeTime.Value, getIsAInstances(v, 'BasePart'))
                     end
                 end
@@ -441,7 +484,7 @@ spawn(function()
             sleep(3)
         end
         if Toggles['Auto Swing'].Value and playerAlive() and LocalPlayer.Character:FindFirstChild('ToolWeld', true) then
-            ReplicatedStorage.Events.SwingTool:FireServer(ReplicatedStorage.RelativeTime.Value, {})
+            SwingTool()
         end
         sleep()
     end
