@@ -238,7 +238,7 @@ Crafting:AddButton('Craft Item', function() ReplicatedStorage.Events.CraftItem:F
 Crafting:AddDivider()
 Crafting:AddDropdown('Selected Craft Item', {Text = 'Select Item to Craft', Values = items, Default = 1, Multi = false, Tooltip = 'Select item to craft.'})
 Crafting:AddButton('Craft Item', function() ReplicatedStorage.Events.CraftItem:FireServer(Options['Selected Craft Item'].Value) end)
-local ESP = Main:AddLeftGroupbox('ESP')
+local ESP = Main:AddLeftGroupbox('Player ESP')
 ESP:AddToggle('Box ESP', {Text = 'Box', Default = false, Tooltip = 'Activates box ESP.'})
 ESP:AddToggle('Name ESP', {Text = 'Name', Default = false, Tooltip = 'Activates name ESP.'})
 ESP:AddToggle('Health ESP', {Text = 'Health', Default = false, Tooltip = 'Activates health ESP.'})
@@ -423,6 +423,17 @@ spawn(function()
                         if not Toggles['Animal Damage'].Value then
                             ReplicatedStorage.Events.SwingTool:FireServer(ReplicatedStorage.RelativeTime.Value, resource:GetChildren())
                             VirtualInputManager:SendKeyEvent(true, Options['Slot Selection'].Value, false, nil)
+                        end
+                        if resource.Parent == workspace.Critters then
+                            for _, v in next, workspace.Critters:GetChildren() do
+                                local part = v:FindFirstChildWhichIsA('BasePart')
+                                if part then
+                                    local Distance = LocalPlayer:DistanceFromCharacter(part.Position)
+                                    if Distance <= 10 then
+                                        ReplicatedStorage.Events.SwingTool:FireServer(ReplicatedStorage.RelativeTime.Value, getIsAInstances(v, 'BasePart'))
+                                    end
+                                end
+                            end
                         end
                         sleep()
                     until not Toggles['Collect Resource'].Value or not playerAlive() or not resource:IsDescendantOf(workspace) or Options['Resource Selection'].Value ~= resource.Name
