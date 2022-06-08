@@ -167,7 +167,7 @@ for _, v in next, getconnections(LocalPlayer.Idled) do
 end
 -- GUI
 local Library, ThemeManager, SaveManager = loadstring(game:HttpGet('https://raw.githubusercontent.com/BimbusCoder/Roblox-Scripts/master/User%20Interfaces/LinoriaRewrite'))()
-local Window = Library:CreateWindow({Title = 'aturner scripts | ' .. game:GetService('MarketplaceService'):GetProductInfo(game.PlaceId).Name, Center = true, AutoShow = true})
+local Window = Library:CreateWindow({Title = 'aturner scripts | Version: 1.0 | ' .. game:GetService('MarketplaceService'):GetProductInfo(game.PlaceId).Name, Center = true, AutoShow = true})
 local Main = Window:AddTab('Main')
 local General = Main:AddLeftGroupbox('Players')
 local playerDropdown = General:AddDropdown('Player Selection', {Text = 'Player Selection', Values = getPlayerNames(false, true), Default = 1, Multi = false, Tooltip = 'Select target player.'})
@@ -224,6 +224,7 @@ Farming:AddDropdown('Resource Selection', {Text = 'Resource Selection', Values =
 end)(), Default = 1, Multi = false, Tooltip = 'Selects the resource to farm.'})
 Farming:AddToggle('Collect Resource', {Text = 'Farm Resource', Default = false, Tooltip = 'Automatically collects selected resources.'})
 Farming:AddSlider('Collect Resource Distance', {Text = 'Distance', Default = 2, Min = -15, Max = 15, Rounding = 0.1, Compact = false})
+Farming:AddDropdown('Collect Direction', {Text = 'Farm Direction', Values = {'Above', 'Below', 'Behind'}, Default = 3, Multi = false, Tooltip = 'Selects the direction to farm from.'})
 local Crafting = Main:AddLeftGroupbox('Crafting')
 Crafting:AddInput('Selected Craft Item Text', {Text = 'Item Name', Numeric = false, Finished = false, Tooltip = 'Select item to craft.'}):OnChanged(function()
     for _, v in next, items do
@@ -400,13 +401,29 @@ spawn(function()
                     break
                 end
             end
+            for _, v in next, workspace.Critters:GetChildren() do
+                if v.Name == Options['Resource Selection'].Value then
+                    resource = v
+                    break
+                end
+            end
             if resource then
                 local part = resource:FindFirstChildWhichIsA('BasePart')
                 if part then
                     repeat
-                        LocalPlayer.Character.HumanoidRootPart.CFrame = part.CFrame * CFrame.new(0, 0, Options['Collect Resource Distance'].Value)
-                        ReplicatedStorage.Events.SwingTool:FireServer(ReplicatedStorage.RelativeTime.Value, resource:GetChildren())
-                        VirtualInputManager:SendKeyEvent(true, Options['Slot Selection'].Value, false, nil)
+                        if Options['Collect Direction'].Value == 'Behind' then
+                            LocalPlayer.Character.HumanoidRootPart.CFrame = part.CFrame * CFrame.new(0, 0, Options['Collect Resource Distance'].Value)
+                        end
+                        if Options['Collect Direction'].Value == 'Above' then
+                            LocalPlayer.Character.HumanoidRootPart.CFrame = part.CFrame * CFrame.new(0, Options['Collect Resource Distance'].Value, 0) * CFrame.Angles(math.rad(-90), 0, 0)
+                        end
+                        if Options['Collect Direction'].Value == 'Below' then
+                            LocalPlayer.Character.HumanoidRootPart.CFrame = part.CFrame * CFrame.new(0, Options['Collect Resource Distance'].Value, 0) * CFrame.Angles(math.rad(90), 0, 0)
+                        end
+                        if not Toggles['Animal Damage'].Value then
+                            ReplicatedStorage.Events.SwingTool:FireServer(ReplicatedStorage.RelativeTime.Value, resource:GetChildren())
+                            VirtualInputManager:SendKeyEvent(true, Options['Slot Selection'].Value, false, nil)
+                        end
                         sleep()
                     until not Toggles['Collect Resource'].Value or not playerAlive() or not resource:IsDescendantOf(workspace) or Options['Resource Selection'].Value ~= resource.Name
                     sleep(0.5)
