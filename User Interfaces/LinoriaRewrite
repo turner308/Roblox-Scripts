@@ -1134,6 +1134,10 @@ do
 
             Label.Text = Text;
 
+            Library:AddToRegistry(Label, {
+                TextColor3 = 'FontColor';
+            })
+
             Library:AddToRegistry(Inner, {
                 BackgroundColor3 = 'MainColor';
                 BorderColor3 = 'OutlineColor';
