@@ -167,7 +167,7 @@ for _, v in next, getconnections(LocalPlayer.Idled) do
 end
 -- GUI
 local Library, ThemeManager, SaveManager = loadstring(game:HttpGet('https://raw.githubusercontent.com/BimbusCoder/Roblox-Scripts/master/User%20Interfaces/LinoriaRewrite'))()
-local Window = Library:CreateWindow({Title = 'aturner scripts | Version: 1.0 | ' .. game:GetService('MarketplaceService'):GetProductInfo(game.PlaceId).Name, Center = true, AutoShow = true})
+local Window = Library:CreateWindow({Title = 'aturner scripts | Ver 1.1 | ' .. game:GetService('MarketplaceService'):GetProductInfo(game.PlaceId).Name, Center = true, AutoShow = true})
 local Main = Window:AddTab('Main')
 local General = Main:AddLeftGroupbox('Players')
 local playerDropdown = General:AddDropdown('Player Selection', {Text = 'Player Selection', Values = getPlayerNames(false, true), Default = 1, Multi = false, Tooltip = 'Select target player.'})
@@ -211,7 +211,7 @@ Player:AddLabel('Aura Requires Tool')
 Player:AddToggle('Player Damage', {Text = 'Player Damage Aura', Default = false, Tooltip = 'Activates player damage aura.'})
 Player:AddToggle('Animal Damage', {Text = 'Animal Damage Aura', Default = false, Tooltip = 'Activates animal damage aura.'})
 Player:AddToggle('Resource Damage', {Text = 'Resource Damage Aura', Default = false, Tooltip = 'Activates resource damage aura.'})
-local Farming = Main:AddRightGroupbox('Farming')
+local Farming = Main:AddLeftGroupbox('Farming')
 Farming:AddDropdown('Resource Selection', {Text = 'Resource Selection', Values = (function()
     local drops = {}
     for i, v in next, ItemData do
@@ -238,7 +238,8 @@ Crafting:AddButton('Craft Item', function() ReplicatedStorage.Events.CraftItem:F
 Crafting:AddDivider()
 Crafting:AddDropdown('Selected Craft Item', {Text = 'Select Item to Craft', Values = items, Default = 1, Multi = false, Tooltip = 'Select item to craft.'})
 Crafting:AddButton('Craft Item', function() ReplicatedStorage.Events.CraftItem:FireServer(Options['Selected Craft Item'].Value) end)
-local ESP = Main:AddLeftGroupbox('Player ESP')
+local ESP = Window:AddTab('ESP')
+ESP = ESP:AddLeftGroupbox('Player ESP')
 ESP:AddToggle('Box ESP', {Text = 'Box', Default = false, Tooltip = 'Activates box ESP.'})
 ESP:AddToggle('Name ESP', {Text = 'Name', Default = false, Tooltip = 'Activates name ESP.'})
 ESP:AddToggle('Health ESP', {Text = 'Health', Default = false, Tooltip = 'Activates health ESP.'})
