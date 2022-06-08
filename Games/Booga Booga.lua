@@ -167,7 +167,7 @@ for _, v in next, getconnections(LocalPlayer.Idled) do
 end
 -- GUI
 local Library, ThemeManager, SaveManager = loadstring(game:HttpGet('https://raw.githubusercontent.com/BimbusCoder/Roblox-Scripts/master/User%20Interfaces/LinoriaRewrite'))()
-local Window = Library:CreateWindow({Title = 'aturner scripts | Ver 1.1 | ' .. game:GetService('MarketplaceService'):GetProductInfo(game.PlaceId).Name, Center = true, AutoShow = true})
+local Window = Library:CreateWindow({Title = 'aturner scripts | Ver 1.2 | ' .. game:GetService('MarketplaceService'):GetProductInfo(game.PlaceId).Name, Center = true, AutoShow = true})
 local Main = Window:AddTab('Main')
 local General = Main:AddLeftGroupbox('Players')
 local playerDropdown = General:AddDropdown('Player Selection', {Text = 'Player Selection', Values = getPlayerNames(false, true), Default = 1, Multi = false, Tooltip = 'Select target player.'})
@@ -236,7 +236,16 @@ Crafting:AddInput('Selected Craft Item Text', {Text = 'Item Name', Numeric = fal
 end)
 Crafting:AddButton('Craft Item', function() ReplicatedStorage.Events.CraftItem:FireServer(Options['Selected Craft Item Text'].Value) end)
 Crafting:AddDivider()
-Crafting:AddDropdown('Selected Craft Item', {Text = 'Select Item to Craft', Values = items, Default = 1, Multi = false, Tooltip = 'Select item to craft.'})
+Crafting:AddDropdown('Selected Craft Item', {Text = 'Select Item to Craft', Values = (function()
+    local craftables = {}
+    for i, v in next, ItemData do
+        if v.craftLevel then
+            craftables[#craftables + 1] = i
+        end
+    end
+    table.sort(craftables)
+    return craftables
+end)(), Default = 1, Multi = false, Tooltip = 'Select item to craft.'})
 Crafting:AddButton('Craft Item', function() ReplicatedStorage.Events.CraftItem:FireServer(Options['Selected Craft Item'].Value) end)
 local ESP = Window:AddTab('ESP')
 ESP = ESP:AddLeftGroupbox('Player ESP')
