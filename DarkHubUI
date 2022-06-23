@@ -1,31 +1,16 @@
-
-if game.CoreGui:FindFirstChild("DarkHubLib") then
-    game.CoreGui.DarkHubLib:Destroy()
-end
-game:GetService("UserInputService").InputBegan:connect(
-    function(key, gpe)
-        if key.KeyCode == Enum.KeyCode.RightControl then
-            pcall(
-                function()
-                    for i, v in pairs(game.CoreGui.DarkHubLib:GetChildren()) do
-                        v.Visible = not v.Visible
-                    end
-                end
-            )
-        end
-    end
-)
-
-local DarkLib = {RainbowColorValue = 0, HueSelectionPosition = 0}
-local UserInputService = game:GetService("UserInputService")
+local sleep = task.wait
+local spawn = task.spawn
+local DarkLib = { RainbowColorValue = 0, HueSelectionPosition = 0, closeBind = Enum.KeyCode.RightControl, signals = {} }
+local UserInputService = UserInputService
 local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
 local LocalPlayer = game:GetService("Players").LocalPlayer
 local Mouse = LocalPlayer:GetMouse()
+local tableInsert = table.insert
 
 coroutine.wrap(
 	function()
-		while wait() do
+		while sleep() do
 			DarkLib.RainbowColorValue = DarkLib.RainbowColorValue + 1 / 255
 			DarkLib.HueSelectionPosition = DarkLib.HueSelectionPosition + 1
 
@@ -97,10 +82,9 @@ local function MakeDraggable(topbarobject, object)
 	)
 end
 
-function Ripple(obj)
+local function Ripple(obj)
 	spawn(
 		function()
-			local Mouse = game.Players.LocalPlayer:GetMouse()
 			local Circle = Instance.new("ImageLabel")
 			Circle.Name = "Circle"
 			Circle.Parent = obj
@@ -130,7 +114,7 @@ function Ripple(obj)
 			)
 			for i = 1, 15 do
 				Circle.ImageTransparency = Circle.ImageTransparency + 0.05
-				wait()
+				sleep()
 			end
 			Circle:Destroy()
 		end
@@ -142,9 +126,28 @@ DarkHubLib.Name = "DarkHubLib"
 DarkHubLib.Parent = game.CoreGui
 DarkHubLib.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
-function DarkLib:Window(name)
+function DarkLib:Destroy()
+    for _, signal in next, self.signals do
+        signal:Disconnect()
+    end
+
+    DarkHubLib:Destroy()
+end
+
+function DarkLib:Window(name, closeBind)
 	local firsttab = false
 	local MainFrame = Instance.new("Frame")
+
+    if closeBind then
+        self.closeBind = closeBind
+    end
+
+    tableInsert(self.signals, UserInputService.InputBegan:Connect(function(inputObject)
+        if inputObject.KeyCode == self.closeBind then
+            MainFrame.Visible = not MainFrame.Visible
+        end
+    end))
+
 	local MainFrameUICorner = Instance.new("UICorner")
 	local Title = Instance.new("TextLabel")
 	local Containers = Instance.new("Folder")
@@ -384,7 +387,7 @@ function DarkLib:Window(name)
 						TweenInfo.new(.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
 						{TextSize = 0}
 					):Play()
-					wait(.1)
+					sleep(.1)
 					TweenService:Create(
 						Button,
 						TweenInfo.new(.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
@@ -740,7 +743,7 @@ function DarkLib:Window(name)
 							true
 						)
 						repeat
-							wait()
+							sleep()
 						until DropdownFrame.Size == UDim2.new(0, 491, 0, DropdownFrameSize)
 						ItemHolder.CanvasSize = UDim2.new(0, 0, 0, ItemHolderUIList.AbsoluteContentSize.Y)
 					else
@@ -770,10 +773,10 @@ function DarkLib:Window(name)
 							0.1,
 							true
 						)
-						wait(.05)
+						sleep(.05)
 						DropdownFrame.Visible = false
 						repeat
-							wait()
+							sleep()
 						until DropdownFrame.Size == UDim2.new(0, 491, 0, 0)
 						ItemHolder.CanvasSize = UDim2.new(0, 0, 0, ItemHolderUIList.AbsoluteContentSize.Y)
 					end
@@ -858,10 +861,10 @@ function DarkLib:Window(name)
 							0.1,
 							true
 						)
-						wait(.05)
+						sleep(.05)
 						DropdownFrame.Visible = false
 						repeat
-							wait()
+							sleep()
 						until DropdownFrame.Size == UDim2.new(0, 491, 0, 0)
 						ItemHolder.CanvasSize = UDim2.new(0, 0, 0, ItemHolderUIList.AbsoluteContentSize.Y)
 					end
@@ -1114,7 +1117,7 @@ function DarkLib:Window(name)
 						end
 
 						if ColorInput then
-							ColorInput:Disconnect()
+							ColorInput:DisConnect()
 						end
 
 						ColorInput =
@@ -1142,7 +1145,7 @@ function DarkLib:Window(name)
 				function(input)
 					if input.UserInputType == Enum.UserInputType.MouseButton1 then
 						if ColorInput then
-							ColorInput:Disconnect()
+							ColorInput:DisConnect()
 						end
 					end
 				end
@@ -1156,7 +1159,7 @@ function DarkLib:Window(name)
 						end
 
 						if HueInput then
-							HueInput:Disconnect()
+							HueInput:DisConnect()
 						end
 
 						HueInput =
@@ -1180,7 +1183,7 @@ function DarkLib:Window(name)
 				function(input)
 					if input.UserInputType == Enum.UserInputType.MouseButton1 then
 						if HueInput then
-							HueInput:Disconnect()
+							HueInput:DisConnect()
 						end
 					end
 				end
@@ -1191,11 +1194,11 @@ function DarkLib:Window(name)
 					RainbowColorPicker = not RainbowColorPicker
 
 					if ColorInput then
-						ColorInput:Disconnect()
+						ColorInput:DisConnect()
 					end
 
 					if HueInput then
-						HueInput:Disconnect()
+						HueInput:DisConnect()
 					end
 
 					if RainbowColorPicker then
@@ -1218,7 +1221,7 @@ function DarkLib:Window(name)
 							HueSelection.Position = UDim2.new(0.48, 0, 0, DarkLib.HueSelectionPosition)
 
 							pcall(callback, CurrentColor.BackgroundColor3)
-							wait()
+							sleep()
 						end
 					elseif not RainbowColorPicker then
 						TweenService:Create(
@@ -1250,7 +1253,7 @@ function DarkLib:Window(name)
 							true
 						)
 						repeat
-							wait()
+							sleep()
 						until ColorpickerFrame.Size == UDim2.new(0, 491, 0, 111)
 						ItemHolder.CanvasSize = UDim2.new(0, 0, 0, ItemHolderUIList.AbsoluteContentSize.Y)
 					else
@@ -1262,10 +1265,10 @@ function DarkLib:Window(name)
 							0.1,
 							true
 						)
-						wait(.05)
+						sleep(.05)
 						ColorpickerFrame.Visible = false
 						repeat
-							wait()
+							sleep()
 						until ColorpickerFrame.Size == UDim2.new(0, 491, 0, 0)
 						ItemHolder.CanvasSize = UDim2.new(0, 0, 0, ItemHolderUIList.AbsoluteContentSize.Y)
 					end
@@ -1282,10 +1285,10 @@ function DarkLib:Window(name)
 						0.1,
 						true
 					)
-					wait(.05)
+					sleep(.05)
 					ColorpickerFrame.Visible = false
 					repeat
-						wait()
+						sleep()
 					until ColorpickerFrame.Size == UDim2.new(0, 491, 0, 0)
 					ItemHolder.CanvasSize = UDim2.new(0, 0, 0, ItemHolderUIList.AbsoluteContentSize.Y)
 				end
@@ -1454,10 +1457,10 @@ function DarkLib:Window(name)
 				end
 			)
 
-			Bind.MouseButton1Click:connect(
+			Bind.MouseButton1Click:Connect(
 				function(e)
 					BindLabel.Text = "..."
-					local a, b = game:GetService("UserInputService").InputBegan:wait()
+					local a, b = UserInputService.InputBegan:sleep()
 					if a.KeyCode.Name ~= "Unknown" then
 						BindLabel.Text = a.KeyCode.Name
 						Key = a.KeyCode.Name
@@ -1465,15 +1468,14 @@ function DarkLib:Window(name)
 				end
 			)
 
-			game:GetService("UserInputService").InputBegan:connect(
-			function(current, pressed)
-				if not pressed then
-					if current.KeyCode.Name == Key then
-						pcall(callback)
-					end
-				end
-			end
-			)
+			tableInsert(DarkLib.signals, UserInputService.InputBegan:Connect(function(current, pressed)
+                if not pressed then
+                    if current.KeyCode.Name == Key then
+                        pcall(callback)
+                    end
+                end
+            end))
+
 			ItemHolder.CanvasSize = UDim2.new(0, 0, 0, ItemHolderUIList.AbsoluteContentSize.Y)
 		end
 
@@ -1527,7 +1529,7 @@ task.spawn(function()
         if flags['toggle me'] then
             print('ok')
         end
-        task.wait()
+        task.sleep()
     end
 end)
 
@@ -1553,4 +1555,6 @@ end)
 
 Tab:Label("LABEL")
 
+
+THIS CODE IS NOT MINE!!! I ONLY EDITED IT SOME TO MAKE IT BETTER!!! -aturner
 ]]
