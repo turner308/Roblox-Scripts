@@ -1,7 +1,7 @@
 local sleep = task.wait
 local spawn = task.spawn
 local DarkLib = { RainbowColorValue = 0, HueSelectionPosition = 0, closeBind = Enum.KeyCode.RightControl, signals = {} }
-local UserInputService = UserInputService
+local UserInputService = game:GetService('UserInputService')
 local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
 local LocalPlayer = game:GetService("Players").LocalPlayer
@@ -1556,5 +1556,5 @@ end)
 Tab:Label("LABEL")
 
 
-THIS GUI LIBRARY CODE IS NOT MINE!!! I ONLY EDITED IT SOME TO MAKE IT BETTER!!! -aturner (people who use lua beautifiers need to perish)
+THIS GUI CODE IS NOT MINE!!! I ONLY EDITED IT SOME TO MAKE IT BETTER!!! -aturner (people who use Lua beautifiers need to perish)
 ]]
