@@ -1511,17 +1511,23 @@ local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Bimbu
 local Window = Library:Window("CUM CHECK")
 local Tab = Window:Tab("LOL EZ")
 local Tab2 = Window:Tab("UH OKKKK")
+local flags = {}
 
 Tab:Button("BUTTON", function()
     print("LOL")
 end)
 
 Tab:Toggle("TOGGLE", function(bool)
-    _G.on = bool
-    
-    while _G.on do
-        print("YES")
-        wait()
+    print(bool)
+    flags['toggle me'] = bool
+end)
+
+task.spawn(function()
+    while true do
+        if flags['toggle me'] then
+            print('ok')
+        end
+        task.wait()
     end
 end)
 
