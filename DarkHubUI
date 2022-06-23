@@ -1460,7 +1460,7 @@ function DarkLib:Window(name, closeBind)
 			Bind.MouseButton1Click:Connect(
 				function(e)
 					BindLabel.Text = "..."
-					local a, b = UserInputService.InputBegan:sleep()
+					local a, b = UserInputService.InputBegan:Wait()
 					if a.KeyCode.Name ~= "Unknown" then
 						BindLabel.Text = a.KeyCode.Name
 						Key = a.KeyCode.Name
