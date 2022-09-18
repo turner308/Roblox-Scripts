@@ -74,13 +74,13 @@ function Library.IsAlive(Char, MinHealth)
         if (Character) then
             local Humanoid = Character:FindFirstChild("Humanoid")
 
-            return Humanoid and (Humanoid.Health > MinHealth) and Char
+            return Humanoid and (Humanoid.Health > MinHealth) and Character
         end
     end
 
     local Humanoid = Char:FindFirstChildOfClass("Humanoid")
 
-    return Humanoid and (Humanoid.Health > MinHealth) and Char
+    return Humanoid and (Humanoid.Health > MinHealth)
 end
 
 function Library.GetTypeFromTable(Table, Type)
