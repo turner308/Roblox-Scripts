@@ -194,4 +194,8 @@ function Library.TablePop(_table, x)
     return Library.TableToX(_table, #_table - x)
 end
 
+function Library.TableLast(_table)
+    return _table[#_table]
+end
+
 return Library
