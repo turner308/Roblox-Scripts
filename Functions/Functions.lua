@@ -133,7 +133,7 @@ function Library.StringReplaces(Str, ToReplaces, Replacements)
     return Result
 end
 
-function Library.InstanceChain(...)
+function Library.InstanceChains(...)
     local Arguments = {...}
     local Inst = Library.GetTypeFromTable(Arguments, "Instance")
     local LastLink = Inst
@@ -156,6 +156,42 @@ function Library.InstanceChain(...)
     end
 
     return Result
+end
+
+function Library.InstanceChain(...)
+    local Arguments = {...}
+    local Inst = Library.GetTypeFromTable(Arguments, "Instance")
+    local LastLink = Inst
+    local Result
+
+    for _, v in next, Arguments do
+        if (type(v) == "string") then
+            if (LastLink) then
+                LastLink = LastLink:FindFirstChild(v)
+            else
+                LastLink = Inst
+            end
+        end
+
+        Result = LastLink
+    end
+
+    return Result
+end
+
+function Library.TableToX(_table, x)
+    local result = {}
+
+    for i = 1, x do
+        result[#result + 1] = _table[i]
+    end
+
+    return result
+end
+
+function Library.TablePop(_table, x)
+    x = x or 1
+    return Library.TableToX(_table, #_table - x)
 end
 
 return Library
