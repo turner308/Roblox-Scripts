@@ -93,7 +93,7 @@ function Library.StringInTable(Table, String, EqualsIgnoreCase)
     String = EqualsIgnoreCase and StringUpper(String) or String
     for _, v in next, Table do
         if StringFind(String, EqualsIgnoreCase and StringUpper(v) or v) then
-            return true
+            return v, String
         end
     end
 end
