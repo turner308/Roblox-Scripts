@@ -4,6 +4,7 @@ local Players = game:GetService("Players")
 local StringSub = string.sub
 local StringUpper = string.upper
 local StringSplit = string.split
+local StringFind = string.find
 local TableConcat = table.concat
 
 function Library.Concat(Table, Delimiter, DelimitEvery, TruncateEnd)
@@ -91,7 +92,7 @@ end
 function Library.StringInTable(Table, String, EqualsIgnoreCase)
     String = EqualsIgnoreCase and StringUpper(String) or String
     for _, v in next, Table do
-        if (StringUpper(v) == String) then
+        if StringFind(String, StringUpper(v)) then
             return true
         end
     end
