@@ -90,9 +90,9 @@ function Library.GetTypeFromTable(Table, Type)
 end
 
 function Library.StringInTable(Table, String, EqualsIgnoreCase)
-    String = EqualsIgnoreCase and StringUpper(String) or String
+    local StringAsUpper = EqualsIgnoreCase and StringUpper(String) or String
     for _, v in next, Table do
-        if StringFind(String, EqualsIgnoreCase and StringUpper(v) or v) then
+        if StringFind(StringAsUpper, EqualsIgnoreCase and StringUpper(v) or v) then
             return v, String
         end
     end
