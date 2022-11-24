@@ -7,6 +7,7 @@ local StringSplit = string.split
 local StringFind = string.find
 local TableConcat = table.concat
 local TableFind = table.find
+local TableRemove = table.remove
 
 function Library.Concat(Table, Delimiter, DelimitEvery, TruncateEnd)
     Delimiter = Delimiter or ""
@@ -93,6 +94,9 @@ end
 function Library.StringInTable(Table, String, EqualsIgnoreCase)
     local StringAsUpper = EqualsIgnoreCase and StringUpper(String) or String
     local UseIndex = TableFind(Table, "@INDEX")
+    if UseIndex then
+        TableRemove(Table, UseIndex)
+    end
     for i, v in next, Table do
         if UseIndex then
             v = i
