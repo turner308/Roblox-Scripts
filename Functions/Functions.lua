@@ -65,22 +65,19 @@ function Library.BreakCamelCase(Str)
 end
 
 function Library.IsAlive(Char, MinHealth)
-    MinHealth = MinHealth or 0
     local Player = Players:FindFirstChild(tostring(Char))
 
     if (Player) then
         local Character = Player.Character
 
         if (Character) then
-            local Humanoid = Character:FindFirstChild("Humanoid")
-
-            return Humanoid and (Humanoid.Health > MinHealth) and Character
+            Char = Character
         end
     end
 
     local Humanoid = Char:FindFirstChildOfClass("Humanoid")
 
-    return Humanoid and (Humanoid.Health > MinHealth)
+    return Humanoid and (Humanoid.Health > (MinHealth or 0)) and Char
 end
 
 function Library.GetTypeFromTable(Table, Type)
@@ -94,7 +91,7 @@ end
 function Library.StringInTable(Table, String, EqualsIgnoreCase)
     String = EqualsIgnoreCase and StringUpper(String) or String
     for _, v in next, Table do
-        if StringUpper(v) == String then
+        if (StringUpper(v) == String) then
             return true
         end
     end
