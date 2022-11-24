@@ -101,8 +101,10 @@ function Library.StringInTable(Table, String, EqualsIgnoreCase)
         if UseIndex then
             v = i
         end
-        if StringFind(StringAsUpper, EqualsIgnoreCase and StringUpper(v) or v) then
-            return v, String
+        if type(v) == "string" then
+            if StringFind(StringAsUpper, EqualsIgnoreCase and StringUpper(v) or v) then
+                return v, String
+            end
         end
     end
 end
