@@ -6,6 +6,7 @@ local StringUpper = string.upper
 local StringSplit = string.split
 local StringFind = string.find
 local TableConcat = table.concat
+local TableFind = table.find
 
 function Library.Concat(Table, Delimiter, DelimitEvery, TruncateEnd)
     Delimiter = Delimiter or ""
@@ -91,7 +92,11 @@ end
 
 function Library.StringInTable(Table, String, EqualsIgnoreCase)
     local StringAsUpper = EqualsIgnoreCase and StringUpper(String) or String
-    for _, v in next, Table do
+    local UseIndex = TableFind(Table, "@INDEX")
+    for i, v in next, Table do
+        if UseIndex then
+            v = i
+        end
         if StringFind(StringAsUpper, EqualsIgnoreCase and StringUpper(v) or v) then
             return v, String
         end
