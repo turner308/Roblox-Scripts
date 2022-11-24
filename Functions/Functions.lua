@@ -91,6 +91,15 @@ function Library.GetTypeFromTable(Table, Type)
     end
 end
 
+function Library.StringInTable(Table, String, EqualsIgnoreCase)
+    String = EqualsIgnoreCase and StringUpper(String) or String
+    for _, v in next, Table do
+        if StringUpper(v) == String then
+            return true
+        end
+    end
+end
+
 function Library.InstanceContains(...)
     local Arguments = {...}
     local Inst = Library.GetTypeFromTable(Arguments, "Instance")
