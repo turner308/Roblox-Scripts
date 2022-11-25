@@ -27,6 +27,16 @@ function Library.Concat(Table, Delimiter, DelimitEvery, TruncateEnd)
     return TruncateEnd and StringSub(Result, 0, #Result - #Delimiter) or Result
 end
 
+function Library.TableCombine(...)
+    local new = {}
+    for _, v in next, {...} do
+        for _, k in next, v do
+            new[#new + 1] = k
+        end
+    end
+    return new
+end
+
 function Library.ReverseTable(X)
     local Result = {}
 
