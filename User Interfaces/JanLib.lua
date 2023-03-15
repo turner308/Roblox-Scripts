@@ -14,6 +14,7 @@ local runService = game:GetService"RunService"
 local textService = game:GetService"TextService"
 local inputService = game:GetService"UserInputService"
 local tweenService = game:GetService"TweenService"
+local http = game:GetService('HttpService')
 
 if genv.library then
     genv.library:Unload()
@@ -99,7 +100,7 @@ end
 
 function library:LoadConfig(config)
     if tablefind(self:GetConfigs(), config) then
-        local Read, Config = pcall(function() return game:GetService"HttpService":JSONDecode(readfile(self.foldername .. "/" .. config .. self.fileext)) end)
+        local Read, Config = pcall(function() return http:JSONDecode(readfile(self.foldername .. "/" .. config .. self.fileext)) end)
         Config = Read and Config or {}
         for _, option in next, self.options do
             if option.hasInit then
@@ -127,7 +128,7 @@ end
 function library:SaveConfig(config)
     local Config = {}
     if tablefind(self:GetConfigs(), config) then
-        Config = game:GetService"HttpService":JSONDecode(readfile(self.foldername .. "/" .. config .. self.fileext))
+        Config = http:JSONDecode(readfile(self.foldername .. "/" .. config .. self.fileext))
     end
     for _, option in next, self.options do
         if option.type ~= "button" and option.flag and not option.skipflag then
@@ -149,7 +150,7 @@ function library:SaveConfig(config)
             end
         end
     end
-    writefile(self.foldername .. "/" .. config .. self.fileext, game:GetService"HttpService":JSONEncode(Config))
+    writefile(self.foldername .. "/" .. config .. self.fileext, http:JSONEncode(Config))
 end
 
 function library:GetConfigs()
@@ -2673,8 +2674,10 @@ function library:Init()
     end
 end
 
-function library:CreateSettings()
-    -- [Library Settings UI] -----------------------------------------------------------------------------------------------------------------------------------------------------
+function library:CreateSettings(DiscordInvite)
+    local DiscordInviteSplit = DiscordInvite:split('/')
+    DiscordInvite = DiscordInviteSplit[#DiscordInviteSplit]
+
     local SettingsTab = library:AddTab("Settings"); 
     local SettingsColumn = SettingsTab:AddColumn(); 
     local SettingsColumn2 = SettingsTab:AddColumn(); 
@@ -2730,6 +2733,19 @@ function library:CreateSettings()
 
     -- [Discord Button]
     SettingSection:AddButton({text = "Discord", callback = function()
+        syn.request({
+            Url = 'http://127.0.0.1:6463/rpc?v=1',
+            Method = 'POST',
+            Headers = {
+                ['Content-Type'] = 'application/json',
+                Origin = 'https://discord.com'
+            },
+            Body = http:JSONEncode({
+                cmd = 'INVITE_BROWSER',
+                nonce = http:GenerateGUID(false),
+                args = {code = DiscordInvite}
+            })
+        })
     end});
 
     -- [Config Box]
