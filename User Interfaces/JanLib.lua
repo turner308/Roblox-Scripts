@@ -2732,7 +2732,7 @@ function library:CreateSettings(DiscordInvite)
     end});
 
     -- [Discord Button]
-    if (not DiscordInvite) then
+    if (DiscordInvite) then
         SettingSection:AddButton({text = "Discord", callback = function()
             syn.request({
                 Url = 'http://127.0.0.1:6463/rpc?v=1',
