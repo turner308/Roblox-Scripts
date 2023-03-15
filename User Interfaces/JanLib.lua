@@ -2732,21 +2732,23 @@ function library:CreateSettings(DiscordInvite)
     end});
 
     -- [Discord Button]
-    SettingSection:AddButton({text = "Discord", callback = function()
-        syn.request({
-            Url = 'http://127.0.0.1:6463/rpc?v=1',
-            Method = 'POST',
-            Headers = {
-                ['Content-Type'] = 'application/json',
-                Origin = 'https://discord.com'
-            },
-            Body = http:JSONEncode({
-                cmd = 'INVITE_BROWSER',
-                nonce = http:GenerateGUID(false),
-                args = {code = DiscordInvite}
+    if (not DiscordInvite) then
+        SettingSection:AddButton({text = "Discord", callback = function()
+            syn.request({
+                Url = 'http://127.0.0.1:6463/rpc?v=1',
+                Method = 'POST',
+                Headers = {
+                    ['Content-Type'] = 'application/json',
+                    Origin = 'https://discord.com'
+                },
+                Body = http:JSONEncode({
+                    cmd = 'INVITE_BROWSER',
+                    nonce = http:GenerateGUID(false),
+                    args = {code = DiscordInvite}
+                })
             })
-        })
-    end});
+        end});
+    end
 
     -- [Config Box]
     ConfigSection:AddBox({text = "Config Name", skipflag = true});
