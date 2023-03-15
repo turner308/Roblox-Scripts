@@ -10,10 +10,10 @@ local tableinsert = table.insert
 local tableremove = table.remove
 
 --Services
-genv.runService = game:GetService"RunService"
-genv.textService = game:GetService"TextService"
-genv.inputService = game:GetService"UserInputService"
-genv.tweenService = game:GetService"TweenService"
+local runService = game:GetService"RunService"
+local textService = game:GetService"TextService"
+local inputService = game:GetService"UserInputService"
+local tweenService = game:GetService"TweenService"
 
 if genv.library then
     genv.library:Unload()
