@@ -2675,9 +2675,6 @@ function library:Init()
 end
 
 function library:CreateSettings(DiscordInvite)
-    local DiscordInviteSplit = DiscordInvite:split('/')
-    DiscordInvite = DiscordInviteSplit[#DiscordInviteSplit]
-
     local SettingsTab = library:AddTab("Settings"); 
     local SettingsColumn = SettingsTab:AddColumn(); 
     local SettingsColumn2 = SettingsTab:AddColumn(); 
@@ -2733,6 +2730,9 @@ function library:CreateSettings(DiscordInvite)
 
     -- [Discord Button]
     if (DiscordInvite) then
+        local DiscordInviteSplit = DiscordInvite:split('/')
+        DiscordInvite = DiscordInviteSplit[#DiscordInviteSplit]
+
         SettingSection:AddButton({text = "Discord", callback = function()
             syn.request({
                 Url = 'http://127.0.0.1:6463/rpc?v=1',
