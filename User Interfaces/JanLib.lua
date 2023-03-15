@@ -1,40 +1,26 @@
 -- Modified support for Krnl and others
 
 --LIBRARY START
---Services
-local runService = game:GetService("RunService")
-local textService = game:GetService("TextService")
-local inputService = game:GetService("UserInputService")
---local tweenService = game:GetService("TweenService")
+local genv = getgenv()
 local wait = task.wait
-local delay = task.delay
 local spawn = task.spawn
+local delay = task.delay
+local tablefind = table.find
+local tableinsert = table.insert
+local tableremove = table.remove
 
-if getgenv().library then
-    getgenv().library:Unload()
+--Services
+genv.runService = game:GetService"RunService"
+genv.textService = game:GetService"TextService"
+genv.inputService = game:GetService"UserInputService"
+genv.tweenService = game:GetService"TweenService"
+
+if genv.library then
+    genv.library:Unload()
 end
 
-local library = {
-    design = "kali" --[[or "uwuware"]],
-    tabs = {},
-    draggable = true,
-    flags = {},
-    title = "ngegroro",
-    open = false,
-    popup = nil,
-    instances = {},
-    connections = {},
-    options = {},
-    notifications = {},
-    tabSize = 0,
-    theme = {},
-    ignorefiles = { 'teleport', 'autoload' },
-    autoload = true,
-    autoloadname = game.PlaceId .. '_autoload',
-    foldername = "aturner scripts/" .. game.PlaceId,
-    fileext = ".json"
-}
-getgenv().library = library
+local library = {design = genv.design == "kali" and "kali" or "uwuware", tabs = {}, draggable = true, flags = {}, title = "CheatX", open = false, popup = nil, instances = {}, connections = {}, options = {}, notifications = {}, tabSize = 0, theme = {}, foldername = "cheatx_cnfgs", fileext = ".txt"}
+genv.library = library
 
 --Locals
 local dragging, dragInput, dragStart, startPos, dragObject
@@ -76,7 +62,7 @@ function library:Create(class, properties)
     for property, value in next, properties do
         inst[property] = value
     end
-    table.insert(self.instances, {object = inst, method = a})
+    tableinsert(self.instances, {object = inst, method = a})
     return inst
 end
 
@@ -86,7 +72,7 @@ function library:AddConnection(connection, name, callback)
     if name ~= callback then
         self.connections[name] = connection
     else
-        table.insert(self.connections, connection)
+        tableinsert(self.connections, connection)
     end
     return connection
 end
@@ -108,11 +94,11 @@ function library:Unload()
         end
     end
     library = nil
-    getgenv().library = nil
+    genv.library = nil
 end
 
 function library:LoadConfig(config)
-    if table.find(self:GetConfigs(), config) then
+    if tablefind(self:GetConfigs(), config) then
         local Read, Config = pcall(function() return game:GetService"HttpService":JSONDecode(readfile(self.foldername .. "/" .. config .. self.fileext)) end)
         Config = Read and Config or {}
         for _, option in next, self.options do
@@ -138,13 +124,9 @@ function library:LoadConfig(config)
     end
 end
 
-if not isfile(library.autoloadname) then
-    writefile(library.foldername .. "/" .. library.autoloadname .. library.fileext, '')
-end
-
 function library:SaveConfig(config)
     local Config = {}
-    if table.find(self:GetConfigs(), config) then
+    if tablefind(self:GetConfigs(), config) then
         Config = game:GetService"HttpService":JSONDecode(readfile(self.foldername .. "/" .. config .. self.fileext))
     end
     for _, option in next, self.options do
@@ -175,26 +157,14 @@ function library:GetConfigs()
         makefolder(self.foldername)
         return {}
     end
-
     local files = {}
-
     local a = 0
     for i,v in next, listfiles(self.foldername) do
         if v:sub(#v - #self.fileext + 1, #v) == self.fileext then
-            local skip = false
-
-            for _, ignored in next, library.ignorefiles do
-                if v:find(ignored) then
-                    skip = true
-                end
-            end
-
-            if not skip then
-                a = a + 1
-                v = v:gsub(self.foldername .. "\\", "")
-                v = v:gsub(self.fileext, "")
-                table.insert(files, a, v)
-            end
+            a = a + 1
+            v = v:gsub(self.foldername .. "\\", "")
+            v = v:gsub(self.fileext, "")
+            tableinsert(files, a, v)
         end
     end
     return files
@@ -332,7 +302,7 @@ library.createToggle = function(option, parent)
             Parent = tickbox
         })
 
-        table.insert(library.theme, tickboxOverlay)
+        tableinsert(library.theme, tickboxOverlay)
     else
         tickbox = library:Create("Frame", {
             Position = UDim2.new(0, 6, 0, 4),
@@ -374,7 +344,7 @@ library.createToggle = function(option, parent)
             Parent = tickbox
         })
 
-        table.insert(library.theme, tickbox)
+        tableinsert(library.theme, tickbox)
     end
 
     option.interest = library:Create("Frame", {
@@ -620,8 +590,8 @@ library.createBind = function(option, parent)
     library:AddConnection(inputService.InputBegan, function(input)
         if inputService:GetFocusedTextBox() then return end
         if binding then
-            local key = (table.find(whitelistedMouseinputs, input.UserInputType) and not option.nomouse) and input.UserInputType
-            option:SetKey(key or (not table.find(blacklistedKeys, input.KeyCode)) and input.KeyCode)
+            local key = (tablefind(whitelistedMouseinputs, input.UserInputType) and not option.nomouse) and input.UserInputType
+            option:SetKey(key or (not tablefind(blacklistedKeys, input.KeyCode)) and input.KeyCode)
         else
             if (input.KeyCode.Name == option.key or input.UserInputType.Name == option.key) and not binding then
                 if option.mode == "toggle" then
@@ -744,7 +714,7 @@ library.createSlider = function(option, parent)
         TextXAlignment = Enum.TextXAlignment[(option.sub or option.textpos) and "Center" or "Left"],
         Parent = (option.sub or option.textpos) and option.slider or option.main
     })
-    table.insert(library.theme, option.fill)
+    tableinsert(library.theme, option.fill)
 
     library:Create("UIGradient", {
         Color = ColorSequence.new({
@@ -1065,8 +1035,8 @@ library.createList = function(option, parent)
         if self.multiselect then
             self.values[value] = state
         else
-            if not table.find(self.values, value) then
-                table.insert(self.values, value)
+            if not tablefind(self.values, value) then
+                tableinsert(self.values, value)
             end
         end
 
@@ -1097,7 +1067,7 @@ library.createList = function(option, parent)
             Parent = label
         })
         selected = selected or self.value == value and labelOverlay
-        table.insert(library.theme, labelOverlay)
+        tableinsert(library.theme, labelOverlay)
 
         label.InputBegan:connect(function(input)
             if input.UserInputType.Name == "MouseButton1" then
@@ -1126,7 +1096,7 @@ library.createList = function(option, parent)
                 self.values[value] = nil
                 self:SetValue(self.value)
             else
-                table.remove(self.values, table.find(self.values, value))
+                tableremove(self.values, tablefind(self.values, value))
                 if self.value == value then
                     selected = nil
                     self:SetValue(self.values[1] or "")
@@ -1142,7 +1112,7 @@ library.createList = function(option, parent)
                 value[v] = false
             end
         end
-        self.value = typeof(value) == "table" and value or tostring(table.find(self.values, value) and value or self.values[1])
+        self.value = typeof(value) == "table" and value or tostring(tablefind(self.values, value) and value or self.values[1])
         library.flags[self.flag] = self.value
         option.listvalue.Text = " " .. (self.multiselect and getMultiText() or self.value)
         if self.multiselect then
@@ -1776,15 +1746,15 @@ end
 
 function library:AddTab(title, pos)
     local tab = {canInit = true, tabs = {}, columns = {}, title = tostring(title)}
-    table.insert(self.tabs, pos or #self.tabs + 1, tab)
+    tableinsert(self.tabs, pos or #self.tabs + 1, tab)
 
     function tab:AddColumn()
         local column = {sections = {}, position = #self.columns, canInit = true, tab = self}
-        table.insert(self.columns, column)
+        tableinsert(self.columns, column)
 
         function column:AddSection(title)
             local section = {title = tostring(title), options = {}, canInit = true, column = self}
-            table.insert(self.sections, section)
+            tableinsert(self.sections, section)
 
             function section:AddLabel(text)
                 local option = {text = text}
@@ -1792,7 +1762,7 @@ function library:AddTab(title, pos)
                 option.type = "label"
                 option.position = #self.options
                 option.canInit = true
-                table.insert(self.options, option)
+                tableinsert(self.options, option)
 
                 if library.hasInit and self.hasInit then
                     library.createLabel(option, self.content)
@@ -1809,7 +1779,7 @@ function library:AddTab(title, pos)
                 option.type = "divider"
                 option.position = #self.options
                 option.canInit = true
-                table.insert(self.options, option)
+                tableinsert(self.options, option)
 
                 if library.hasInit and self.hasInit then
                     library.createDivider(option, self.content)
@@ -1834,7 +1804,7 @@ function library:AddTab(title, pos)
                 option.tip = option.tip and tostring(option.tip)
                 option.style = option.style == 2
                 library.flags[option.flag] = option.state
-                table.insert(self.options, option)
+                tableinsert(self.options, option)
                 library.options[option.flag] = option
 
                 function option:AddColor(subOption)
@@ -1891,7 +1861,7 @@ function library:AddTab(title, pos)
                 option.subcount = 0
                 option.canInit = (option.canInit ~= nil and option.canInit) or true
                 option.tip = option.tip and tostring(option.tip)
-                table.insert(self.options, option)
+                tableinsert(self.options, option)
                 library.options[option.flag] = option
 
                 function option:AddBind(subOption)
@@ -1934,7 +1904,7 @@ function library:AddTab(title, pos)
                 option.flag = (library.flagprefix and library.flagprefix .. " " or "") .. (option.flag or option.text)
                 option.canInit = (option.canInit ~= nil and option.canInit) or true
                 option.tip = option.tip and tostring(option.tip)
-                table.insert(self.options, option)
+                tableinsert(self.options, option)
                 library.options[option.flag] = option
 
                 if library.hasInit and self.hasInit then
@@ -1964,7 +1934,7 @@ function library:AddTab(title, pos)
                 option.canInit = (option.canInit ~= nil and option.canInit) or true
                 option.tip = option.tip and tostring(option.tip)
                 library.flags[option.flag] = option.value
-                table.insert(self.options, option)
+                tableinsert(self.options, option)
                 library.options[option.flag] = option
 
                 function option:AddColor(subOption)
@@ -2018,14 +1988,14 @@ function library:AddTab(title, pos)
                 option.canInit = (option.canInit ~= nil and option.canInit) or true
                 option.tip = option.tip and tostring(option.tip)
                 library.flags[option.flag] = option.value
-                table.insert(self.options, option)
+                tableinsert(self.options, option)
                 library.options[option.flag] = option
 
                 function option:AddValue(value, state)
                     if self.multiselect then
                         self.values[value] = state
                     else
-                        table.insert(self.values, value)
+                        tableinsert(self.values, value)
                     end
                 end
 
@@ -2068,7 +2038,7 @@ function library:AddTab(title, pos)
                 option.canInit = (option.canInit ~= nil and option.canInit) or true
                 option.tip = option.tip and tostring(option.tip)
                 library.flags[option.flag] = option.value
-                table.insert(self.options, option)
+                tableinsert(self.options, option)
                 library.options[option.flag] = option
 
                 if library.hasInit and self.hasInit then
@@ -2096,7 +2066,7 @@ function library:AddTab(title, pos)
                 option.canInit = (option.canInit ~= nil and option.canInit) or true
                 option.tip = option.tip and tostring(option.tip)
                 library.flags[option.flag] = option.color
-                table.insert(self.options, option)
+                tableinsert(self.options, option)
                 library.options[option.flag] = option
 
                 function option:AddColor(subOption)
@@ -2157,7 +2127,7 @@ function library:AddTab(title, pos)
                     Parent = self.main
                 })
 
-                table.insert(library.theme, library:Create("Frame", {
+                tableinsert(library.theme, library:Create("Frame", {
                     Size = UDim2.new(1, 0, 0, 1),
                     BackgroundColor3 = library.flags["Menu Accent Color"],
                     BorderSizePixel = 0,
@@ -2526,7 +2496,7 @@ function library:Init()
         Parent = self.main
     })
 
-    table.insert(library.theme, self:Create("Frame", {
+    tableinsert(library.theme, self:Create("Frame", {
         Size = UDim2.new(1, 0, 0, 1),
         Position = UDim2.new(0, 0, 0, 24),
         BackgroundColor3 = library.flags["Menu Accent Color"],
@@ -2548,7 +2518,7 @@ function library:Init()
         BorderSizePixel = 0,
         Parent = self.main
     })
-    table.insert(library.theme, self.tabHighlight)
+    tableinsert(library.theme, self.tabHighlight)
 
     self.columnHolder = self:Create("Frame", {
         Position = UDim2.new(0, 5, 0, 55),
@@ -2641,12 +2611,12 @@ function library:Init()
             wait(1)
             local Configs = self:GetConfigs()
             for _, config in next, Configs do
-                if not table.find(self.options["Config List"].values, config) then
+                if not tablefind(self.options["Config List"].values, config) then
                     self.options["Config List"]:AddValue(config)
                 end
             end
             for _, config in next, self.options["Config List"].values do
-                if not table.find(Configs, config) then
+                if not tablefind(Configs, config) then
                     self.options["Config List"]:RemoveValue(config)
                 end
             end
@@ -2698,50 +2668,113 @@ function library:Init()
         return Old_new(t, i, v)
     end)
 
-    if not getgenv().silent then
+    if not genv.silent then
         delay(1, function() self:Close() end)
     end
 end
 
-local function promptLib()
-    local RunService = game:GetService("RunService")
-    local CoreGui = game:GetService("CoreGui")
+function library:CreateSettings()
+    -- [Library Settings UI] -----------------------------------------------------------------------------------------------------------------------------------------------------
+    local SettingsTab = library:AddTab("Settings"); 
+    local SettingsColumn = SettingsTab:AddColumn(); 
+    local SettingsColumn2 = SettingsTab:AddColumn(); 
+    local SettingSection = SettingsColumn:AddSection("Menu"); 
+    local ConfigSection = SettingsColumn2:AddSection("Configs");
+    local Warning = library:AddWarning({type = "confirm"});
 
-    local ErrorPrompt = getrenv().require(CoreGui.RobloxGui.Modules.ErrorPrompt)
-    local function NewScreen(ScreenName)
-        local Screen = Instance.new("ScreenGui")
-        Screen.Name = ScreenName
-        Screen.ResetOnSpawn = false
-        Screen.IgnoreGuiInset = true
-        sethiddenproperty(Screen,
-        "OnTopOfCoreBlur",true)
-        Screen.RobloxLocked = true 
-        Screen.Parent = CoreGui
-        return Screen
-    end
+    SettingSection:AddBind({text = "Open / Close", flag = "UI Toggle", nomouse = true, key = "End", callback = function()
+        library:Close();
+    end});
 
-    return function(Title,Message,Buttons)
-        local Screen = NewScreen("Prompt")
-        local Prompt = ErrorPrompt.new("Default",{
-            MessageTextScaled = false,
-            PlayAnimation = false,
-            HideErrorCode = true
-        })
-        for Index,Button in pairs(Buttons) do
-            local Old = Button.Callback
-            Button.Callback = function(...)
-                RunService:SetRobloxGuiFocused(false)
-                Prompt:_close()
-                Screen:Destroy()
-                return Old(...)
+    SettingSection:AddColor({text = "Accent Color", flag = "Menu Accent Color", color = Color3.new(0.599623620510101318359375, 0.447115242481231689453125, 0.97174417972564697265625), callback = function(color)
+        if library.currentTab then
+            library.currentTab.button.TextColor3 = color;
+        end
+        for i,v in pairs(library.theme) do
+            v[(v.ClassName == "TextLabel" and "TextColor3") or (v.ClassName == "ImageLabel" and "ImageColor3") or "BackgroundColor3"] = color;
+        end
+    end});
+
+    -- [Background List]
+    local backgroundlist = {
+        Floral = "rbxassetid://5553946656",
+        Flowers = "rbxassetid://6071575925",
+        Circles = "rbxassetid://6071579801",
+        Hearts = "rbxassetid://6073763717"
+    };
+
+    -- [Background List]
+    local back = SettingSection:AddList({text = "Background", max = 4, flag = "background", values = {"Floral", "Flowers", "Circles", "Hearts"}, value = "Floral", callback = function(v)
+        if library.main then
+            library.main.Image = backgroundlist[v];
+        end
+    end});
+
+    -- [Background Color Picker]
+    back:AddColor({flag = "backgroundcolor", color = Color3.new(), callback = function(color)
+        if library.main then
+            library.main.ImageColor3 = color;
+        end
+    end, trans = 1, calltrans = function(trans)
+        if library.main then
+            library.main.ImageTransparency = 1 - trans;
+        end
+    end});
+
+    -- [Tile Size Slider]
+    SettingSection:AddSlider({text = "Tile Size", min = 50, max = 500, value = 50, callback = function(size)
+        if library.main then
+            library.main.TileSize = UDim2.new(0, size, 0, size);
+        end
+    end});
+
+    -- [Discord Button]
+    SettingSection:AddButton({text = "Discord", callback = function()
+    end});
+
+    -- [Config Box]
+    ConfigSection:AddBox({text = "Config Name", skipflag = true});
+
+    -- [Config List]
+    ConfigSection:AddList({text = "Configs", skipflag = true, value = "", flag = "Config List", values = library:GetConfigs()});
+
+    -- [Create Button]
+    ConfigSection:AddButton({text = "Create", callback = function()
+        library:GetConfigs();
+        writefile(library.foldername .. "/" .. library.flags["Config Name"] .. library.fileext, "{}");
+        library.options["Config List"]:AddValue(library.flags["Config Name"]);
+    end});
+
+    -- [Save Button]
+    ConfigSection:AddButton({text = "Save", callback = function()
+        local r, g, b = library.round(library.flags["Menu Accent Color"]);
+        Warning.text = "Are you sure you want to save the current settings to config <font color='rgb(" .. r .. "," .. g .. "," .. b .. ")'>" .. library.flags["Config List"] .. "</font>?";
+        if Warning:Show() then
+            library:SaveConfig(library.flags["Config List"]);
+        end
+    end});
+
+    -- [Load Button]
+    ConfigSection:AddButton({text = "Load", callback = function()
+        local r, g, b = library.round(library.flags["Menu Accent Color"]);
+        Warning.text = "Are you sure you want to load config <font color='rgb(" .. r .. "," .. g .. "," .. b .. ")'>" .. library.flags["Config List"] .. "</font>?";
+        if Warning:Show() then
+            library:LoadConfig(library.flags["Config List"]);
+        end
+    end});
+
+    -- [Delete Button]
+    ConfigSection:AddButton({text = "Delete", callback = function()
+        local r, g, b = library.round(library.flags["Menu Accent Color"]);
+        Warning.text = "Are you sure you want to delete config <font color='rgb(" .. r .. "," .. g .. "," .. b .. ")'>" .. library.flags["Config List"] .. "</font>?";
+        if Warning:Show() then
+            local config = library.flags["Config List"];
+            if tablefind(library:GetConfigs(), config) and isfile(library.foldername .. "/" .. config .. library.fileext) then
+                library.options["Config List"]:RemoveValue(config);
+                delfile(library.foldername .. "/" .. config .. library.fileext);
             end
         end
-
-        Prompt:setErrorTitle(Title)
-        Prompt:updateButtons(Buttons)
-        Prompt:setParent(Screen)
-        RunService:SetRobloxGuiFocused(true)
-        Prompt:_open(Message)
-        return Prompt,Screen
-    end
+    end});
 end
+
+--LIBRARY END
