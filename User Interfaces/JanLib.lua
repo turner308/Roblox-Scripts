@@ -1,3 +1,6 @@
+---@diagnostic disable
+--// Imports
+
 -- Modified support for Krnl and others
 
 --LIBRARY START
@@ -926,7 +929,7 @@ Library.createList = function(option, parent)
         BackgroundTransparency = 1,
         BorderSizePixel = 0,
         ScrollBarImageColor3 = Color3.new(),
-        ScrollBarThickness = 3,
+        ScrollBarThickness = 9, --SCROLL_THICKNESS1
         ScrollingDirection = Enum.ScrollingDirection.Y,
         VerticalScrollBarInset = Enum.ScrollBarInset.Always,
         TopImage = "rbxasset://textures/ui/Scroll/scroll-middle.png",
