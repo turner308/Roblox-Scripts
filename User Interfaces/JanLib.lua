@@ -241,7 +241,6 @@ end
 
 Library.createToggle = function(option, parent)
     option.hasInit = true
-    option.init = option.init or true
 
     option.main = Library:Create("Frame", {
         LayoutOrder = option.position,
@@ -429,9 +428,9 @@ Library.createToggle = function(option, parent)
         end
     end
 
-    if option.state ~= nil and option.init then
+    if option.state ~= nil then
         delay(1, function()
-            if Library then
+            if Library and not option.initCallback then
                 option.callback(option.state)
             end
         end)
