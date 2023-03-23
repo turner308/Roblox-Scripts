@@ -430,7 +430,7 @@ Library.createToggle = function(option, parent)
 
     if option.state ~= nil then
         delay(1, function()
-            if Library and not option.initCallback then
+            if Library and not option.noInit then
                 option.callback(option.state)
             end
         end)
