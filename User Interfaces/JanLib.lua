@@ -1,3 +1,5 @@
+---@diagnostic disable
+--// Imports
 -- Modified support for Krnl and others
 
 --LIBRARY START
@@ -430,6 +432,7 @@ Library.createToggle = function(option, parent)
 
     if option.state ~= nil then
         delay(1, function()
+            print(option.noInit)
             if Library and not option.noInit then
                 option.callback(option.state)
             end
@@ -2428,9 +2431,13 @@ function Library:AddWarning(warning)
         warning.message.Text = warning.text
 
         repeat wait()
+            
         until answer ~= nil
-        spawn(warning.Close)
+        
+        delay(0, warning.Close)
+        
         Library.warning = nil
+        
         return answer
     end
 
@@ -2775,6 +2782,7 @@ function Library:CreateSettings(DiscordInvite)
     ConfigSection:AddButton({text = "Load", callback = function()
         local r, g, b = Library.round(Library.flags["Menu Accent Color"]);
         Warning.text = "Are you sure you want to load config <font color='rgb(" .. r .. "," .. g .. "," .. b .. ")'>" .. Library.flags["Config List"] .. "</font>?";
+
         if Warning:Show() then
             Library:LoadConfig(Library.flags["Config List"]);
         end
@@ -2793,5 +2801,3 @@ function Library:CreateSettings(DiscordInvite)
         end
     end});
 end
-
---LIBRARY END
