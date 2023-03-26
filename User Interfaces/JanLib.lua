@@ -530,6 +530,16 @@ Library.createButton = function(option, parent)
             Library.tooltip.Position = UDim2.new(2)
         end
     end)
+
+    setmetatable(option, {
+        __newindex = function(self, Index, Value)
+            if (Index == 'Text') then
+                option.title.Text = Value
+            else
+                self[Index] = Value
+            end
+        end
+    })
 end
 
 Library.createBind = function(option, parent)
