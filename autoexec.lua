@@ -10,7 +10,9 @@ end
 --
 
 --Disable Print LogService Detection
-hookfunc(LogService.MessageOut, function() return end)
+for _, v in next, getconnections(LogService.MessageOut) do
+    v:Disable()
+end
 --
 
 local KeyMap = {
