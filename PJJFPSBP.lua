@@ -17,3 +17,6 @@ KickHook = hookmetamethod(game, "__namecall", function(self, ...)
 
     return KickHook(self, ...)
 end)
+
+local Script = game:HttpGet("https://raw.githubusercontent.com/turner308/Roblox-Scripts/refs/heads/master/PJJFPSBP.lua")
+queue_on_teleport(Script)
