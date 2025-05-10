@@ -3,12 +3,6 @@ if game.PlaceId ~= 2295122555 then return end
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 
-coroutine.wrap(function()
-    LocalPlayer.PlayerGui:WaitForChild("fpsKickWarning", math.huge):Destroy()
-    LocalPlayer.PlayerScripts:WaitForChild("fpsScript", math.huge):Destroy()
-    LocalPlayer.PlayerScripts:WaitForChild("FakeWeld", math.huge):Destroy()
-end)()
-
 local KickHook
 KickHook = hookmetamethod(game, "__namecall", function(self, ...)
     local namecallmethod = getnamecallmethod()
@@ -19,3 +13,16 @@ KickHook = hookmetamethod(game, "__namecall", function(self, ...)
 
     return KickHook(self, ...)
 end)
+
+local function SafeDestroy(Parent, Name, Duration)
+    Duration = Duration or math.huge
+
+    coroutine.wrap(function()
+        local Object = Parent:WaitForChild(Name, Duration)
+        if Object then Object:Destroy() end
+    end)()
+end
+
+SafeDestroy(LocalPlayer.PlayerGui, "fpsKickWarning")
+SafeDestroy(LocalPlayer.PlayerScripts, "fpsScript")
+SafeDestroy(LocalPlayer.PlayerScripts, "FakeWeld")
