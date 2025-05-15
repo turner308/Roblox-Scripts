@@ -1,7 +1,14 @@
 local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
 local UserInputService = game:GetService("UserInputService")
 local LogService = game:GetService("LogService")
+
+-- Wait for game
+if not game:IsLoaded() then
+    game.Loaded:Wait()
+end
+
+-- LocalPlayer
+local LocalPlayer = Players.LocalPlayer
 
 --Anti AFK
 for _, v in next, getconnections(LocalPlayer.Idled) do
