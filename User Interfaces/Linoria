@@ -3516,3 +3516,4 @@ local SaveManager = {} do
 
 	SaveManager:BuildFolderTree()
 end
+return Library, ThemeManager, SaveManager
