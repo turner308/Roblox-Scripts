@@ -38,6 +38,9 @@ local KeyMap = {
         ["KeypadThree"] = function()
             --Frosthook
             loadstring(game:HttpGet("https://raw.githubusercontent.com/turner308/Roblox-Scripts/refs/heads/master/Frosthook.lua"))()
+        end,
+        ["KeypadFour"] = function()
+            loadstring(game:HttpGet("https://github.com/notpoiu/cobalt/releases/latest/download/Cobalt.luau"))()
         end
     }
 }
