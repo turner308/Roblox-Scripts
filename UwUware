@@ -19,8 +19,8 @@ local library = {
         Outline = Color3.fromRGB(100, 100, 100),
         Text = Color3.fromRGB(255, 255, 255)
     }, 
-    flags = {}, 
-    windows = {}, 
+    flags = {},
+    windows = {},
     open = true,
     CloseKey = Enum.KeyCode.RightControl
 }
@@ -232,6 +232,7 @@ function createToggle(option, parent)
 		Size = UDim2.new(1, 0, 0, 31),
 		BackgroundTransparency = 1,
 		Text = " " .. option.text,
+        RichText = true,
 		TextSize = 17,
 		Font = Enum.Font.Gotham,
 		TextColor3 = library.Colors.Text,
@@ -338,6 +339,7 @@ function createButton(option, parent)
 		Size = UDim2.new(1, 0, 0, 34),
 		BackgroundTransparency = 1,
 		Text = " " .. option.text,
+        RichText = true,
 		TextSize = 17,
 		Font = Enum.Font.Gotham,
 		TextColor3 = library.Colors.Text,
@@ -403,6 +405,7 @@ local function createBind(option, parent)
 		Text = " " .. option.text,
 		TextSize = 17,
 		Font = Enum.Font.Gotham,
+        RichText = true,
 		TextColor3 = library.Colors.Text,
 		TextXAlignment = Enum.TextXAlignment.Left,
 		Parent = parent.content
@@ -426,6 +429,7 @@ local function createBind(option, parent)
 		BackgroundTransparency = 1,
 		Text = text,
 		TextSize = 16,
+        RichText = true,
 		Font = Enum.Font.Gotham,
 		TextColor3 = library.Colors.Text,
 		Parent = round
@@ -533,6 +537,7 @@ local function createSlider(option, parent)
 		TextSize = 17,
 		Font = Enum.Font.Gotham,
 		TextColor3 = library.Colors.Text,
+        RichText = true,
 		TextXAlignment = Enum.TextXAlignment.Left,
 		Parent = main
 	})
@@ -699,6 +704,7 @@ local function createList(option, parent, holder)
 		TextSize = 14,
 		Font = Enum.Font.GothamBold,
 		TextColor3 = Color3.fromRGB(140, 140, 140),
+        RichText = true,
 		TextXAlignment = Enum.TextXAlignment.Left,
 		Parent = main
 	})
@@ -709,6 +715,7 @@ local function createList(option, parent, holder)
 		BackgroundTransparency = 1,
 		Text = option.value,
 		TextSize = 18,
+        RichText = true,
 		Font = Enum.Font.Gotham,
 		TextColor3 = library.Colors.Text,
 		TextXAlignment = Enum.TextXAlignment.Left,
@@ -814,6 +821,7 @@ local function createList(option, parent, holder)
 			TextSize = 14,
 			TextTransparency = self.open and 0 or 1,
 			Font = Enum.Font.Gotham,
+            RichText = true,
 			TextColor3 = library.Colors.Text,
 			TextXAlignment = Enum.TextXAlignment.Left,
 			Parent = content
@@ -940,6 +948,7 @@ local function createBox(option, parent)
 		TextSize = 14,
 		Font = Enum.Font.GothamBold,
 		TextColor3 = library.Colors.Outline,
+        RichText = true,
 		TextXAlignment = Enum.TextXAlignment.Left,
 		Parent = main
 	})
@@ -1186,6 +1195,7 @@ local function createColorPickerWindow(option)
 		Font = Enum.Font.Code,
 		TextSize = 15,
 		TextColor3 = library.Colors.Text,
+        RichText = true,
 		Parent = option.resetColor
 	})
 	
@@ -1228,6 +1238,7 @@ local function createColorPickerWindow(option)
 		Font = Enum.Font.Code,
 		TextSize = 15,
 		TextColor3 = library.Colors.Text,
+        RichText = true,
 		Parent = option.undoColor
 	})
 	
@@ -1273,6 +1284,7 @@ local function createColorPickerWindow(option)
 		Font = Enum.Font.Code,
 		TextSize = 15,
 		TextColor3 = library.Colors.Text,
+        RichText = true,
 		Parent = option.setColor
 	})
 	
@@ -1315,6 +1327,7 @@ local function createColorPickerWindow(option)
 		Font = Enum.Font.Code,
 		TextSize = 15,
 		TextColor3 = library.Colors.Text,
+        RichText = true,
 		Parent = option.rainbow
 	})
 	
@@ -1355,6 +1368,7 @@ local function createColor(option, parent, holder)
 		TextSize = 17,
 		Font = Enum.Font.Gotham,
 		TextColor3 = library.Colors.Text,
+        RichText = true,
 		TextXAlignment = Enum.TextXAlignment.Left,
 		Parent = parent.content
 	})
