@@ -11,25 +11,571 @@ for i,v in pairs(game:GetService("CoreGui"):GetDescendants()) do
     end
 end
 
-local library = {
-    Colors = {
-        Topbar = Color3.fromRGB(10, 10, 10),
-        TopbarArrow = Color3.fromRGB(50, 50, 50), 
-        Accent = Color3.fromRGB(255, 65, 65),
-        Outline = Color3.fromRGB(100, 100, 100),
-        Text = Color3.fromRGB(255, 255, 255)
-    }, 
-    flags = {},
-    windows = {},
-    open = true,
-    CloseKey = Enum.KeyCode.RightControl
+local Themes = {
+    ['Default'] = {
+        Text = Color3.fromRGB(255, 255, 255),
+        Topbar = Color3.fromRGB(28, 28, 28),
+        TopbarArrow = Color3.fromRGB(20, 20, 20),
+        Accent = Color3.fromRGB(0, 85, 255),
+        Outline = Color3.fromRGB(50, 50, 50),
+        Background = Color3.fromRGB(20, 20, 20)
+    },
+    ['Dracula'] = {
+        Text = Color3.fromRGB(255, 255, 255),
+        Topbar = Color3.fromRGB(35, 37, 51),
+        TopbarArrow = Color3.fromRGB(27, 28, 39),
+        Accent = Color3.fromRGB(98, 113, 165),
+        Outline = Color3.fromRGB(124, 130, 167),
+        Background = Color3.fromRGB(27, 28, 39)
+    },
+    ['Bitch Bot'] = {
+        Text = Color3.fromRGB(255, 255, 255),
+        Topbar = Color3.fromRGB(30, 30, 30),
+        TopbarArrow = Color3.fromRGB(35, 35, 35),
+        Accent = Color3.fromRGB(126, 72, 163),
+        Outline = Color3.fromRGB(20, 20, 20),
+        Background = Color3.fromRGB(35, 35, 35)
+    },
+    ['Kiriot Hub'] = {
+        Text = Color3.fromRGB(255, 255, 255),
+        Topbar = Color3.fromRGB(48, 51, 59),
+        TopbarArrow = Color3.fromRGB(26, 28, 32),
+        Accent = Color3.fromRGB(255, 170, 0),
+        Outline = Color3.fromRGB(20, 20, 20),
+        Background = Color3.fromRGB(26, 28, 32)
+    },
+    ['Fatality'] = {
+        Text = Color3.fromRGB(255, 255, 255),
+        Topbar = Color3.fromRGB(30, 24, 66),
+        TopbarArrow = Color3.fromRGB(25, 19, 53),
+        Accent = Color3.fromRGB(197, 7, 84),
+        Outline = Color3.fromRGB(60, 53, 93),
+        Background = Color3.fromRGB(25, 19, 53)
+    },
+    ['Green'] = {
+        Text = Color3.fromRGB(255, 255, 255),
+        Topbar = Color3.fromRGB(20, 20, 20),
+        TopbarArrow = Color3.fromRGB(28, 28, 28),
+        Accent = Color3.fromRGB(0, 255, 139),
+        Outline = Color3.fromRGB(60, 60, 60),
+        Background = Color3.fromRGB(28, 28, 28)
+    },
+    ['Jester'] = {
+        Text = Color3.fromRGB(255, 255, 255),
+        Topbar = Color3.fromRGB(36, 36, 36),
+        TopbarArrow = Color3.fromRGB(28, 28, 28),
+        Accent = Color3.fromRGB(219, 68, 103),
+        Outline = Color3.fromRGB(55, 55, 55),
+        Background = Color3.fromRGB(28, 28, 28)
+    },
+    ['Mint'] = {
+        Text = Color3.fromRGB(255, 255, 255),
+        Topbar = Color3.fromRGB(36, 36, 36),
+        TopbarArrow = Color3.fromRGB(28, 28, 28),
+        Accent = Color3.fromRGB(61, 180, 136),
+        Outline = Color3.fromRGB(55, 55, 55),
+        Background = Color3.fromRGB(28, 28, 28)
+    },
+    ['Tokyo Night'] = {
+        Text = Color3.fromRGB(255, 255, 255),
+        Topbar = Color3.fromRGB(25, 25, 37),
+        TopbarArrow = Color3.fromRGB(22, 22, 31),
+        Accent = Color3.fromRGB(103, 89, 179),
+        Outline = Color3.fromRGB(50, 50, 50),
+        Background = Color3.fromRGB(22, 22, 31)
+    },
+    ['Ubuntu'] = {
+        Text = Color3.fromRGB(255, 255, 255),
+        Topbar = Color3.fromRGB(62, 62, 62),
+        TopbarArrow = Color3.fromRGB(50, 50, 50),
+        Accent = Color3.fromRGB(226, 88, 30),
+        Outline = Color3.fromRGB(25, 25, 25),
+        Background = Color3.fromRGB(50, 50, 50)
+    }
 }
+
+local themeNames = {}
+for name in pairs(Themes) do
+	table.insert(themeNames, name)
+end
+table.sort(themeNames)
+
+local library = {
+	Colors = {},
+	Themes = Themes,
+	flags = {},
+	windows = {},
+	open = true,
+	CloseKey = Enum.KeyCode.RightControl,
+	UIFadeDuration = 0.28,
+	_uiVisible = true,
+	_fadeHiding = false,
+	SettingsGui = true,
+	currentTheme = "Default",
+	defaultTheme = "Default",
+	DataDirectory = "uwuware",
+	ConfigExcludeKeys = { uwuware_config_slot = true },
+	LoadPersistedSettingsOnInit = true,
+	SaveSlotEnabled = false,
+	_themeHooks = {},
+}
+
+for k, v in pairs(Themes.Default) do
+	library.Colors[k] = v
+end
+
+function library:RefreshShades()
+	local B = self.Colors.Background
+	local T = self.Colors.Text
+	local O = self.Colors.Outline
+	self._sh = {
+		surface = B:Lerp(Color3.new(1, 1, 1), 0.1),
+		surfaceHi = B:Lerp(Color3.new(1, 1, 1), 0.18),
+		track = B:Lerp(Color3.new(1, 1, 1), 0.06),
+		deepBox = B:Lerp(Color3.new(0, 0, 0), 0.35),
+		closedTop = B:Lerp(Color3.new(0, 0, 0), 0.72),
+		subClosed = B:Lerp(Color3.new(0, 0, 0), 0.22),
+		listDrop = B:Lerp(Color3.new(1, 1, 1), 0.04),
+		listRow = B:Lerp(Color3.new(1, 1, 1), 0.03),
+		listRowHi = B:Lerp(Color3.new(0, 0, 0), 0.25),
+		mutedText = T:Lerp(O, 0.55),
+		tickHoverInactive = O:Lerp(T, 0.35),
+		arrowOpen = self.Colors.TopbarArrow,
+		arrowClosed = self.Colors.TopbarArrow:Lerp(Color3.new(0, 0, 0), 0.4),
+		sliderTrack = B:Lerp(Color3.new(1, 1, 1), 0.06),
+		sliderIdle = B:Lerp(Color3.new(1, 1, 1), 0.18),
+		chromeButton = B:Lerp(Color3.new(1, 1, 1), 0.02),
+	}
+end
+
+function library:RegisterThemeHook(fn)
+	table.insert(self._themeHooks, fn)
+end
+
+function library:SetTheme(name)
+	if not Themes[name] then
+		return
+	end
+	self.currentTheme = name
+	for k, v in pairs(Themes[name]) do
+		self.Colors[k] = v
+	end
+	self:RefreshShades()
+	for _, fn in ipairs(self._themeHooks) do
+		pcall(fn)
+	end
+	if self.flags then
+		self.flags.uwuware_theme = name
+	end
+end
+
+library:RefreshShades()
+library.flags.uwuware_theme = library.currentTheme
+
+function library:InitUI()
+    self.base = library:Create("ScreenGui", {
+        Name = "uwuware_ScreenGui",
+        Parent = game:GetService("CoreGui"),
+        DisplayOrder = 9999, -- Ensure it's on top
+        ResetOnSpawn = false -- Keep UI persistent across character spawns
+    })
+
+    local uiScale = library:Create("UIScale", {
+        Parent = self.base,
+        Scale = self.isMobile and 0.7 or 1 -- Adjust scale for mobile
+    })
+end
 
 --Services
 local runService = game:GetService"RunService"
 local tweenService = game:GetService"TweenService"
 local textService = game:GetService"TextService"
 local inputService = game:GetService"UserInputService"
+local httpService = game:GetService("HttpService")
+
+local isMobileDevice = (inputService:GetPlatform() == Enum.Platform.Android or inputService:GetPlatform() == Enum.Platform.IOS)
+library.isMobile = isMobileDevice
+
+local function serializeFlagValue(v)
+	local ty = typeof(v)
+	if ty == "Color3" then
+		return { __uw = "Color3", r = math.floor(v.R * 255 + 0.5), g = math.floor(v.G * 255 + 0.5), b = math.floor(v.B * 255 + 0.5) }
+	elseif ty == "boolean" or ty == "number" or ty == "string" then
+		return v
+	end
+	return { __uw = "tostring", v = tostring(v) }
+end
+
+local function deserializeFlagValue(v)
+	if type(v) == "table" and v.__uw == "Color3" then
+		return Color3.fromRGB(tonumber(v.r) or 255, tonumber(v.g) or 255, tonumber(v.b) or 255)
+	elseif type(v) == "table" and v.__uw == "tostring" then
+		return v.v
+	end
+	return v
+end
+
+local function syncOptionsContainer(container)
+	for _, opt in ipairs(container.options) do
+		if opt.type == "folder" then
+			syncOptionsContainer(opt)
+		elseif opt.RefreshFromFlags then
+			pcall(function()
+				opt:RefreshFromFlags()
+			end)
+		end
+	end
+end
+
+function library:SyncUIFromFlags()
+	for _, w in ipairs(self.windows) do
+		syncOptionsContainer(w)
+	end
+end
+
+function library:GetAppSettingsPath()
+	return (self.DataDirectory or "uwuware") .. "/app_settings.json"
+end
+
+function library:GetConfigDataPath(slot)
+	slot = tostring(slot or "main"):gsub("[^%w_%-]", "_")
+	return (self.DataDirectory or "uwuware") .. "/configs/" .. slot .. ".json"
+end
+
+function library:PersistAppSettings()
+	local payload = httpService:JSONEncode({
+		defaultTheme = self.defaultTheme,
+		uiToggleKey = typeof(self.CloseKey) == "EnumItem" and self.CloseKey.Name or tostring(self.CloseKey),
+	})
+	local path = self:GetAppSettingsPath()
+	if writefile then
+		pcall(writefile, path, payload)
+	end
+end
+
+local function keyNameToKeyCode(name)
+	if type(name) ~= "string" then
+		return nil
+	end
+	for _, item in Enum.KeyCode:GetEnumItems() do
+		if item.Name == name then
+			return item
+		end
+	end
+	return nil
+end
+
+function library:SetUIToggleKey(key)
+	local kc = typeof(key) == "EnumItem" and key or keyNameToKeyCode(tostring(key))
+	if not kc then
+		return
+	end
+	self.CloseKey = kc
+	if self.flags then
+		self.flags.uwuware_ui_toggle_key = kc.Name
+	end
+	self:PersistAppSettings()
+end
+
+function library:LoadPersistedAppSettings()
+	if not readfile then
+		return
+	end
+	local path = self:GetAppSettingsPath()
+	local ok, data = pcall(readfile, path)
+	if ok and type(data) == "string" and data ~= "" then
+		local ok2, decoded = pcall(function()
+			return httpService:JSONDecode(data)
+		end)
+		if ok2 and type(decoded) == "table" then
+			if type(decoded.defaultTheme) == "string" and Themes[decoded.defaultTheme] then
+				self.defaultTheme = decoded.defaultTheme
+			end
+			if type(decoded.uiToggleKey) == "string" then
+				local kc = keyNameToKeyCode(decoded.uiToggleKey)
+				if kc then
+					self.CloseKey = kc
+				end
+			end
+		end
+	end
+end
+
+function library:SetDefaultTheme(name)
+	if not Themes[name] then
+		return
+	end
+	if self.defaultTheme == name and self.flags and self.flags.uwuware_startup_style == name then
+		return
+	end
+	self.defaultTheme = name
+	if self.flags then
+		self.flags.uwuware_startup_style = name
+	end
+	self:PersistAppSettings()
+	self:SyncUIFromFlags()
+end
+
+function library:SaveConfig(slot)
+	slot = tostring(slot or (self.flags and self.flags.uwuware_config_slot) or "main")
+	local export = {}
+	for k, v in pairs(self.flags) do
+		if not (self.ConfigExcludeKeys and self.ConfigExcludeKeys[k]) then
+			export[k] = serializeFlagValue(v)
+		end
+	end
+	local payload = httpService:JSONEncode(export)
+	if not writefile then
+		warn("[uwuware] writefile not available; config not saved.")
+		return false
+	end
+	pcall(writefile, self:GetConfigDataPath(slot), payload)
+	return true
+end
+
+function library:LoadConfig(slot)
+	slot = tostring(slot or (self.flags and self.flags.uwuware_config_slot) or "main")
+	if not readfile then
+		warn("[uwuware] readfile not available.")
+		return false
+	end
+	local path = self:GetConfigDataPath(slot)
+	local ok, data = pcall(readfile, path)
+	if not ok or type(data) ~= "string" or data == "" then
+		warn("[uwuware] No config file:", path)
+		return false
+	end
+	local ok2, decoded = pcall(function()
+		return httpService:JSONDecode(data)
+	end)
+	if not ok2 or type(decoded) ~= "table" then
+		warn("[uwuware] Invalid config JSON.")
+		return false
+	end
+	for k, v in pairs(decoded) do
+		self.flags[k] = deserializeFlagValue(v)
+	end
+	local themeApply = self.flags.uwuware_theme
+	if type(themeApply) ~= "string" or not Themes[themeApply] then
+		themeApply = self.flags.uwuware_startup_style
+	end
+	if type(themeApply) == "string" and Themes[themeApply] then
+		self:SetTheme(themeApply)
+	end
+	if type(self.flags.uwuware_startup_style) == "string" and Themes[self.flags.uwuware_startup_style] then
+		self.defaultTheme = self.flags.uwuware_startup_style
+		self:PersistAppSettings()
+	end
+	local uk = self.flags.uwuware_ui_toggle_key
+	if type(uk) == "string" then
+		self:SetUIToggleKey(uk)
+	end
+	self:SyncUIFromFlags()
+	return true
+end
+
+local fadePropKeys = {
+	"BackgroundTransparency",
+	"TextTransparency",
+	"TextStrokeTransparency",
+	"ImageTransparency",
+	"GroupTransparency",
+	"ScrollBarImageTransparency",
+}
+
+local function tryReadTranspProp(obj, key)
+	local ok, v = pcall(function()
+		return obj[key]
+	end)
+	if ok and type(v) == "number" then
+		return math.clamp(v, 0, 1)
+	end
+	return nil
+end
+
+local function buildFadeRows(root)
+	if not root then
+		return {}
+	end
+	local rows = {}
+	local function addGuiObject(obj)
+		if not obj or not obj:IsA("GuiObject") then
+			return
+		end
+		local snap = {}
+		for _, k in ipairs(fadePropKeys) do
+			local v = tryReadTranspProp(obj, k)
+			if v ~= nil then
+				snap[k] = v
+			end
+		end
+		if next(snap) then
+			rows[#rows + 1] = { obj = obj, snap = snap }
+		end
+	end
+	addGuiObject(root)
+	for _, d in ipairs(root:GetDescendants()) do
+		if d:IsA("GuiObject") then
+			addGuiObject(d)
+		elseif d:IsA("UIStroke") then
+			local v = tryReadTranspProp(d, "Transparency")
+			if v ~= nil then
+				rows[#rows + 1] = { obj = d, snap = { Transparency = v } }
+			end
+		end
+	end
+	return rows
+end
+
+local function fadeQuadEase(t)
+	t = math.clamp(t, 0, 1)
+	return 1 - (1 - t) * (1 - t)
+end
+
+local function applyHideFadeProgress(rows, e)
+	for _, row in ipairs(rows) do
+		local o = row.obj
+		if o and o.Parent then
+			for k, v in pairs(row.snap) do
+				local newV = v + (1 - v) * e
+				pcall(function()
+					o[k] = newV
+				end)
+			end
+		end
+	end
+end
+
+local function applyShowFadeProgress(rows, e)
+	for _, row in ipairs(rows) do
+		local o = row.obj
+		if o and o.Parent then
+			for k, v in pairs(row.snap) do
+				local newV = 1 - (1 - v) * e
+				pcall(function()
+					o[k] = newV
+				end)
+			end
+		end
+	end
+end
+
+local function snapFadeRowsToTarget(rows)
+	for _, row in ipairs(rows) do
+		local o = row.obj
+		if o and o.Parent then
+			for k, v in pairs(row.snap) do
+				pcall(function()
+					o[k] = v
+				end)
+			end
+		end
+	end
+end
+
+function library:_cancelFadeMotion()
+	if self._fadeConn then
+		self._fadeConn:Disconnect()
+		self._fadeConn = nil
+	end
+	if self._fadeTween then
+		self._fadeTween:Cancel()
+		self._fadeTween = nil
+	end
+end
+
+function library:ShowUI()
+	local dur = self.UIFadeDuration or 0.28
+	if not self.fadeContainer then
+		self.base.Enabled = true
+		self.open = true
+		self._uiVisible = true
+		if self.cursor then
+			self.cursor.Visible = true
+		end
+		return
+	end
+	self:_cancelFadeMotion()
+	if self._fadeHiding then
+		self._fadeHiding = false
+		self.base.Enabled = true
+		self.open = true
+		self._uiVisible = true
+		if self._lastFadeSnapshot then
+			snapFadeRowsToTarget(self._lastFadeSnapshot)
+		end
+		return
+	end
+	local wasOff = not self.base.Enabled
+	self.base.Enabled = true
+	self.open = true
+	self._uiVisible = true
+	if not wasOff then
+		return
+	end
+	local rows = self._lastFadeSnapshot
+	if not rows or #rows == 0 then
+		rows = buildFadeRows(self.fadeContainer)
+		self._lastFadeSnapshot = rows
+	end
+	applyShowFadeProgress(rows, 0)
+	local t0 = tick()
+	self._fadeConn = runService.Heartbeat:Connect(function()
+		local linear = (tick() - t0) / dur
+		if linear >= 1 then
+			if self._fadeConn then
+				self._fadeConn:Disconnect()
+				self._fadeConn = nil
+			end
+			snapFadeRowsToTarget(rows)
+			return
+		end
+		applyShowFadeProgress(rows, fadeQuadEase(linear))
+	end)
+end
+
+function library:HideUI()
+	local dur = self.UIFadeDuration or 0.28
+	self.open = false
+	self._uiVisible = false
+	if self.activePopup then
+		self.activePopup:Close()
+	end
+	if not self.fadeContainer then
+		self.base.Enabled = false
+		if self.cursor then
+			self.cursor.Visible = false
+		end
+		return
+	end
+	self:_cancelFadeMotion()
+	self._fadeHiding = true
+	local rows = buildFadeRows(self.fadeContainer)
+	self._lastFadeSnapshot = rows
+	local t0 = tick()
+	self._fadeConn = runService.Heartbeat:Connect(function()
+		local linear = (tick() - t0) / dur
+		if linear >= 1 then
+			if self._fadeConn then
+				self._fadeConn:Disconnect()
+				self._fadeConn = nil
+			end
+			applyHideFadeProgress(rows, 1)
+			self._fadeHiding = false
+			self.base.Enabled = false
+			return
+		end
+		applyHideFadeProgress(rows, fadeQuadEase(linear))
+	end)
+end
+
+function library:ToggleUI()
+	if self._uiVisible then
+		self:HideUI()
+	else
+		self:ShowUI()
+	end
+end
 
 --Locals
 local dragging, dragInput, dragStart, startPos, dragObject
@@ -84,13 +630,14 @@ end
 
 local function createOptionHolder(holderTitle, parent, parentTable, subHolder)
 	local size = subHolder and 34 or 40
+	local sh0 = library._sh
 	parentTable.main = library:Create("ImageButton", {
 		LayoutOrder = subHolder and parentTable.position or 0,
 		Position = UDim2.new(0, 20 + (250 * (parentTable.position or 0)), 0, 20),
 		Size = UDim2.new(0, 230, 0, size),
 		BackgroundTransparency = 1,
 		Image = "rbxassetid://3570695787",
-		ImageColor3 = Color3.fromRGB(20, 20, 20),
+		ImageColor3 = library.Colors.Background,
 		ScaleType = Enum.ScaleType.Slice,
 		SliceCenter = Rect.new(100, 100, 100, 100),
 		SliceScale = 0.04,
@@ -104,7 +651,7 @@ local function createOptionHolder(holderTitle, parent, parentTable, subHolder)
 			Size = UDim2.new(1, 0, 0, size),
 			BackgroundTransparency = 1,
 			Image = "rbxassetid://3570695787",
-			ImageColor3 = parentTable.open and (subHolder and Color3.fromRGB(16, 16, 16) or library.Colors.Topbar) or (subHolder and library.Colors.Topbar or Color3.fromRGB(6, 6, 6)),
+			ImageColor3 = parentTable.open and (subHolder and sh0.subClosed or library.Colors.Topbar) or (subHolder and library.Colors.Topbar or sh0.closedTop),
 			ScaleType = Enum.ScaleType.Slice,
 			SliceCenter = Rect.new(100, 100, 100, 100),
 			SliceScale = 0.04,
@@ -139,7 +686,7 @@ local function createOptionHolder(holderTitle, parent, parentTable, subHolder)
 		Rotation = parentTable.open and 90 or 180,
 		BackgroundTransparency = 1,
 		Image = "rbxassetid://4918373417",
-		ImageColor3 = parentTable.open and Color3.fromRGB(50, 50, 50) or Color3.fromRGB(30, 30, 30),
+		ImageColor3 = parentTable.open and sh0.arrowOpen or sh0.arrowClosed,
 		ScaleType = Enum.ScaleType.Fit,
 		Parent = closeHolder
 	})
@@ -167,7 +714,7 @@ local function createOptionHolder(holderTitle, parent, parentTable, subHolder)
 		})
 		
 		title.InputBegan:connect(function(input)
-			if input.UserInputType == Enum.UserInputType.MouseButton1 then
+			if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
 				dragObject = parentTable.main
 				dragging = true
 				dragStart = input.Position
@@ -180,7 +727,7 @@ local function createOptionHolder(holderTitle, parent, parentTable, subHolder)
 			end
 		end)
 			title.InputEnded:connect(function(input)
-			if input.UserInputType == Enum.UserInputType.MouseButton1 then
+			if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
 				dragging = false
 			end
 		end)
@@ -189,11 +736,12 @@ local function createOptionHolder(holderTitle, parent, parentTable, subHolder)
 	closeHolder.InputBegan:connect(function(input)
 		if input.UserInputType == Enum.UserInputType.MouseButton1 then
 			parentTable.open = not parentTable.open
-			tweenService:Create(close, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Rotation = parentTable.open and 90 or 180, ImageColor3 = parentTable.open and Color3.fromRGB(50, 50, 50) or Color3.fromRGB(30, 30, 30)}):Play()
+			local sh = library._sh
+			tweenService:Create(close, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Rotation = parentTable.open and 90 or 180, ImageColor3 = parentTable.open and sh.arrowOpen or sh.arrowClosed}):Play()
 			if subHolder then
-				tweenService:Create(title, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundColor3 = parentTable.open and Color3.fromRGB(16, 16, 16) or library.Colors.Topbar}):Play()
+				tweenService:Create(title, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundColor3 = parentTable.open and sh.subClosed or library.Colors.Topbar}):Play()
 			else
-				tweenService:Create(round, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = parentTable.open and library.Colors.Topbar or Color3.fromRGB(6, 6, 6)}):Play()
+				tweenService:Create(round, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = parentTable.open and library.Colors.Topbar or sh.closedTop}):Play()
 			end
 			parentTable.main:TweenSize(#parentTable.options > 0 and parentTable.open and UDim2.new(0, 230, 0, layout.AbsoluteContentSize.Y + size) or UDim2.new(0, 230, 0, size), "Out", "Quad", 0.2, true)
 		end
@@ -202,6 +750,19 @@ local function createOptionHolder(holderTitle, parent, parentTable, subHolder)
 	function parentTable:SetTitle(newTitle)
 		title.Text = tostring(newTitle)
 	end
+	
+	library:RegisterThemeHook(function()
+		local sh = library._sh
+		local open = parentTable.open
+		parentTable.main.ImageColor3 = library.Colors.Background
+		if round then
+			round.ImageColor3 = open and (subHolder and sh.subClosed or library.Colors.Topbar) or (subHolder and library.Colors.Topbar or sh.closedTop)
+		elseif subHolder then
+			title.BackgroundColor3 = open and sh.subClosed or library.Colors.Topbar
+		end
+		title.TextColor3 = library.Colors.Text
+		close.ImageColor3 = open and sh.arrowOpen or sh.arrowClosed
+	end)
 	
 	return parentTable
 end
@@ -224,6 +785,10 @@ local function createLabel(option, parent)
 			main.Text = " " .. tostring(v)
 		end
 	end})
+	
+	library:RegisterThemeHook(function()
+		main.TextColor3 = library.Colors.Text
+	end)
 end
 
 function createToggle(option, parent)
@@ -258,7 +823,7 @@ function createToggle(option, parent)
 		Size = UDim2.new(1, -4, 1, -4),
 		BackgroundTransparency = 1,
 		Image = "rbxassetid://3570695787",
-		ImageColor3 = option.state and library.Colors.Accent or Color3.fromRGB(20, 20, 20),
+		ImageColor3 = option.state and library.Colors.Accent or library._sh.deepBox,
 		ScaleType = Enum.ScaleType.Slice,
 		SliceCenter = Rect.new(100, 100, 100, 100),
 		SliceScale = 0.02,
@@ -278,7 +843,7 @@ function createToggle(option, parent)
 		SizeConstraint = Enum.SizeConstraint.RelativeYY,
 		BackgroundTransparency = 1,
 		Image = "rbxassetid://4919148038",
-		ImageColor3 = Color3.fromRGB(20, 20, 20),
+		ImageColor3 = library._sh.deepBox,
 		Parent = checkmarkHolder
 	})
 	
@@ -290,7 +855,7 @@ function createToggle(option, parent)
 		if input.UserInputType == Enum.UserInputType.MouseMovement then
 			inContact = true
 			if not option.state then
-				tweenService:Create(tickboxOutline, TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = Color3.fromRGB(140, 140, 140)}):Play()
+				tweenService:Create(tickboxOutline, TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = library._sh.tickHoverInactive}):Play()
 			end
 		end
 	end)
@@ -308,12 +873,13 @@ function createToggle(option, parent)
 		library.flags[self.flag] = state
 		self.state = state
 		checkmarkHolder:TweenSize(option.state and UDim2.new(1, -8, 1, -8) or UDim2.new(0, 0, 1, -8), "Out", "Quad", 0.2, true)
-		tweenService:Create(tickboxInner, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = state and library.Colors.Accent or Color3.fromRGB(20, 20, 20)}):Play()
+		local sh = library._sh
+		tweenService:Create(tickboxInner, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = state and library.Colors.Accent or sh.deepBox}):Play()
 		if state then
 			tweenService:Create(tickboxOutline, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = library.Colors.Accent}):Play()
 		else
 			if inContact then
-				tweenService:Create(tickboxOutline, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = Color3.fromRGB(140, 140, 140)}):Play()
+				tweenService:Create(tickboxOutline, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = sh.tickHoverInactive}):Play()
 			else
 				tweenService:Create(tickboxOutline, TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = library.Colors.Outline}):Play()
 			end
@@ -330,6 +896,66 @@ function createToggle(option, parent)
 			main.Text = " " .. tostring(v)
 		end
 	end})
+	
+	function option:RefreshFromFlags()
+		local v = library.flags[self.flag]
+		if typeof(v) == "boolean" and self.state ~= v then
+			self:SetState(v)
+		end
+	end
+	
+	library:RegisterThemeHook(function()
+		local sh = library._sh
+		main.TextColor3 = library.Colors.Text
+		checkmark.ImageColor3 = sh.deepBox
+		if option.state then
+			tickboxInner.ImageColor3 = library.Colors.Accent
+			tickboxOutline.ImageColor3 = library.Colors.Accent
+		else
+			tickboxInner.ImageColor3 = sh.deepBox
+			tickboxOutline.ImageColor3 = inContact and sh.tickHoverInactive or library.Colors.Outline
+		end
+	end)
+end
+
+local function wireStandardButton(main, round, option)
+	local inContact
+	local clicking
+	main.InputBegan:connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 then
+			library.flags[option.flag] = true
+			clicking = true
+			tweenService:Create(round, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = library.Colors.Accent}):Play()
+			option.callback()
+		end
+		if input.UserInputType == Enum.UserInputType.MouseMovement then
+			inContact = true
+			tweenService:Create(round, TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = library._sh.surfaceHi}):Play()
+		end
+	end)
+	
+	main.InputEnded:connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 then
+			clicking = false
+			if inContact then
+				tweenService:Create(round, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = library._sh.surfaceHi}):Play()
+			else
+				tweenService:Create(round, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = library._sh.surface}):Play()
+			end
+		end
+		if input.UserInputType == Enum.UserInputType.MouseMovement then
+			inContact = false
+			if not clicking then
+				tweenService:Create(round, TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = library._sh.surface}):Play()
+			end
+		end
+	end)
+	
+	library:RegisterThemeHook(function()
+		main.TextColor3 = library.Colors.Text
+		local sh = library._sh
+		round.ImageColor3 = (inContact or clicking) and sh.surfaceHi or sh.surface
+	end)
 end
 
 function createButton(option, parent)
@@ -352,44 +978,58 @@ function createButton(option, parent)
 		Size = UDim2.new(1, -12, 1, -10),
 		BackgroundTransparency = 1,
 		Image = "rbxassetid://3570695787",
-		ImageColor3 = Color3.fromRGB(40, 40, 40),
+		ImageColor3 = library._sh.surface,
 		ScaleType = Enum.ScaleType.Slice,
 		SliceCenter = Rect.new(100, 100, 100, 100),
 		SliceScale = 0.02,
 		Parent = main
 	})
 	
-	local inContact
-	local clicking
-	main.InputBegan:connect(function(input)
-		if input.UserInputType == Enum.UserInputType.MouseButton1 then
-			library.flags[option.flag] = true
-			clicking = true
-			tweenService:Create(round, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = library.Colors.Accent}):Play()
-			option.callback()
-		end
-		if input.UserInputType == Enum.UserInputType.MouseMovement then
-			inContact = true
-			tweenService:Create(round, TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = Color3.fromRGB(60, 60, 60)}):Play()
-		end
-	end)
+	wireStandardButton(main, round, option)
+end
+
+local function createSplitButton(leftOption, rightOption, parent)
+	local row = library:Create("Frame", {
+		LayoutOrder = leftOption.position,
+		Size = UDim2.new(1, 0, 0, 34),
+		BackgroundTransparency = 1,
+		Parent = parent.content
+	})
 	
-	main.InputEnded:connect(function(input)
-		if input.UserInputType == Enum.UserInputType.MouseButton1 then
-			clicking = false
-			if inContact then
-				tweenService:Create(round, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = Color3.fromRGB(60, 60, 60)}):Play()
-			else
-				tweenService:Create(round, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = Color3.fromRGB(40, 40, 40)}):Play()
-			end
-		end
-		if input.UserInputType == Enum.UserInputType.MouseMovement then
-			inContact = false
-			if not clicking then
-				tweenService:Create(round, TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = Color3.fromRGB(40, 40, 40)}):Play()
-			end
-		end
-	end)
+	local function addHalf(opt, xScale, xOffset)
+		local main = library:Create("TextLabel", {
+			ZIndex = 2,
+			Position = UDim2.new(xScale, xOffset, 0, 0),
+			Size = UDim2.new(0.5, -5, 0, 34),
+			BackgroundTransparency = 1,
+			Text = opt.text,
+			RichText = true,
+			TextSize = 15,
+			Font = Enum.Font.Gotham,
+			TextColor3 = library.Colors.Text,
+			TextXAlignment = Enum.TextXAlignment.Center,
+			TextYAlignment = Enum.TextYAlignment.Center,
+			TextWrapped = true,
+			TextTruncate = Enum.TextTruncate.AtEnd,
+			Parent = row
+		})
+		local round = library:Create("ImageLabel", {
+			AnchorPoint = Vector2.new(0.5, 0.5),
+			Position = UDim2.new(0.5, 0, 0.5, 0),
+			Size = UDim2.new(1, -10, 1, -10),
+			BackgroundTransparency = 1,
+			Image = "rbxassetid://3570695787",
+			ImageColor3 = library._sh.surface,
+			ScaleType = Enum.ScaleType.Slice,
+			SliceCenter = Rect.new(100, 100, 100, 100),
+			SliceScale = 0.02,
+			Parent = main
+		})
+		wireStandardButton(main, round, opt)
+	end
+	
+	addHalf(leftOption, 0, 0)
+	addHalf(rightOption, 0.5, 3)
 end
 
 local function createBind(option, parent)
@@ -417,7 +1057,7 @@ local function createBind(option, parent)
 		SizeConstraint = Enum.SizeConstraint.RelativeYY,
 		BackgroundTransparency = 1,
 		Image = "rbxassetid://3570695787",
-		ImageColor3 = Color3.fromRGB(40, 40, 40),
+		ImageColor3 = library._sh.surface,
 		ScaleType = Enum.ScaleType.Slice,
 		SliceCenter = Rect.new(100, 100, 100, 100),
 		SliceScale = 0.02,
@@ -440,7 +1080,7 @@ local function createBind(option, parent)
 		if input.UserInputType == Enum.UserInputType.MouseMovement then
 			inContact = true
 			if not binding then
-				tweenService:Create(round, TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = Color3.fromRGB(60, 60, 60)}):Play()
+				tweenService:Create(round, TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = library._sh.surfaceHi}):Play()
 			end
 		end
 	end)
@@ -454,7 +1094,7 @@ local function createBind(option, parent)
 		if input.UserInputType == Enum.UserInputType.MouseMovement then
 			inContact = false
 			if not binding then
-				tweenService:Create(round, TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = Color3.fromRGB(40, 40, 40)}):Play()
+				tweenService:Create(round, TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = library._sh.surface}):Play()
 			end
 		end
 	end)
@@ -516,9 +1156,31 @@ local function createBind(option, parent)
 		else
 			bindinput.Text = self.key
 		end
-		tweenService:Create(round, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = inContact and Color3.fromRGB(60, 60, 60) or Color3.fromRGB(40, 40, 40)}):Play()
+		local sh = library._sh
+		tweenService:Create(round, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = inContact and sh.surfaceHi or sh.surface}):Play()
 		round.Size = UDim2.new(0, -textService:GetTextSize(bindinput.Text, 15, Enum.Font.Gotham, Vector2.new(9e9, 9e9)).X - 16, 1, -10)	
+		if option.applyAsCloseKey then
+			library:SetUIToggleKey(self.key)
+		end
 	end
+	
+	function option:RefreshFromFlags()
+		local k = library.flags[self.flag]
+		if k ~= nil and k ~= self.key then
+			self:SetKey(k)
+		end
+	end
+	
+	library:RegisterThemeHook(function()
+		main.TextColor3 = library.Colors.Text
+		bindinput.TextColor3 = library.Colors.Text
+		local sh = library._sh
+		if binding then
+			round.ImageColor3 = library.Colors.Accent
+		else
+			round.ImageColor3 = inContact and sh.surfaceHi or sh.surface
+		end
+	end)
 end
 
 local function createSlider(option, parent)
@@ -547,7 +1209,7 @@ local function createSlider(option, parent)
 		Size = UDim2.new(1, -20, 0, 5),
 		BackgroundTransparency = 1,
 		Image = "rbxassetid://3570695787",
-		ImageColor3 = Color3.fromRGB(30, 30, 30),
+		ImageColor3 = library._sh.sliderTrack,
 		ScaleType = Enum.ScaleType.Slice,
 		SliceCenter = Rect.new(100, 100, 100, 100),
 		SliceScale = 0.02,
@@ -557,7 +1219,7 @@ local function createSlider(option, parent)
 	local fill = library:Create("ImageLabel", {
 		BackgroundTransparency = 1,
 		Image = "rbxassetid://3570695787",
-		ImageColor3 = Color3.fromRGB(60, 60, 60),
+		ImageColor3 = library._sh.sliderIdle,
 		ScaleType = Enum.ScaleType.Slice,
 		SliceCenter = Rect.new(100, 100, 100, 100),
 		SliceScale = 0.02,
@@ -570,7 +1232,7 @@ local function createSlider(option, parent)
 		SizeConstraint = Enum.SizeConstraint.RelativeYY,
 		BackgroundTransparency = 1,
 		Image = "rbxassetid://3570695787",
-		ImageColor3 = Color3.fromRGB(60, 60, 60),
+		ImageColor3 = library._sh.sliderIdle,
 		ScaleType = Enum.ScaleType.Slice,
 		SliceCenter = Rect.new(100, 100, 100, 100),
 		SliceScale = 1,
@@ -582,7 +1244,7 @@ local function createSlider(option, parent)
 		Size = UDim2.new(0, -60, 0, 18),
 		BackgroundTransparency = 1,
 		Image = "rbxassetid://3570695787",
-		ImageColor3 = Color3.fromRGB(40, 40, 40),
+		ImageColor3 = library._sh.surface,
 		ScaleType = Enum.ScaleType.Slice,
 		SliceCenter = Rect.new(100, 100, 100, 100),
 		SliceScale = 0.02,
@@ -593,7 +1255,7 @@ local function createSlider(option, parent)
 		Size = UDim2.new(1, 0, 1, 0),
 		BackgroundTransparency = 1,
 		Text = option.value,
-		TextColor3 = Color3.fromRGB(235, 235, 235),
+		TextColor3 = library.Colors.Text:Lerp(Color3.new(1, 1, 1), 0.08),
 		TextSize = 15,
 		TextWrapped = true,
 		Font = Enum.Font.Gotham,
@@ -638,22 +1300,24 @@ local function createSlider(option, parent)
 				tweenService:Create(fill, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = library.Colors.Outline}):Play()
 				tweenService:Create(circle, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(2.8, 0, 2.8, 0), ImageColor3 = library.Colors.Outline}):Play()
 			else
-				tweenService:Create(fill, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = Color3.fromRGB(60, 60, 60)}):Play()
-				tweenService:Create(circle, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0, 0, 0, 0), ImageColor3 = Color3.fromRGB(60, 60, 60)}):Play()
+				local sh = library._sh
+				tweenService:Create(fill, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = sh.sliderIdle}):Play()
+				tweenService:Create(circle, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0, 0, 0, 0), ImageColor3 = sh.sliderIdle}):Play()
 			end
 		end
 		if input.UserInputType == Enum.UserInputType.MouseMovement then
 			inContact = false
 			inputvalue:ReleaseFocus()
 			if not sliding then
-				tweenService:Create(fill, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = Color3.fromRGB(60, 60, 60)}):Play()
-				tweenService:Create(circle, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0, 0, 0, 0), ImageColor3 = Color3.fromRGB(60, 60, 60)}):Play()
+				local sh = library._sh
+				tweenService:Create(fill, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = sh.sliderIdle}):Play()
+				tweenService:Create(circle, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0, 0, 0, 0), ImageColor3 = sh.sliderIdle}):Play()
 			end
 		end
 	end)
 
 	inputvalue.FocusLost:connect(function()
-		tweenService:Create(circle, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0, 0, 0, 0), ImageColor3 = Color3.fromRGB(60, 60, 60)}):Play()
+		tweenService:Create(circle, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0, 0, 0, 0), ImageColor3 = library._sh.sliderIdle}):Play()
 		option:SetValue(tonumber(inputvalue.Text) or option.value)
 	end)
 
@@ -672,10 +1336,30 @@ local function createSlider(option, parent)
 		inputvalue.Text = value
 		self.callback(value)
 	end
+	
+	function option:RefreshFromFlags()
+		local v = library.flags[self.flag]
+		if typeof(v) == "number" then
+			self:SetValue(v)
+		end
+	end
+	
+	library:RegisterThemeHook(function()
+		title.TextColor3 = library.Colors.Text
+		inputvalue.TextColor3 = library.Colors.Text:Lerp(Color3.new(1, 1, 1), 0.08)
+		local sh = library._sh
+		slider.ImageColor3 = sh.sliderTrack
+		valueRound.ImageColor3 = sh.surface
+		if not sliding then
+			fill.ImageColor3 = inContact and library.Colors.Outline or sh.sliderIdle
+			circle.ImageColor3 = inContact and library.Colors.Outline or sh.sliderIdle
+		end
+	end)
 end
 
 local function createList(option, parent, holder)
 	local valueCount = 0
+	option._themeRows = option._themeRows or {}
 	
 	local main = library:Create("Frame", {
 		LayoutOrder = option.position,
@@ -689,7 +1373,7 @@ local function createList(option, parent, holder)
 		Size = UDim2.new(1, -12, 1, -10),
 		BackgroundTransparency = 1,
 		Image = "rbxassetid://3570695787",
-		ImageColor3 = Color3.fromRGB(40, 40, 40),
+		ImageColor3 = library._sh.surface,
 		ScaleType = Enum.ScaleType.Slice,
 		SliceCenter = Rect.new(100, 100, 100, 100),
 		SliceScale = 0.02,
@@ -703,7 +1387,7 @@ local function createList(option, parent, holder)
 		Text = option.text,
 		TextSize = 14,
 		Font = Enum.Font.GothamBold,
-		TextColor3 = Color3.fromRGB(140, 140, 140),
+		TextColor3 = library._sh.mutedText,
         RichText = true,
 		TextXAlignment = Enum.TextXAlignment.Left,
 		Parent = main
@@ -722,14 +1406,14 @@ local function createList(option, parent, holder)
 		Parent = main
 	})
 	
-	library:Create("ImageLabel", {
+	local listArrow = library:Create("ImageLabel", {
 		Position = UDim2.new(1, -16, 0, 16),
 		Size = UDim2.new(-1, 32, 1, -32),
 		SizeConstraint = Enum.SizeConstraint.RelativeYY,
 		Rotation = 90,
 		BackgroundTransparency = 1,
 		Image = "rbxassetid://4918373417",
-		ImageColor3 = Color3.fromRGB(140, 140, 140),
+		ImageColor3 = library._sh.mutedText,
 		ScaleType = Enum.ScaleType.Fit,
 		Parent = round
 	})
@@ -740,12 +1424,12 @@ local function createList(option, parent, holder)
 		BackgroundTransparency = 1,
 		Image = "rbxassetid://3570695787",
 		ImageTransparency = 1,
-		ImageColor3 = Color3.fromRGB(30, 30, 30),
+		ImageColor3 = library._sh.listDrop,
 		ScaleType = Enum.ScaleType.Slice,
 		SliceCenter = Rect.new(100, 100, 100, 100),
 		SliceScale = 0.02,
 		Visible = false,
-		Parent = library.base
+		Parent = library.fadeContainer or library.base
 	})
 	
 	local content = library:Create("ScrollingFrame", {
@@ -796,7 +1480,7 @@ local function createList(option, parent, holder)
 		if input.UserInputType == Enum.UserInputType.MouseMovement then
 			inContact = true
 			if not option.open then
-				tweenService:Create(round, TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = Color3.fromRGB(60, 60, 60)}):Play()
+				tweenService:Create(round, TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = library._sh.surfaceHi}):Play()
 			end
 		end
 	end)
@@ -805,17 +1489,18 @@ local function createList(option, parent, holder)
 		if input.UserInputType == Enum.UserInputType.MouseMovement then
 			inContact = false
 			if not option.open then
-				tweenService:Create(round, TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = Color3.fromRGB(40, 40, 40)}):Play()
+				tweenService:Create(round, TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = library._sh.surface}):Play()
 			end
 		end
 	end)
 	
 	function option:AddValue(value)
 		valueCount = valueCount + 1
+		local sh = library._sh
 		local label = library:Create("TextLabel", {
 			ZIndex = 3,
 			Size = UDim2.new(1, 0, 0, 40),
-			BackgroundColor3 = Color3.fromRGB(30, 30, 30),
+			BackgroundColor3 = sh.listRow,
 			BorderSizePixel = 0,
 			Text = "    " .. value,
 			TextSize = 14,
@@ -826,6 +1511,7 @@ local function createList(option, parent, holder)
 			TextXAlignment = Enum.TextXAlignment.Left,
 			Parent = content
 		})
+		table.insert(option._themeRows, label)
 		
 		local inContact
 		local clicking
@@ -838,7 +1524,7 @@ local function createList(option, parent, holder)
 			if input.UserInputType == Enum.UserInputType.MouseMovement then
 				inContact = true
 				if not clicking then
-					tweenService:Create(label, TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(20, 20, 20)}):Play()
+					tweenService:Create(label, TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundColor3 = library._sh.listRowHi}):Play()
 				end
 			end
 		end)
@@ -846,12 +1532,13 @@ local function createList(option, parent, holder)
 		label.InputEnded:connect(function(input)
 			if input.UserInputType == Enum.UserInputType.MouseButton1 then
 				clicking = false
-				tweenService:Create(label, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundColor3 = inContact and Color3.fromRGB(20, 20, 20) or Color3.fromRGB(30, 30, 30)}):Play()
+				local sh2 = library._sh
+				tweenService:Create(label, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundColor3 = inContact and sh2.listRowHi or sh2.listRow}):Play()
 			end
 			if input.UserInputType == Enum.UserInputType.MouseMovement then
 				inContact = false
 				if not clicking then
-					tweenService:Create(label, TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(30, 30, 30)}):Play()
+					tweenService:Create(label, TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundColor3 = library._sh.listRow}):Play()
 				end
 			end
 		end)
@@ -867,7 +1554,13 @@ local function createList(option, parent, holder)
 	
 	function option:RemoveValue(value)
 		for _,label in next, content:GetChildren() do
-			if label:IsA"TextLabel" and label.Text == "	" .. value then
+			if label:IsA"TextLabel" and label.Text == "    " .. value then
+				for i, row in ipairs(option._themeRows) do
+					if row == label then
+						table.remove(option._themeRows, i)
+						break
+					end
+				end
 				label:Destroy()
 				valueCount = valueCount - 1
 				break
@@ -878,11 +1571,18 @@ local function createList(option, parent, holder)
 		end
 	end
 	
-	function option:SetValue(value)
+	function option:SetValue(value, skipCallback)
 		library.flags[self.flag] = tostring(value)
 		self.value = tostring(value)
 		listvalue.Text = self.value
-		self.callback(value)
+		if not skipCallback then
+			self.callback(value)
+		end
+	end
+	
+	function option:RefreshFromFlags()
+		local v = library.flags[self.flag]
+		self:SetValue(tostring(v ~= nil and v or self.value), true)
 	end
 	
 	function option:Close()
@@ -890,7 +1590,8 @@ local function createList(option, parent, holder)
 		self.open = false
 		content.ScrollBarThickness = 0
 		local position = main.AbsolutePosition
-		tweenService:Create(round, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = inContact and Color3.fromRGB(60, 60, 60) or Color3.fromRGB(40, 40, 40)}):Play()
+		local sh = library._sh
+		tweenService:Create(round, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = inContact and sh.surfaceHi or sh.surface}):Play()
 		tweenService:Create(self.mainHolder, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageTransparency = 1, Position = UDim2.new(0, position.X - 5, 0, position.Y -10)}):Play()
 		for _,label in next, content:GetChildren() do
 			if label:IsA"TextLabel" then
@@ -904,6 +1605,21 @@ local function createList(option, parent, holder)
 			end
 		--end)
 	end
+
+	library:RegisterThemeHook(function()
+		local sh = library._sh
+		round.ImageColor3 = (option.open or inContact) and sh.surfaceHi or sh.surface
+		title.TextColor3 = sh.mutedText
+		listvalue.TextColor3 = library.Colors.Text
+		listArrow.ImageColor3 = sh.mutedText
+		option.mainHolder.ImageColor3 = sh.listDrop
+		for _, row in ipairs(option._themeRows) do
+			if row.Parent then
+				row.BackgroundColor3 = sh.listRow
+				row.TextColor3 = library.Colors.Text
+			end
+		end
+	end)
 
 	return option
 end
@@ -921,7 +1637,7 @@ local function createBox(option, parent)
 		Size = UDim2.new(1, -12, 1, -10),
 		BackgroundTransparency = 1,
 		Image = "rbxassetid://3570695787",
-		ImageColor3 = Color3.fromRGB(60, 60, 60),
+		ImageColor3 = library._sh.sliderIdle,
 		ScaleType = Enum.ScaleType.Slice,
 		SliceCenter = Rect.new(100, 100, 100, 100),
 		SliceScale = 0.02,
@@ -933,7 +1649,7 @@ local function createBox(option, parent)
 		Size = UDim2.new(1, -16, 1, -14),
 		BackgroundTransparency = 1,
 		Image = "rbxassetid://3570695787",
-		ImageColor3 = Color3.fromRGB(20, 20, 20),
+		ImageColor3 = library._sh.listRowHi,
 		ScaleType = Enum.ScaleType.Slice,
 		SliceCenter = Rect.new(100, 100, 100, 100),
 		SliceScale = 0.01,
@@ -984,7 +1700,7 @@ local function createBox(option, parent)
 		if input.UserInputType == Enum.UserInputType.MouseMovement then
 			inContact = false
 			if not focused then
-				tweenService:Create(outline, TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = Color3.fromRGB(60, 60, 60)}):Play()
+				tweenService:Create(outline, TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = library._sh.sliderIdle}):Play()
 			end
 		end
 	end)
@@ -996,7 +1712,7 @@ local function createBox(option, parent)
 	
 	inputvalue.FocusLost:connect(function(enter)
 		focused = false
-		tweenService:Create(outline, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = Color3.fromRGB(60, 60, 60)}):Play()
+		tweenService:Create(outline, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = library._sh.sliderIdle}):Play()
 		option:SetValue(inputvalue.Text, enter)
 	end)
 	
@@ -1006,6 +1722,18 @@ local function createBox(option, parent)
 		inputvalue.Text = self.value
 		self.callback(value, enter)
 	end
+	
+	function option:RefreshFromFlags()
+		self:SetValue(tostring(library.flags[self.flag] ~= nil and library.flags[self.flag] or self.value), nil)
+	end
+	
+	library:RegisterThemeHook(function()
+		title.TextColor3 = library.Colors.Outline
+		inputvalue.TextColor3 = library.Colors.Text
+		local sh = library._sh
+		outline.ImageColor3 = focused and library.Colors.Accent or (inContact and library.Colors.Outline or sh.sliderIdle)
+		round.ImageColor3 = sh.listRowHi
+	end)
 end
 
 local function createColorPickerWindow(option)
@@ -1015,11 +1743,11 @@ local function createColorPickerWindow(option)
 		BackgroundTransparency = 1,
 		Image = "rbxassetid://3570695787",
 		ImageTransparency = 1,
-		ImageColor3 = Color3.fromRGB(30, 30, 30),
+		ImageColor3 = library._sh.listDrop,
 		ScaleType = Enum.ScaleType.Slice,
 		SliceCenter = Rect.new(100, 100, 100, 100),
 		SliceScale = 0.02,
-		Parent = library.base
+		Parent = library.fadeContainer or library.base
 	})
 		
 	local hue, sat, val = Color3.toHSV(option.color)
@@ -1179,7 +1907,7 @@ local function createColorPickerWindow(option)
 		BackgroundTransparency = 1,
 		Image = "rbxassetid://3570695787",
 		ImageTransparency = 1,
-		ImageColor3 = Color3.fromRGB(20, 20, 20),
+		ImageColor3 = library._sh.chromeButton,
 		ScaleType = Enum.ScaleType.Slice,
 		SliceCenter = Rect.new(100, 100, 100, 100),
 		SliceScale = 0.02,
@@ -1211,7 +1939,7 @@ local function createColorPickerWindow(option)
 	
 	option.resetColor.InputEnded:connect(function(Input)
 		if Input.UserInputType == Enum.UserInputType.MouseMovement and not dragging then
-			tweenService:Create(option.resetColor, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = Color3.fromRGB(20, 20, 20)}):Play()
+			tweenService:Create(option.resetColor, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = library._sh.chromeButton}):Play()
 		end
 	end)
 	
@@ -1222,7 +1950,7 @@ local function createColorPickerWindow(option)
 		BackgroundTransparency = 1,
 		Image = "rbxassetid://3570695787",
 		ImageTransparency = 1,
-		ImageColor3 = Color3.fromRGB(20, 20, 20),
+		ImageColor3 = library._sh.chromeButton,
 		ScaleType = Enum.ScaleType.Slice,
 		SliceCenter = Rect.new(100, 100, 100, 100),
 		SliceScale = 0.02,
@@ -1257,7 +1985,7 @@ local function createColorPickerWindow(option)
 	
 	option.undoColor.InputEnded:connect(function(Input)
 		if Input.UserInputType == Enum.UserInputType.MouseMovement and not dragging then
-			tweenService:Create(option.undoColor, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = Color3.fromRGB(20, 20, 20)}):Play()
+			tweenService:Create(option.undoColor, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = library._sh.chromeButton}):Play()
 		end
 	end)
 	
@@ -1268,7 +1996,7 @@ local function createColorPickerWindow(option)
 		BackgroundTransparency = 1,
 		Image = "rbxassetid://3570695787",
 		ImageTransparency = 1,
-		ImageColor3 = Color3.fromRGB(20, 20, 20),
+		ImageColor3 = library._sh.chromeButton,
 		ScaleType = Enum.ScaleType.Slice,
 		SliceCenter = Rect.new(100, 100, 100, 100),
 		SliceScale = 0.02,
@@ -1300,7 +2028,7 @@ local function createColorPickerWindow(option)
 	
 	option.setColor.InputEnded:connect(function(Input)
 		if Input.UserInputType == Enum.UserInputType.MouseMovement and not dragging then
-			tweenService:Create(option.setColor, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = Color3.fromRGB(20, 20, 20)}):Play()
+			tweenService:Create(option.setColor, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = library._sh.chromeButton}):Play()
 		end
 	end)
 	
@@ -1311,7 +2039,7 @@ local function createColorPickerWindow(option)
 		BackgroundTransparency = 1,
 		Image = "rbxassetid://3570695787",
 		ImageTransparency = 1,
-		ImageColor3 = Color3.fromRGB(20, 20, 20),
+		ImageColor3 = library._sh.chromeButton,
 		ScaleType = Enum.ScaleType.Slice,
 		SliceCenter = Rect.new(100, 100, 100, 100),
 		SliceScale = 0.02,
@@ -1352,7 +2080,23 @@ local function createColorPickerWindow(option)
 	
 	option.rainbow.InputEnded:connect(function(Input)
 		if Input.UserInputType == Enum.UserInputType.MouseMovement and not dragging then
-			tweenService:Create(option.rainbow, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = Color3.fromRGB(20, 20, 20)}):Play()
+			tweenService:Create(option.rainbow, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = library._sh.chromeButton}):Play()
+		end
+	end)
+	
+	library:RegisterThemeHook(function()
+		if not option.mainHolder then return end
+		local sh = library._sh
+		option.mainHolder.ImageColor3 = sh.listDrop
+		option.resetColor.ImageColor3 = sh.chromeButton
+		option.undoColor.ImageColor3 = sh.chromeButton
+		option.setColor.ImageColor3 = sh.chromeButton
+		option.rainbow.ImageColor3 = sh.chromeButton
+		option.resetText.TextColor3 = library.Colors.Text
+		option.undoText.TextColor3 = library.Colors.Text
+		option.setText.TextColor3 = library.Colors.Text
+		if not rainbowEnabled then
+			option.rainbowText.TextColor3 = library.Colors.Text
 		end
 	end)
 	
@@ -1426,7 +2170,7 @@ local function createColor(option, parent, holder)
 		if input.UserInputType == Enum.UserInputType.MouseMovement then
 			inContact = true
 			if not option.open then
-				tweenService:Create(colorBoxOutline, TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = Color3.fromRGB(140, 140, 140)}):Play()
+				tweenService:Create(colorBoxOutline, TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageColor3 = library._sh.tickHoverInactive}):Play()
 			end
 		end
 	end)
@@ -1450,6 +2194,13 @@ local function createColor(option, parent, holder)
 		self.callback(newColor)
 	end
 	
+	function option:RefreshFromFlags()
+		local c = library.flags[self.flag]
+		if typeof(c) == "Color3" then
+			self:SetColor(c)
+		end
+	end
+	
 	function option:Close()
 		library.activePopup = nil
 		self.open = false
@@ -1471,6 +2222,11 @@ local function createColor(option, parent, holder)
 			end 
 		end)
 	end
+	
+	library:RegisterThemeHook(function()
+		option.main.TextColor3 = library.Colors.Text
+		colorBoxOutline.ImageColor3 = inContact and library._sh.tickHoverInactive or library.Colors.Outline
+	end)
 end
 
 local function loadOptions(option, holder)
@@ -1480,7 +2236,11 @@ local function loadOptions(option, holder)
 		elseif newOption.type == "toggle" then
 			createToggle(newOption, option)
 		elseif newOption.type == "button" then
-			createButton(newOption, option)
+			if newOption.splitRight then
+				createSplitButton(newOption, newOption.splitRight, option)
+			else
+				createButton(newOption, option)
+			end
 		elseif newOption.type == "list" then
 			createList(newOption, option, holder)
 		elseif newOption.type == "box" then
@@ -1530,6 +2290,17 @@ local function getFnctions(parent)
 		option.position = #self.options
 		option.flag = option.flag or option.text
 		table.insert(self.options, option)
+		
+		function option:AddButton(rightOption)
+			assert(not self.splitRight, "This row already has a split (right) button")
+			rightOption = typeof(rightOption) == "table" and rightOption or {}
+			rightOption.text = tostring(rightOption.text)
+			rightOption.callback = typeof(rightOption.callback) == "function" and rightOption.callback or function() end
+			rightOption.type = "button"
+			rightOption.flag = rightOption.flag or rightOption.text
+			self.splitRight = rightOption
+			return rightOption
+		end
 		
 		return option
 	end
@@ -1646,7 +2417,19 @@ local UIToggle
 local UnlockMouse
 function library:Init()
 	
+	self:LoadPersistedAppSettings()
+	if self.LoadPersistedSettingsOnInit ~= false and Themes[self.defaultTheme] then
+		self:SetTheme(self.defaultTheme)
+	end
+	
 	self.base = self.base or self:Create("ScreenGui")
+
+	-- If the library is destroyed, loops stop when using UI.alive
+	self.alive = true
+	self.base.Destroying:Connect(function()
+		self.alive = false
+	end)
+
 	if syn and syn.protect_gui then
 		syn.protect_gui(self.base)
 	elseif get_hidden_gui then
@@ -1658,9 +2441,20 @@ function library:Init()
 	
 	self.base.Parent = game:GetService"CoreGui"
 
+	self.fadeContainer = self.fadeContainer or self:Create("Frame", {
+		Name = "UwuwareFadeRoot",
+		Parent = self.base,
+		Size = UDim2.new(1, 0, 1, 0),
+		Position = UDim2.new(0, 0, 0, 0),
+		BackgroundTransparency = 1,
+		BorderSizePixel = 0,
+		ClipsDescendants = false,
+	})
+	library.fadeContainer = library.fadeContainer or self.fadeContainer
+
 	inputService.InputBegan:Connect(function(input, GPE)
 		if not GPE and input.KeyCode == library.CloseKey then
-			self.base.Enabled = not self.base.Enabled
+			self:ToggleUI()
 		end
 	end)
 	
@@ -1669,29 +2463,83 @@ function library:Init()
 		AnchorPoint = Vector2.new(0, 0),
 		Size = UDim2.new(0, 5, 0, 5),
 		BackgroundColor3 = Color3.fromRGB(255, 255, 255),
-		Parent = self.base
+		Parent = self.fadeContainer or self.base,
 	})
 	
+	if self.SettingsGui and not self._themePanelInjected then
+		self._themePanelInjected = true
+		self.flags.uwuware_theme = self.currentTheme
+		if self.flags.uwuware_config_slot == nil then
+			self.flags.uwuware_config_slot = "main"
+		end
+		self.flags.uwuware_startup_style = self.defaultTheme
+		self.flags.uwuware_ui_toggle_key = self.CloseKey.Name
+		
+		local settingsWin = self:CreateWindow("Settings")
+		settingsWin:AddList({
+			text = "Style",
+			values = themeNames,
+			value = self.currentTheme,
+			callback = function(v)
+				self:SetTheme(v)
+			end,
+			flag = "uwuware_theme",
+		})
+
+		self:SetTheme("Dracula")
+
+		settingsWin:AddButton({
+			text = "Save Style",
+			flag = "uw_style_as_default",
+			callback = function()
+				self:SetDefaultTheme(self.currentTheme)
+			end,
+		})
+		
+		settingsWin:AddBind({
+			text = "Toggle UI key",
+			flag = "uwuware_ui_toggle_key",
+			key = self.CloseKey.Name,
+			applyAsCloseKey = true,
+			callback = function() end,
+		})
+
+		if self.SaveSlotEnabled then
+			settingsWin:AddBox({
+				text = "Slot name",
+				flag = "uwuware_config_slot",
+				value = tostring(self.flags.uwuware_config_slot),
+				callback = function() end,
+			})
+			
+			settingsWin:AddButton({
+				text = "Save",
+				flag = "uw_cfg_save",
+				callback = function()
+					self:SaveConfig()
+				end,
+			}):AddButton({
+				text = "Load",
+				flag = "uw_cfg_load",
+				callback = function()
+					self:LoadConfig()
+				end,
+			})
+		end
+	end
+	
+	local guiParent = self.fadeContainer or self.base
 	for _, window in next, self.windows do
 		if window.canInit and not window.init then
 			window.init = true
-			createOptionHolder(window.title, self.base, window)
+			createOptionHolder(window.title, guiParent, window)
 			loadOptions(window)
 		end
 	end
 end
 
 function library:Close()
-	self.open = not self.open
-	self.cursor.Visible = self.open
-	if self.activePopup then
-		self.activePopup:Close()
-	end
-	for _, window in next, self.windows do
-		if window.main then
-			window.main.Visible = self.open
-		end
-	end
+	self:ToggleUI()
 end
 
 inputService.InputBegan:connect(function(input)
