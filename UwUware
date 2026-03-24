@@ -2476,6 +2476,7 @@ function library:Init()
 		self.flags.uwuware_ui_toggle_key = self.CloseKey.Name
 		
 		local settingsWin = self:CreateWindow("Settings")
+		self:SetTheme("Dracula") -- Default Theme
 		settingsWin:AddList({
 			text = "Style",
 			values = themeNames,
@@ -2485,8 +2486,6 @@ function library:Init()
 			end,
 			flag = "uwuware_theme",
 		})
-
-		self:SetTheme("Dracula")
 
 		settingsWin:AddButton({
 			text = "Save Style",
