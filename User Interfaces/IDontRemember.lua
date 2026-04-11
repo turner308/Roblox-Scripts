@@ -4657,15 +4657,15 @@ function Library:CreateWindow(WindowInfo)
 
             TabLabel = New("TextLabel", {
                 BackgroundTransparency = 1,
-                Position = UDim2.fromOffset(30, 0),
-                Size = UDim2.new(1, -30, 1, 0),
+                Position = Icon and UDim2.fromOffset(30, 0) or UDim2.fromScale(0.5, 0.5),
+                Size = UDim2.new(1, Icon and -30 or 0, 1, 0),
                 Text = Name,
-                TextSize = 16,
+                TextSize = Library.TitleSize or 18,
                 TextTransparency = 0.5,
                 TextXAlignment = Icon and Enum.TextXAlignment.Left or Enum.TextXAlignment.Center,
                 Parent = TabButton,
             })
-
+            
             if Icon then
                 TabIcon = New("ImageLabel", {
                     Image = Icon.Url,
@@ -4677,6 +4677,8 @@ function Library:CreateWindow(WindowInfo)
                     SizeConstraint = Enum.SizeConstraint.RelativeYY,
                     Parent = TabButton,
                 })
+            else
+                TabLabel.AnchorPoint = Vector2.new(0.5, 0.5)
             end
 
             --// Tab Container \\--
