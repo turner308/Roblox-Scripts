@@ -4662,7 +4662,7 @@ function Library:CreateWindow(WindowInfo)
                 Text = Name,
                 TextSize = 16,
                 TextTransparency = 0.5,
-                TextXAlignment = Enum.TextXAlignment.Left,
+                TextXAlignment = Icon and Enum.TextXAlignment.Left or Enum.TextXAlignment.Center,
                 Parent = TabButton,
             })
 
