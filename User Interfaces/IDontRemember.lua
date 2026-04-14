@@ -3756,7 +3756,7 @@ do
             table.clear(Buttons)
 
             local Count = 0
-            for _, Value in pairs(Values) do
+            for _, Value in ipairs(Values) do
                 if SearchBox and not tostring(Value):lower():match(SearchBox.Text:lower()) then
                     continue
                 end
