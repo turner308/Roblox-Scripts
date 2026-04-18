@@ -6115,18 +6115,7 @@ local SaveManager = {} do
         self:BuildFolderTree()
     end
 
-    --// Save, Load, Delete, Refresh \\--
-    function SaveManager:Save(name)
-        if (not name) then
-            return false, "no config file is selected"
-        end
-        SaveManager:CheckFolderTree()
-
-        local fullPath = self.Folder .. "/settings/" .. name .. ".json"
-        if SaveManager:CheckSubFolder(true) then
-            fullPath = self.Folder .. "/settings/" .. self.SubFolder .. "/" .. name .. ".json"
-        end
-
+    function SaveManager:GetEncodedData()
         local data = {
             objects = {}
         }
@@ -6152,34 +6141,68 @@ local SaveManager = {} do
             return false, "failed to encode data"
         end
 
-        writefile(fullPath, encoded)
-        return true
+        return encoded
     end
 
-    function SaveManager:Load(name)
+    --// Save, Load, Delete, Refresh \\--
+    function SaveManager:Save(name)
         if (not name) then
             return false, "no config file is selected"
         end
         SaveManager:CheckFolderTree()
 
-        local file = self.Folder .. "/settings/" .. name .. ".json"
+        local fullPath = self.Folder .. "/settings/" .. name .. ".json"
         if SaveManager:CheckSubFolder(true) then
-            file = self.Folder .. "/settings/" .. self.SubFolder .. "/" .. name .. ".json"
+            fullPath = self.Folder .. "/settings/" .. self.SubFolder .. "/" .. name .. ".json"
         end
 
-        if not isfile(file) then return false, "invalid file" end
-
-        local success, decoded = pcall(httpService.JSONDecode, httpService, readfile(file))
-        if not success then return false, "decode error" end
-
-        for _, option in pairs(decoded.objects) do
-            if not option.type then continue end
-            if not self.Parser[option.type] then continue end
-
-            task.spawn(self.Parser[option.type].Load, option.idx, option) -- task.spawn() so the config loading wont get stuck.
+        local EncodedData = SaveManager:GetEncodedData()
+        if not EncodedData then
+            return false, "failed to encode data"
         end
 
+        writefile(fullPath, EncodedData)
         return true
+    end
+
+    function SaveManager:Load(name, rawData)
+        if not rawData then
+            if (not name) then
+                return false, "no config file is selected"
+            end
+            SaveManager:CheckFolderTree()
+
+            local file = self.Folder .. "/settings/" .. name .. ".json"
+            if SaveManager:CheckSubFolder(true) then
+                file = self.Folder .. "/settings/" .. self.SubFolder .. "/" .. name .. ".json"
+            end
+
+            if not isfile(file) then return false, "invalid file" end
+
+            local success, decoded = pcall(httpService.JSONDecode, httpService, readfile(file))
+            if not success then return false, "decode error" end
+
+            for _, option in pairs(decoded.objects) do
+                if not option.type then continue end
+                if not self.Parser[option.type] then continue end
+
+                task.spawn(self.Parser[option.type].Load, option.idx, option) -- task.spawn() so the config loading wont get stuck.
+            end
+
+            return true
+        else
+            local success, decoded = pcall(httpService.JSONDecode, httpService, rawData)
+            if not success then return false, "decode error" end
+
+            for _, option in pairs(decoded.objects) do
+                if not option.type then continue end
+                if not self.Parser[option.type] then continue end
+
+                task.spawn(self.Parser[option.type].Load, option.idx, option) -- task.spawn() so the config loading wont get stuck.
+            end
+
+            return true
+        end
     end
 
     function SaveManager:Delete(name)
