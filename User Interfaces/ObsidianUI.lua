@@ -6442,5 +6442,7 @@ local SaveManager = {} do
 
     SaveManager:BuildFolderTree()
 end
+
+Library.SaveManager = SaveManager
 --#endregion
 return Library, Options, Toggles, Labels, Buttons, SaveManager, ThemeManager
