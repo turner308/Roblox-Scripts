@@ -1,26 +1,24 @@
--- ── GUI Protection ────────────────────────────────────────────────────────────
--- Build a safe protect_gui shim before anything else touches CoreGui.
+
 local function _buildProtectGui()
-	-- gethui() executor support (Fluxus, etc.)
+	if syn and type(syn.protect_gui) == "function" then
+		return syn.protect_gui
+	end
 	if type(gethui) == "function" then
 		local hgui = pcall(gethui) and gethui()
 		if hgui then
 			return function(gui) gui.Parent = hgui end
 		end
 	end
-	-- get_hidden_gui support
 	if type(get_hidden_gui) == "function" then
 		return function(gui) get_hidden_gui(gui) end
 	end
-	-- Fallback: CoreGui with pcall
 	return function(gui)
-		gui.Parent = game:GetService("CoreGui")
+		pcall(function() gui.Parent = game:GetService("CoreGui") end)
 	end
 end
 
 local _protectGui = _buildProtectGui()
 
--- ── Themes ────────────────────────────────────────────────────────────────────
 local Themes = {
 	["Default"] = {
 		Text         = Color3.fromRGB(255, 255, 255),
@@ -110,7 +108,6 @@ for name in pairs(Themes) do
 end
 table.sort(themeNames)
 
--- ── Library table ─────────────────────────────────────────────────────────────
 local library = {
 	Colors                    = {},
 	Themes                    = Themes,
@@ -135,7 +132,6 @@ for k, v in pairs(Themes.Default) do
 	library.Colors[k] = v
 end
 
--- ── Shade cache ───────────────────────────────────────────────────────────────
 function library:RefreshShades()
 	local B, T, O = self.Colors.Background, self.Colors.Text, self.Colors.Outline
 	self._sh = {
@@ -180,7 +176,6 @@ end
 library:RefreshShades()
 library.flags.uwuware_theme = library.currentTheme
 
--- ── Services ──────────────────────────────────────────────────────────────────
 local runService   = game:GetService("RunService")
 local tweenService = game:GetService("TweenService")
 local textService  = game:GetService("TextService")
@@ -193,7 +188,6 @@ library.isMobile = (
 	inputService:GetPlatform() == Enum.Platform.IOS
 )
 
--- ── Serialization ─────────────────────────────────────────────────────────────
 local function serializeFlagValue(v)
 	local ty = typeof(v)
 	if ty == "Color3" then
@@ -234,7 +228,6 @@ function library:SyncUIFromFlags()
 	end
 end
 
--- ── Config / persistence ──────────────────────────────────────────────────────
 function library:GetAppSettingsPath()
 	return (self.DataDirectory or "uwuware") .. "/app_settings.json"
 end
@@ -341,7 +334,6 @@ function library:LoadConfig(slot)
 	return true
 end
 
--- ── Fade system ───────────────────────────────────────────────────────────────
 local fadePropKeys = {
 	"BackgroundTransparency", "TextTransparency", "TextStrokeTransparency",
 	"ImageTransparency", "GroupTransparency", "ScrollBarImageTransparency",
@@ -484,7 +476,6 @@ function library:ToggleUI()
 	if self._uiVisible then self:HideUI() else self:ShowUI() end
 end
 
--- ── Drag system ───────────────────────────────────────────────────────────────
 local dragging, dragInput, dragStart, startPos, dragObject
 
 local blacklistedKeys = {
@@ -521,7 +512,6 @@ local function updateDrag(input)
 	)
 end
 
--- ── Rainbow / chroma ──────────────────────────────────────────────────────────
 local chromaColor = Color3.new(1, 0, 0)
 local RAINBOW_TIME = 5
 task.spawn(function()
@@ -531,7 +521,6 @@ task.spawn(function()
 	end
 end)
 
--- ── Instance factory ──────────────────────────────────────────────────────────
 function library:Create(class, properties)
 	local inst = Instance.new(class)
 	if type(properties) == "table" then
@@ -542,7 +531,6 @@ function library:Create(class, properties)
 	return inst
 end
 
--- ── Option holders ────────────────────────────────────────────────────────────
 local function createOptionHolder(holderTitle, parent, parentTable, subHolder)
 	local size = subHolder and 34 or 40
 	local sh = library._sh
@@ -697,7 +685,6 @@ local function createOptionHolder(holderTitle, parent, parentTable, subHolder)
 	return parentTable
 end
 
--- ── Label ─────────────────────────────────────────────────────────────────────
 local function createLabel(option, parent)
 	local main = library:Create("TextLabel", {
 		LayoutOrder        = option.position,
@@ -716,7 +703,6 @@ local function createLabel(option, parent)
 	library:RegisterThemeHook(function() main.TextColor3 = library.Colors.Text end)
 end
 
--- ── Toggle ────────────────────────────────────────────────────────────────────
 local function createToggle(option, parent)
 	local main = library:Create("TextLabel", {
 		LayoutOrder        = option.position,
@@ -846,7 +832,6 @@ local function createToggle(option, parent)
 	end)
 end
 
--- ── Shared button wiring ──────────────────────────────────────────────────────
 local function wireStandardButton(main, roundImg, option)
 	local inContact = false
 	local clicking  = false
@@ -888,7 +873,6 @@ local function wireStandardButton(main, roundImg, option)
 	end)
 end
 
--- ── Button ────────────────────────────────────────────────────────────────────
 local function createButton(option, parent)
 	local main = library:Create("TextLabel", {
 		ZIndex     = 2,
@@ -917,7 +901,6 @@ local function createButton(option, parent)
 	wireStandardButton(main, roundImg, option)
 end
 
--- ── Split button ──────────────────────────────────────────────────────────────
 local function createSplitButton(leftOption, rightOption, parent)
 	local row = library:Create("Frame", {
 		LayoutOrder        = leftOption.position,
@@ -962,7 +945,6 @@ local function createSplitButton(leftOption, rightOption, parent)
 	addHalf(rightOption, 0.5, 3)
 end
 
--- ── Bind ──────────────────────────────────────────────────────────────────────
 local function createBind(option, parent)
 	local binding = false
 	local loop
@@ -1111,7 +1093,6 @@ local function createBind(option, parent)
 	end)
 end
 
--- ── Slider ────────────────────────────────────────────────────────────────────
 local function createSlider(option, parent)
 	local main = library:Create("Frame", {
 		LayoutOrder = option.position,
@@ -1192,7 +1173,6 @@ local function createSlider(option, parent)
 		Parent     = valueRound,
 	})
 
-	-- Initial fill position
 	if option.min >= 0 then
 		fill.Size = UDim2.new((option.value - option.min) / (option.max - option.min), 0, 1, 0)
 	else
@@ -1289,7 +1269,6 @@ local function createSlider(option, parent)
 	end)
 end
 
--- ── List ──────────────────────────────────────────────────────────────────────
 local function createList(option, parent)
 	local valueCount = 0
 	option._themeRows = option._themeRows or {}
@@ -1561,7 +1540,6 @@ local function createList(option, parent)
 	return option
 end
 
--- ── Box ───────────────────────────────────────────────────────────────────────
 local function createBox(option, parent)
 	local main = library:Create("Frame", {
 		LayoutOrder = option.position,
@@ -1678,7 +1656,6 @@ local function createBox(option, parent)
 	end)
 end
 
--- ── Color picker window ───────────────────────────────────────────────────────
 local function createColorPickerWindow(option)
 	local sh = library._sh
 	option.mainHolder = library:Create("ImageButton", {
@@ -1717,7 +1694,6 @@ local function createColorPickerWindow(option)
 		self.satvalSlider.Position = UDim2.new(sat, 0, 1 - val, 0)
 	end
 
-	-- Hue bar
 	option.hue = library:Create("ImageLabel", {
 		ZIndex     = 3,
 		AnchorPoint = Vector2.new(0, 1),
@@ -1778,7 +1754,6 @@ local function createColorPickerWindow(option)
 		if input.UserInputType == Enum.UserInputType.MouseButton1 then editinghue = false end
 	end)
 
-	-- Saturation/value square
 	option.satval = library:Create("ImageLabel", {
 		ZIndex     = 3,
 		Position   = UDim2.new(0, 8, 0, 8),
@@ -1828,7 +1803,6 @@ local function createColorPickerWindow(option)
 		if input.UserInputType == Enum.UserInputType.MouseButton1 then editingsatval = false end
 	end)
 
-	-- Color preview
 	option.visualize2 = library:Create("ImageLabel", {
 		ZIndex     = 3,
 		Position   = UDim2.new(1, -8, 0, 8),
@@ -1842,7 +1816,6 @@ local function createColorPickerWindow(option)
 		Parent     = option.mainHolder,
 	})
 
-	-- Chrome buttons helper
 	local function makeChrome(yPos, labelText)
 		local btn = library:Create("ImageLabel", {
 			ZIndex     = 3,
@@ -1945,7 +1918,6 @@ local function createColorPickerWindow(option)
 	return option
 end
 
--- ── Color (inline) ────────────────────────────────────────────────────────────
 local function createColor(option, parent)
 	option.main = library:Create("TextLabel", {
 		LayoutOrder = option.position,
@@ -2027,7 +1999,7 @@ local function createColor(option, parent)
 
 	option.main.InputEnded:Connect(function(input)
 		if input.UserInputType == Enum.UserInputType.MouseMovement then
-			inContact = false  -- (was incorrectly `true` in original)
+			inContact = false
 			if not option.open then
 				tweenService:Create(colorBoxOutline, ti01, { ImageColor3 = library.Colors.Outline }):Play()
 			end
@@ -2079,7 +2051,6 @@ local function createColor(option, parent)
 	end)
 end
 
--- ── Option loader / builder ───────────────────────────────────────────────────
 local function loadOptions(option)
 	for _, newOption in ipairs(option.options) do
 		if     newOption.type == "label"  then createLabel(newOption, option)
@@ -2235,7 +2206,6 @@ local function getFunctions(parent)
 	end
 end
 
--- ── Window factory ────────────────────────────────────────────────────────────
 function library:CreateWindow(title)
 	local window = {
 		title    = tostring(title),
@@ -2250,7 +2220,6 @@ function library:CreateWindow(title)
 	return window
 end
 
--- ── Init ──────────────────────────────────────────────────────────────────────
 function library:Init()
 	self:LoadPersistedAppSettings()
 	if self.LoadPersistedSettingsOnInit ~= false and Themes[self.defaultTheme] then
@@ -2267,22 +2236,15 @@ function library:Init()
 	self.alive = true
 	self.base.Destroying:Connect(function() self.alive = false end)
 
-	-- ── GUI protection (hardened) ──────────────────────────────────────────
-	-- 1) Try real protect_gui / gethui / get_hidden_gui
-	-- 2) Ensure no other local script can re-parent or destroy the ScreenGui
 	_protectGui(self.base)
-	-- Explicit CoreGui parent re-enforcement after protect attempt
 	pcall(function() self.base.Parent = game:GetService("CoreGui") end)
 
-	-- 3) Guard against the ScreenGui being unexpectedly reparented out of
-	--    protected storage (e.g. a rogue LocalScript ancestry change).
 	self.base.AncestryChanged:Connect(function(_, newParent)
 		if newParent ~= game:GetService("CoreGui") then
 			task.defer(function() _protectGui(self.base) end)
 		end
 	end)
 
-	-- Fade container
 	self.fadeContainer = self.fadeContainer or self:Create("Frame", {
 		Name               = "UwuwareFadeRoot",
 		Parent             = self.base,
@@ -2292,14 +2254,12 @@ function library:Init()
 		ClipsDescendants   = false,
 	})
 
-	-- Toggle key
 	inputService.InputBegan:Connect(function(input, gpe)
 		if not gpe and input.KeyCode == self.CloseKey then
 			self:ToggleUI()
 		end
 	end)
 
-	-- Cursor dot
 	self.cursor = self.cursor or self:Create("Frame", {
 		ZIndex           = 100,
 		AnchorPoint      = Vector2.new(0, 0),
@@ -2308,7 +2268,6 @@ function library:Init()
 		Parent           = self.fadeContainer or self.base,
 	})
 
-	-- Built-in settings panel
 	if self.SettingsGui and not self._themePanelInjected then
 		self._themePanelInjected = true
 		self.flags.uwuware_theme        = self.currentTheme
@@ -2378,7 +2337,6 @@ function library:Close()
 	self:ToggleUI()
 end
 
--- ── Global popup dismiss ──────────────────────────────────────────────────────
 inputService.InputBegan:Connect(function(input)
 	if input.UserInputType ~= Enum.UserInputType.MouseButton1 then return end
 	if not library.activePopup then return end
@@ -2392,11 +2350,9 @@ inputService.InputBegan:Connect(function(input)
 	end
 end)
 
--- ── Cursor + drag update ──────────────────────────────────────────────────────
 inputService.InputChanged:Connect(function(input)
 	if input.UserInputType == Enum.UserInputType.MouseMovement then
 		if library.cursor then
-			-- GetMouseLocation already returns screen-space coords; no manual offset needed.
 			local mouse = inputService:GetMouseLocation()
 			library.cursor.Position = UDim2.new(0, mouse.X - 2, 0, mouse.Y - 2)
 		end
