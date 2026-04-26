@@ -5,12 +5,6 @@ if not pcall(function() return syn.protect_gui end) then
     end
 end
 
-for i,v in pairs(game:GetService("CoreGui"):GetDescendants()) do
-    if v.Name == "ScreenGui" and v:FindFirstChild("ImageButton") then
-        v:Destroy()
-    end
-end
-
 local Themes = {
     ['Default'] = {
         Text = Color3.fromRGB(255, 255, 255),
@@ -2501,6 +2495,13 @@ function library:Init()
 			key = self.CloseKey.Name,
 			applyAsCloseKey = true,
 			callback = function() end,
+		})
+
+		settingsWin:AddButton({
+		    text = "Destroy Script",
+		    callback = function()
+		        self.base:Destroy()
+		    end,
 		})
 
 		if self.SaveSlotEnabled then
