@@ -1,4 +1,3 @@
-
 local function _buildProtectGui()
 	if syn and type(syn.protect_gui) == "function" then
 		return syn.protect_gui
@@ -100,6 +99,71 @@ local Themes = {
 		Outline      = Color3.fromRGB(25, 25, 25),
 		Background   = Color3.fromRGB(50, 50, 50),
 	},
+	-- ── NEW THEMES ──────────────────────────────────────────────────────
+	["Creme"] = {
+		Text         = Color3.fromRGB(60,  50,  40),
+		Topbar       = Color3.fromRGB(235, 225, 210),
+		TopbarArrow  = Color3.fromRGB(220, 208, 190),
+		Accent       = Color3.fromRGB(180, 120, 60),
+		Outline      = Color3.fromRGB(200, 188, 170),
+		Background   = Color3.fromRGB(245, 238, 225),
+	},
+	["Abyss"] = {
+		Text         = Color3.fromRGB(200, 220, 255),
+		Topbar       = Color3.fromRGB(8,   12,  28),
+		TopbarArrow  = Color3.fromRGB(5,    8,  18),
+		Accent       = Color3.fromRGB(60,  130, 255),
+		Outline      = Color3.fromRGB(25,  35,  65),
+		Background   = Color3.fromRGB(5,    8,  18),
+	},
+	["Rose Gold"] = {
+		Text         = Color3.fromRGB(255, 240, 235),
+		Topbar       = Color3.fromRGB(80,  50,  55),
+		TopbarArrow  = Color3.fromRGB(60,  35,  40),
+		Accent       = Color3.fromRGB(220, 130, 120),
+		Outline      = Color3.fromRGB(110, 75,  80),
+		Background   = Color3.fromRGB(60,  35,  40),
+	},
+	["Slate"] = {
+		Text         = Color3.fromRGB(200, 210, 220),
+		Topbar       = Color3.fromRGB(42,  50,  60),
+		TopbarArrow  = Color3.fromRGB(30,  36,  44),
+		Accent       = Color3.fromRGB(80,  180, 200),
+		Outline      = Color3.fromRGB(60,  72,  88),
+		Background   = Color3.fromRGB(30,  36,  44),
+	},
+	["Candy"] = {
+		Text         = Color3.fromRGB(255, 255, 255),
+		Topbar       = Color3.fromRGB(60,  20,  60),
+		TopbarArrow  = Color3.fromRGB(45,  12,  45),
+		Accent       = Color3.fromRGB(255, 100, 200),
+		Outline      = Color3.fromRGB(100, 40, 100),
+		Background   = Color3.fromRGB(45,  12,  45),
+	},
+	["Obsidian"] = {
+		Text         = Color3.fromRGB(210, 210, 210),
+		Topbar       = Color3.fromRGB(22,  22,  22),
+		TopbarArrow  = Color3.fromRGB(14,  14,  14),
+		Accent       = Color3.fromRGB(255, 200, 60),
+		Outline      = Color3.fromRGB(45,  45,  45),
+		Background   = Color3.fromRGB(14,  14,  14),
+	},
+	["Nord"] = {
+		Text         = Color3.fromRGB(236, 239, 244),
+		Topbar       = Color3.fromRGB(46,  52,  64),
+		TopbarArrow  = Color3.fromRGB(36,  41,  51),
+		Accent       = Color3.fromRGB(136, 192, 208),
+		Outline      = Color3.fromRGB(67,  76,  94),
+		Background   = Color3.fromRGB(36,  41,  51),
+	},
+	["Mocha"] = {
+		Text         = Color3.fromRGB(245, 224, 220),
+		Topbar       = Color3.fromRGB(49,  38,  48),
+		TopbarArrow  = Color3.fromRGB(30,  20,  28),
+		Accent       = Color3.fromRGB(203, 166, 247),
+		Outline      = Color3.fromRGB(69,  58,  68),
+		Background   = Color3.fromRGB(30,  20,  28),
+	},
 }
 
 local themeNames = {}
@@ -151,6 +215,7 @@ function library:RefreshShades()
 		sliderTrack     = B:Lerp(Color3.new(1,1,1), 0.06),
 		sliderIdle      = B:Lerp(Color3.new(1,1,1), 0.18),
 		chromeButton    = B:Lerp(Color3.new(1,1,1), 0.02),
+		tooltipBg       = B:Lerp(Color3.new(0,0,0), 0.15),
 	}
 end
 
@@ -188,6 +253,82 @@ library.isMobile = (
 	inputService:GetPlatform() == Enum.Platform.IOS
 )
 
+-- ── Tooltip system ─────────────────────────────────────────────────────────
+local tooltipFrame, tooltipLabel
+local tooltipConn
+
+local function ensureTooltip()
+	if tooltipFrame then return end
+	local base = library.fadeContainer or library.base
+	if not base then return end
+	tooltipFrame = library:Create("ImageLabel", {
+		ZIndex           = 200,
+		BackgroundTransparency = 1,
+		Image            = "rbxassetid://3570695787",
+		ImageColor3      = library._sh.tooltipBg,
+		ScaleType        = Enum.ScaleType.Slice,
+		SliceCenter      = Rect.new(100, 100, 100, 100),
+		SliceScale       = 0.02,
+		Visible          = false,
+		Size             = UDim2.new(0, 160, 0, 28),
+		Parent           = base,
+	})
+	tooltipLabel = library:Create("TextLabel", {
+		ZIndex           = 201,
+		Size             = UDim2.new(1, -12, 1, 0),
+		Position         = UDim2.new(0, 6, 0, 0),
+		BackgroundTransparency = 1,
+		TextSize         = 14,
+		Font             = Enum.Font.Gotham,
+		TextColor3       = library.Colors.Text,
+		TextXAlignment   = Enum.TextXAlignment.Left,
+		TextWrapped      = true,
+		RichText         = true,
+		Parent           = tooltipFrame,
+	})
+	library:RegisterThemeHook(function()
+		if not tooltipFrame then return end
+		tooltipFrame.ImageColor3 = library._sh.tooltipBg
+		tooltipLabel.TextColor3  = library.Colors.Text
+	end)
+end
+
+local function showTooltip(text)
+	ensureTooltip()
+	if not tooltipFrame then return end
+	tooltipLabel.Text = text
+	local textSize = textService:GetTextSize(text, 14, Enum.Font.Gotham, Vector2.new(200, 9e9))
+	tooltipFrame.Size = UDim2.new(0, textSize.X + 16, 0, textSize.Y + 10)
+	tooltipFrame.Visible = true
+	tooltipFrame.ImageTransparency = 0
+	tooltipConn = runService.Heartbeat:Connect(function()
+		if not tooltipFrame then return end
+		local mouse = inputService:GetMouseLocation()
+		tooltipFrame.Position = UDim2.new(0, mouse.X + 14, 0, mouse.Y - tooltipFrame.AbsoluteSize.Y / 2)
+	end)
+end
+
+local function hideTooltip()
+	if tooltipConn then tooltipConn:Disconnect(); tooltipConn = nil end
+	if tooltipFrame then tooltipFrame.Visible = false end
+end
+
+--- Wire tooltip to any GuiObject
+local function wireTooltip(obj, text)
+	if not text or text == "" then return end
+	obj.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseMovement then
+			showTooltip(text)
+		end
+	end)
+	obj.InputEnded:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseMovement then
+			hideTooltip()
+		end
+	end)
+end
+
+-- ── Serialization ──────────────────────────────────────────────────────────
 local function serializeFlagValue(v)
 	local ty = typeof(v)
 	if ty == "Color3" then
@@ -197,6 +338,11 @@ local function serializeFlagValue(v)
 			g = math.floor(v.G * 255 + 0.5),
 			b = math.floor(v.B * 255 + 0.5),
 		}
+	elseif ty == "table" then
+		-- multilist: array of strings
+		local isArr = true
+		for k in pairs(v) do if type(k) ~= "number" then isArr = false; break end end
+		if isArr then return { __uw = "array", v = v } end
 	elseif ty == "boolean" or ty == "number" or ty == "string" then
 		return v
 	end
@@ -206,6 +352,8 @@ end
 local function deserializeFlagValue(v)
 	if type(v) == "table" and v.__uw == "Color3" then
 		return Color3.fromRGB(tonumber(v.r) or 255, tonumber(v.g) or 255, tonumber(v.b) or 255)
+	elseif type(v) == "table" and v.__uw == "array" then
+		return v.v
 	elseif type(v) == "table" and v.__uw == "tostring" then
 		return v.v
 	end
@@ -334,6 +482,7 @@ function library:LoadConfig(slot)
 	return true
 end
 
+-- ── Fade helpers ───────────────────────────────────────────────────────────
 local fadePropKeys = {
 	"BackgroundTransparency", "TextTransparency", "TextStrokeTransparency",
 	"ImageTransparency", "GroupTransparency", "ScrollBarImageTransparency",
@@ -450,6 +599,7 @@ function library:HideUI()
 	local dur = self.UIFadeDuration or 0.28
 	self.open, self._uiVisible = false, false
 	if self.activePopup then self.activePopup:Close() end
+	hideTooltip()
 	if not self.fadeContainer then
 		self.base.Enabled = false
 		return
@@ -531,6 +681,7 @@ function library:Create(class, properties)
 	return inst
 end
 
+-- ── Option holder ──────────────────────────────────────────────────────────
 local function createOptionHolder(holderTitle, parent, parentTable, subHolder)
 	local size = subHolder and 34 or 40
 	local sh = library._sh
@@ -685,6 +836,7 @@ local function createOptionHolder(holderTitle, parent, parentTable, subHolder)
 	return parentTable
 end
 
+-- ── Label ──────────────────────────────────────────────────────────────────
 local function createLabel(option, parent)
 	local main = library:Create("TextLabel", {
 		LayoutOrder        = option.position,
@@ -697,12 +849,14 @@ local function createLabel(option, parent)
 		TextXAlignment     = Enum.TextXAlignment.Left,
 		Parent             = parent.content,
 	})
+	wireTooltip(main, option.tooltip)
 	setmetatable(option, { __newindex = function(_, i, v)
 		if i == "Text" then main.Text = " " .. tostring(v) end
 	end })
 	library:RegisterThemeHook(function() main.TextColor3 = library.Colors.Text end)
 end
 
+-- ── Toggle ─────────────────────────────────────────────────────────────────
 local function createToggle(option, parent)
 	local main = library:Create("TextLabel", {
 		LayoutOrder        = option.position,
@@ -763,6 +917,8 @@ local function createToggle(option, parent)
 	local inContact = false
 	local ti02 = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
 	local ti01 = TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+
+	wireTooltip(main, option.tooltip)
 
 	main.InputBegan:Connect(function(input)
 		local ut = input.UserInputType
@@ -832,6 +988,7 @@ local function createToggle(option, parent)
 	end)
 end
 
+-- ── Button helpers ─────────────────────────────────────────────────────────
 local function wireStandardButton(main, roundImg, option)
 	local inContact = false
 	local clicking  = false
@@ -898,6 +1055,7 @@ local function createButton(option, parent)
 		SliceScale  = 0.02,
 		Parent      = main,
 	})
+	wireTooltip(main, option.tooltip)
 	wireStandardButton(main, roundImg, option)
 end
 
@@ -938,6 +1096,7 @@ local function createSplitButton(leftOption, rightOption, parent)
 			SliceScale  = 0.02,
 			Parent      = main,
 		})
+		wireTooltip(main, opt.tooltip)
 		wireStandardButton(main, roundImg, opt)
 	end
 
@@ -945,6 +1104,7 @@ local function createSplitButton(leftOption, rightOption, parent)
 	addHalf(rightOption, 0.5, 3)
 end
 
+-- ── Bind ───────────────────────────────────────────────────────────────────
 local function createBind(option, parent)
 	local binding = false
 	local loop
@@ -997,6 +1157,8 @@ local function createBind(option, parent)
 	local inContact = false
 	local ti01 = TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
 	local ti02 = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+
+	wireTooltip(main, option.tooltip)
 
 	main.InputBegan:Connect(function(input)
 		if input.UserInputType == Enum.UserInputType.MouseMovement then
@@ -1093,6 +1255,7 @@ local function createBind(option, parent)
 	end)
 end
 
+-- ── Slider ─────────────────────────────────────────────────────────────────
 local function createSlider(option, parent)
 	local main = library:Create("Frame", {
 		LayoutOrder = option.position,
@@ -1184,6 +1347,8 @@ local function createSlider(option, parent)
 	local inContact = false
 	local ti02 = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
 
+	wireTooltip(main, option.tooltip)
+
 	main.InputBegan:Connect(function(input)
 		local ut = input.UserInputType
 		if ut == Enum.UserInputType.MouseButton1 then
@@ -1269,6 +1434,7 @@ local function createSlider(option, parent)
 	end)
 end
 
+-- ── Single-select List (original) ─────────────────────────────────────────
 local function createList(option, parent)
 	local valueCount = 0
 	option._themeRows = option._themeRows or {}
@@ -1330,6 +1496,8 @@ local function createList(option, parent)
 		ScaleType  = Enum.ScaleType.Fit,
 		Parent     = roundImg,
 	})
+
+	wireTooltip(roundImg, option.tooltip)
 
 	option.mainHolder = library:Create("ImageButton", {
 		ZIndex     = 3,
@@ -1540,6 +1708,379 @@ local function createList(option, parent)
 	return option
 end
 
+-- ── Multi-select List (NEW) ────────────────────────────────────────────────
+local function createMultiList(option, parent)
+	local valueCount = 0
+	option._themeRows  = option._themeRows or {}
+	option._checkIcons = option._checkIcons or {}
+	-- option.values  = all possible values
+	-- option.selected = { [value] = true }
+
+	-- Helper: rebuild display text
+	local function buildDisplayText()
+		local sel = {}
+		for k, v in pairs(option.selected) do
+			if v then table.insert(sel, k) end
+		end
+		table.sort(sel)
+		return #sel == 0 and "None" or table.concat(sel, ", ")
+	end
+
+	local main = library:Create("Frame", {
+		LayoutOrder = option.position,
+		Size        = UDim2.new(1, 0, 0, 52),
+		BackgroundTransparency = 1,
+		Parent      = parent.content,
+	})
+
+	local sh = library._sh
+	local roundImg = library:Create("ImageLabel", {
+		Position    = UDim2.new(0, 6, 0, 4),
+		Size        = UDim2.new(1, -12, 1, -10),
+		BackgroundTransparency = 1,
+		Image       = "rbxassetid://3570695787",
+		ImageColor3 = sh.surface,
+		ScaleType   = Enum.ScaleType.Slice,
+		SliceCenter = Rect.new(100, 100, 100, 100),
+		SliceScale  = 0.02,
+		Parent      = main,
+	})
+
+	local titleLbl = library:Create("TextLabel", {
+		Position   = UDim2.new(0, 12, 0, 8),
+		Size       = UDim2.new(1, -24, 0, 14),
+		BackgroundTransparency = 1,
+		Text       = option.text,
+		TextSize   = 14,
+		Font       = Enum.Font.GothamBold,
+		TextColor3 = sh.mutedText,
+		RichText   = true,
+		TextXAlignment = Enum.TextXAlignment.Left,
+		Parent     = main,
+	})
+
+	local listvalue = library:Create("TextLabel", {
+		Position   = UDim2.new(0, 12, 0, 20),
+		Size       = UDim2.new(1, -36, 0, 24),
+		BackgroundTransparency = 1,
+		Text       = buildDisplayText(),
+		TextSize   = 15,
+		RichText   = true,
+		Font       = Enum.Font.Gotham,
+		TextColor3 = library.Colors.Text,
+		TextXAlignment = Enum.TextXAlignment.Left,
+		TextTruncate   = Enum.TextTruncate.AtEnd,
+		Parent     = main,
+	})
+
+	-- Multi icon (stacked lines)
+	library:Create("ImageLabel", {
+		Position   = UDim2.new(1, -16, 0, 16),
+		Size       = UDim2.new(-1, 32, 1, -32),
+		SizeConstraint = Enum.SizeConstraint.RelativeYY,
+		Rotation   = 90,
+		BackgroundTransparency = 1,
+		Image      = "rbxassetid://4918373417",
+		ImageColor3 = sh.mutedText,
+		ScaleType  = Enum.ScaleType.Fit,
+		Parent     = roundImg,
+	})
+
+	wireTooltip(roundImg, option.tooltip)
+
+	option.mainHolder = library:Create("ImageButton", {
+		ZIndex     = 3,
+		Size       = UDim2.new(0, 240, 0, 52),
+		BackgroundTransparency = 1,
+		Image      = "rbxassetid://3570695787",
+		ImageTransparency = 1,
+		ImageColor3 = sh.listDrop,
+		ScaleType  = Enum.ScaleType.Slice,
+		SliceCenter = Rect.new(100, 100, 100, 100),
+		SliceScale = 0.02,
+		Visible    = false,
+		Parent     = library.fadeContainer or library.base,
+	})
+
+	local content = library:Create("ScrollingFrame", {
+		ZIndex     = 3,
+		Size       = UDim2.new(1, 0, 1, 0),
+		BackgroundTransparency = 1,
+		BorderSizePixel = 0,
+		ScrollBarImageColor3 = Color3.new(0, 0, 0),
+		ScrollBarThickness = 0,
+		ScrollingDirection = Enum.ScrollingDirection.Y,
+		Parent     = option.mainHolder,
+	})
+
+	library:Create("UIPadding", { PaddingTop = UDim.new(0, 6), Parent = content })
+
+	local layout = library:Create("UIListLayout", { Parent = content })
+
+	layout.Changed:Connect(function()
+		option.mainHolder.Size = UDim2.new(0, 240, 0, (valueCount > 4 and 4 * 40 or layout.AbsoluteContentSize.Y) + 12)
+		content.CanvasSize    = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y + 12)
+	end)
+
+	local inContact = false
+	local ti01 = TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+	local ti03 = TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
+
+	roundImg.InputBegan:Connect(function(input)
+		local ut = input.UserInputType
+		if ut == Enum.UserInputType.MouseButton1 then
+			if library.activePopup then library.activePopup:Close() end
+			local pos = main.AbsolutePosition
+			option.mainHolder.Position = UDim2.new(0, pos.X - 5, 0, pos.Y - 10)
+			option.open = true
+			option.mainHolder.Visible = true
+			library.activePopup = option
+			content.ScrollBarThickness = 6
+			tweenService:Create(option.mainHolder, ti03, {
+				ImageTransparency = 0,
+				Position = UDim2.new(0, pos.X - 5, 0, pos.Y - 4),
+			}):Play()
+			tweenService:Create(option.mainHolder,
+				TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out, 0, false, 0.1),
+				{ Position = UDim2.new(0, pos.X - 5, 0, pos.Y + 1) }
+			):Play()
+			for _, label in ipairs(content:GetChildren()) do
+				if label:IsA("Frame") then
+					for _, c in ipairs(label:GetChildren()) do
+						if c:IsA("TextLabel") then
+							tweenService:Create(c, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { TextTransparency = 0 }):Play()
+						end
+					end
+					tweenService:Create(label, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { BackgroundTransparency = 0 }):Play()
+				end
+			end
+		elseif ut == Enum.UserInputType.MouseMovement then
+			inContact = true
+			if not option.open then
+				tweenService:Create(roundImg, ti01, { ImageColor3 = library._sh.surfaceHi }):Play()
+			end
+		end
+	end)
+
+	roundImg.InputEnded:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseMovement then
+			inContact = false
+			if not option.open then
+				tweenService:Create(roundImg, ti01, { ImageColor3 = library._sh.surface }):Play()
+			end
+		end
+	end)
+
+	function option:AddValue(value)
+		valueCount += 1
+		local s = library._sh
+		local isSelected = self.selected[value] == true
+
+		local row = library:Create("Frame", {
+			ZIndex     = 3,
+			Size       = UDim2.new(1, 0, 0, 40),
+			BackgroundColor3 = s.listRow,
+			BorderSizePixel = 0,
+			BackgroundTransparency = 1,
+			Parent     = content,
+		})
+		table.insert(option._themeRows, row)
+
+		local rowText = library:Create("TextLabel", {
+			ZIndex     = 3,
+			Position   = UDim2.new(0, 36, 0, 0),
+			Size       = UDim2.new(1, -44, 1, 0),
+			BackgroundTransparency = 1,
+			Text       = value,
+			TextSize   = 14,
+			TextTransparency = self.open and 0 or 1,
+			Font       = Enum.Font.Gotham,
+			RichText   = true,
+			TextColor3 = library.Colors.Text,
+			TextXAlignment = Enum.TextXAlignment.Left,
+			Parent     = row,
+		})
+
+		-- Tiny checkbox inside the row
+		local checkOuter = library:Create("ImageLabel", {
+			ZIndex     = 3,
+			AnchorPoint = Vector2.new(0, 0.5),
+			Position   = UDim2.new(0, 8, 0.5, 0),
+			Size       = UDim2.new(0, 18, 0, 18),
+			BackgroundTransparency = 1,
+			Image      = "rbxassetid://3570695787",
+			ImageColor3 = isSelected and library.Colors.Accent or s.sliderIdle,
+			ScaleType  = Enum.ScaleType.Slice,
+			SliceCenter = Rect.new(100, 100, 100, 100),
+			SliceScale = 0.02,
+			Parent     = row,
+		})
+		local checkInner = library:Create("ImageLabel", {
+			ZIndex     = 3,
+			Position   = UDim2.new(0, 3, 0, 3),
+			Size       = isSelected and UDim2.new(1, -6, 1, -6) or UDim2.new(0, 0, 1, -6),
+			BackgroundTransparency = 1,
+			Image      = "rbxassetid://4919148038",
+			ImageColor3 = library._sh.deepBox,
+			ClipsDescendants = true,
+			Parent     = checkOuter,
+		})
+		table.insert(option._checkIcons, { outer = checkOuter, inner = checkInner, value = value })
+
+		local lContact, lClicking = false, false
+		local lti01 = TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+		local lti02 = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+
+		row.InputBegan:Connect(function(input)
+			local ut = input.UserInputType
+			if ut == Enum.UserInputType.MouseButton1 then
+				lClicking = true
+				tweenService:Create(row, lti02, { BackgroundColor3 = library.Colors.Topbar }):Play()
+				self:ToggleValue(value)
+			elseif ut == Enum.UserInputType.MouseMovement then
+				lContact = true
+				if not lClicking then
+					tweenService:Create(row, lti01, { BackgroundColor3 = library._sh.listRowHi }):Play()
+				end
+			end
+		end)
+
+		row.InputEnded:Connect(function(input)
+			local ut = input.UserInputType
+			if ut == Enum.UserInputType.MouseButton1 then
+				lClicking = false
+				tweenService:Create(row, lti02, {
+					BackgroundColor3 = lContact and library._sh.listRowHi or library._sh.listRow,
+				}):Play()
+			elseif ut == Enum.UserInputType.MouseMovement then
+				lContact = false
+				if not lClicking then
+					tweenService:Create(row, lti01, { BackgroundColor3 = library._sh.listRow }):Play()
+				end
+			end
+		end)
+	end
+
+	function option:ToggleValue(value)
+		self.selected[value] = not self.selected[value]
+		-- Update checkbox visuals
+		local lti02 = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+		for _, ci in ipairs(self._checkIcons) do
+			if ci.value == value then
+				local sel = self.selected[value]
+				tweenService:Create(ci.outer, lti02, {
+					ImageColor3 = sel and library.Colors.Accent or library._sh.sliderIdle,
+				}):Play()
+				ci.inner:TweenSize(
+					sel and UDim2.new(1, -6, 1, -6) or UDim2.new(0, 0, 1, -6),
+					Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.2, true
+				)
+			end
+		end
+		listvalue.Text = buildDisplayText()
+		-- Build array for flag
+		local arr = {}
+		for k, v in pairs(self.selected) do
+			if v then table.insert(arr, k) end
+		end
+		table.sort(arr)
+		library.flags[self.flag] = arr
+		self.callback(arr, self.selected)
+	end
+
+	function option:SetSelected(tbl, skipCallback)
+		self.selected = {}
+		if type(tbl) == "table" then
+			for _, v in ipairs(tbl) do self.selected[v] = true end
+		end
+		-- Refresh all check icons
+		for _, ci in ipairs(self._checkIcons) do
+			local sel = self.selected[ci.value]
+			ci.outer.ImageColor3 = sel and library.Colors.Accent or library._sh.sliderIdle
+			ci.inner.Size = sel and UDim2.new(1, -6, 1, -6) or UDim2.new(0, 0, 1, -6)
+		end
+		listvalue.Text = buildDisplayText()
+		local arr = {}
+		for k, v in pairs(self.selected) do if v then table.insert(arr, k) end end
+		table.sort(arr)
+		library.flags[self.flag] = arr
+		if not skipCallback then self.callback(arr, self.selected) end
+	end
+
+	function option:RefreshFromFlags()
+		local v = library.flags[self.flag]
+		if type(v) == "table" then self:SetSelected(v, true) end
+	end
+
+	function option:Close()
+		library.activePopup = nil
+		self.open = false
+		content.ScrollBarThickness = 0
+		local pos = main.AbsolutePosition
+		local s   = library._sh
+		tweenService:Create(roundImg, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+			ImageColor3 = inContact and s.surfaceHi or s.surface,
+		}):Play()
+		tweenService:Create(self.mainHolder, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+			ImageTransparency = 1,
+			Position = UDim2.new(0, pos.X - 5, 0, pos.Y - 10),
+		}):Play()
+		for _, row in ipairs(content:GetChildren()) do
+			if row:IsA("Frame") then
+				tweenService:Create(row, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+					BackgroundTransparency = 1,
+				}):Play()
+				for _, c in ipairs(row:GetChildren()) do
+					if c:IsA("TextLabel") then
+						tweenService:Create(c, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { TextTransparency = 1 }):Play()
+					end
+				end
+			end
+		end
+		task.delay(0.3, function()
+			if not self.open then self.mainHolder.Visible = false end
+		end)
+	end
+
+	-- Populate rows
+	for _, value in ipairs(option.values) do
+		option:AddValue(tostring(value))
+	end
+
+	-- Sync initial selected state on icons (icons created inside AddValue)
+	for _, ci in ipairs(option._checkIcons) do
+		if option.selected[ci.value] then
+			ci.outer.ImageColor3 = library.Colors.Accent
+			ci.inner.Size = UDim2.new(1, -6, 1, -6)
+		end
+	end
+
+	-- Sync flag
+	local arr = {}
+	for k, v in pairs(option.selected) do if v then table.insert(arr, k) end end
+	table.sort(arr)
+	library.flags[option.flag] = arr
+
+	library:RegisterThemeHook(function()
+		local s = library._sh
+		roundImg.ImageColor3 = (option.open or inContact) and s.surfaceHi or s.surface
+		titleLbl.TextColor3  = s.mutedText
+		listvalue.TextColor3 = library.Colors.Text
+		option.mainHolder.ImageColor3 = s.listDrop
+		for _, row in ipairs(option._themeRows) do
+			if row.Parent then row.BackgroundColor3 = s.listRow end
+		end
+		for _, ci in ipairs(option._checkIcons) do
+			if ci.outer.Parent then
+				ci.outer.ImageColor3 = option.selected[ci.value] and library.Colors.Accent or s.sliderIdle
+			end
+		end
+	end)
+
+	return option
+end
+
+-- ── Box ────────────────────────────────────────────────────────────────────
 local function createBox(option, parent)
 	local main = library:Create("Frame", {
 		LayoutOrder = option.position,
@@ -1604,6 +2145,8 @@ local function createBox(option, parent)
 	local ti01 = TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
 	local ti02 = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
 
+	wireTooltip(main, option.tooltip)
+
 	main.InputBegan:Connect(function(input)
 		local ut = input.UserInputType
 		if ut == Enum.UserInputType.MouseButton1 then
@@ -1656,6 +2199,7 @@ local function createBox(option, parent)
 	end)
 end
 
+-- ── Color picker ───────────────────────────────────────────────────────────
 local function createColorPickerWindow(option)
 	local sh = library._sh
 	option.mainHolder = library:Create("ImageButton", {
@@ -1676,9 +2220,9 @@ local function createColorPickerWindow(option)
 	sat = sat + 0.005
 	val = val - 0.005
 
-	local editinghue   = false
+	local editinghue    = false
 	local editingsatval = false
-	local currentColor = option.color
+	local currentColor  = option.color
 	local previousColors = { option.color }
 	local originalColor  = option.color
 	local rainbowEnabled = false
@@ -1856,7 +2400,7 @@ local function createColorPickerWindow(option)
 		return btn, lbl
 	end
 
-	option.resetColor, option.resetText = makeChrome(92, "Reset")
+	option.resetColor, option.resetText = makeChrome(92,  "Reset")
 	option.undoColor,  option.undoText  = makeChrome(112, "Undo")
 	option.setColor,   option.setText   = makeChrome(132, "Set")
 	option.rainbow,    option.rainbowText = makeChrome(152, "Rainbow")
@@ -1958,9 +2502,11 @@ local function createColor(option, parent)
 	})
 
 	local inContact = false
-	local ti01 = TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+	local ti01  = TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
 	local ti03q = TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
 	local ti04  = TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out, 0, false, 0.1)
+
+	wireTooltip(option.main, option.tooltip)
 
 	option.main.InputBegan:Connect(function(input)
 		local ut = input.UserInputType
@@ -2051,26 +2597,29 @@ local function createColor(option, parent)
 	end)
 end
 
+-- ── loadOptions ────────────────────────────────────────────────────────────
 local function loadOptions(option)
 	for _, newOption in ipairs(option.options) do
-		if     newOption.type == "label"  then createLabel(newOption, option)
-		elseif newOption.type == "toggle" then createToggle(newOption, option)
-		elseif newOption.type == "button" then
+		if     newOption.type == "label"     then createLabel(newOption, option)
+		elseif newOption.type == "toggle"    then createToggle(newOption, option)
+		elseif newOption.type == "button"    then
 			if newOption.splitRight then
 				createSplitButton(newOption, newOption.splitRight, option)
 			else
 				createButton(newOption, option)
 			end
-		elseif newOption.type == "list"   then createList(newOption, option)
-		elseif newOption.type == "box"    then createBox(newOption, option)
-		elseif newOption.type == "bind"   then createBind(newOption, option)
-		elseif newOption.type == "slider" then createSlider(newOption, option)
-		elseif newOption.type == "color"  then createColor(newOption, option)
-		elseif newOption.type == "folder" then newOption:init()
+		elseif newOption.type == "list"      then createList(newOption, option)
+		elseif newOption.type == "multilist" then createMultiList(newOption, option)
+		elseif newOption.type == "box"       then createBox(newOption, option)
+		elseif newOption.type == "bind"      then createBind(newOption, option)
+		elseif newOption.type == "slider"    then createSlider(newOption, option)
+		elseif newOption.type == "color"     then createColor(newOption, option)
+		elseif newOption.type == "folder"    then newOption:init()
 		end
 	end
 end
 
+-- ── API ────────────────────────────────────────────────────────────────────
 local function getFunctions(parent)
 	function parent:AddLabel(option)
 		option = type(option) == "table" and option or {}
@@ -2153,6 +2702,33 @@ local function getFunctions(parent)
 		option.type, option.position = "list", #self.options
 		option.flag = option.flag or option.text
 		library.flags[option.flag] = option.value
+		table.insert(self.options, option)
+		return option
+	end
+
+	--- Multi-select dropdown.
+	--- option.values   = array of all choices
+	--- option.selected = array of initially selected choices  (optional)
+	--- callback(selectedArray, selectedMap) fires on every toggle
+	function parent:AddMultiList(option)
+		option = type(option) == "table" and option or {}
+		option.text     = tostring(option.text)
+		option.values   = type(option.values) == "table" and option.values or {}
+		option.callback = type(option.callback) == "function" and option.callback or function() end
+		option.open     = false
+		option.type, option.position = "multilist", #self.options
+		option.flag = option.flag or option.text
+		-- Build selected map from initial array
+		local initSel = type(option.selected) == "table" and option.selected or {}
+		option.selected = {}
+		for _, v in ipairs(initSel) do option.selected[v] = true end
+		option._themeRows  = {}
+		option._checkIcons = {}
+		-- Initial flag value: array of selected strings
+		local arr = {}
+		for k, v in pairs(option.selected) do if v then table.insert(arr, k) end end
+		table.sort(arr)
+		library.flags[option.flag] = arr
 		table.insert(self.options, option)
 		return option
 	end
@@ -2282,12 +2858,14 @@ function library:Init()
 			values   = themeNames,
 			value    = self.currentTheme,
 			flag     = "uwuware_theme",
+			tooltip  = "Change the UI colour theme",
 			callback = function(v) self:SetTheme(v) end,
 		})
 
 		settingsWin:AddButton({
 			text     = "Save Style",
 			flag     = "uw_style_as_default",
+			tooltip  = "Save the current theme as the startup default",
 			callback = function() self:SetDefaultTheme(self.currentTheme) end,
 		})
 
@@ -2295,12 +2873,14 @@ function library:Init()
 			text           = "Toggle UI key",
 			flag           = "uwuware_ui_toggle_key",
 			key            = self.CloseKey.Name,
+			tooltip        = "Press to rebind the UI visibility toggle",
 			applyAsCloseKey = true,
 			callback       = function() end,
 		})
 
 		settingsWin:AddButton({
 			text     = "Destroy Script",
+			tooltip  = "Fully remove the UI from the game",
 			callback = function() self.base:Destroy() end,
 		})
 
@@ -2337,6 +2917,7 @@ function library:Close()
 	self:ToggleUI()
 end
 
+-- ── Global input handlers ──────────────────────────────────────────────────
 inputService.InputBegan:Connect(function(input)
 	if input.UserInputType ~= Enum.UserInputType.MouseButton1 then return end
 	if not library.activePopup then return end
