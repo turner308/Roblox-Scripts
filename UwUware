@@ -2813,13 +2813,6 @@ function library:Init()
 	self.base.Destroying:Connect(function() self.alive = false end)
 
 	_protectGui(self.base)
-	pcall(function() self.base.Parent = game:GetService("CoreGui") end)
-
-	self.base.AncestryChanged:Connect(function(_, newParent)
-		if newParent ~= game:GetService("CoreGui") then
-			task.defer(function() _protectGui(self.base) end)
-		end
-	end)
 
 	self.fadeContainer = self.fadeContainer or self:Create("Frame", {
 		Name               = "UwuwareFadeRoot",
