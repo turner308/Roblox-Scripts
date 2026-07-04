@@ -1,3 +1,4 @@
+---@diagnostic disable
 local InputService = game:GetService('UserInputService');
 local TextService = game:GetService('TextService');
 local CoreGui = game:GetService('CoreGui');
@@ -12,10 +13,10 @@ local Mouse = LocalPlayer:GetMouse();
 local ScreenGui = Instance.new('ScreenGui');
 ScreenGui.Parent = (gethui and gethui()) or CoreGui
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Global;
+getgenv().Toggles = {};
+getgenv().Options = {};
 
 local Library = {
-    Toggles = {};
-    Options = {};
 
     Registry = {};
     RegistryMap = {};
@@ -988,7 +989,7 @@ do
         ColorPicker:Display();
         ColorPicker.DisplayFrame = DisplayFrame
 
-        Library.Options[Idx] = ColorPicker;
+        Options[Idx] = ColorPicker;
 
         return self;
     end;
@@ -1315,7 +1316,7 @@ do
 
         KeyPicker:Update();
 
-        Library.Options[Idx] = KeyPicker;
+        Options[Idx] = KeyPicker;
 
         return self;
     end;
@@ -1802,7 +1803,7 @@ do
         Groupbox:AddBlank(5);
         Groupbox:Resize();
 
-        Library.Options[Idx] = Textbox;
+        Options[Idx] = Textbox;
 
         return Textbox;
     end;
@@ -1938,7 +1939,7 @@ do
         Toggle.Container = Container;
         setmetatable(Toggle, BaseAddons);
 
-        Library.Toggles[Idx] = Toggle;
+        Toggles[Idx] = Toggle;
 
         Library:UpdateDependencyBoxes();
 
@@ -2136,7 +2137,7 @@ do
         Groupbox:AddBlank(Info.BlankSize or 6);
         Groupbox:Resize();
 
-        Library.Options[Idx] = Slider;
+        Options[Idx] = Slider;
 
         return Slider;
     end;
@@ -2583,7 +2584,7 @@ do
         Groupbox:AddBlank(Info.BlankSize or 5);
         Groupbox:Resize();
 
-        Library.Options[Idx] = Dropdown;
+        Options[Idx] = Dropdown;
 
         return Dropdown;
     end;
@@ -4153,5 +4154,4 @@ local SaveManager = {} do
 
 	SaveManager:BuildFolderTree()
 end
-
 return Library, ThemeManager, SaveManager
